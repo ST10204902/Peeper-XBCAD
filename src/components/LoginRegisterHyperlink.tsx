@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     textDecorationLine: 'underline',
     marginTop: 20,
+    fontFamily: 'Rany-Medium',
   },
 });
 

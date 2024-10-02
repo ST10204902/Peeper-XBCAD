@@ -26,14 +26,14 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onPress, title, textColor, 
 
   const dynamicTextStyle: TextStyle = {
     color: textColor || '#334FD7',
-    fontFamily: fontFamily || 'System',
+    fontFamily: fontFamily || 'Rany-Medium',
     fontSize: textSize || 25,
   };
 
   const labelTextStyle: TextStyle = {
     marginBottom: 5, // Add some spacing between the label and the button
     fontSize: textSize || 20, // Optional: Match label text size with button text size
-    fontFamily: fontFamily || 'System', // Optional: Match label font family with button font family
+    fontFamily: fontFamily || 'Rany-Medium',
   };
 
   return (
