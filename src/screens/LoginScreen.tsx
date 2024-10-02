@@ -5,18 +5,19 @@ import styles from "../styles/LoginScreenStyle"; // Ensure the path is correct
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent"; // Ensure the path is correct
 import {useAuth} from "@clerk/clerk-expo";
-import { useSignUp } from '@clerk/clerk-expo'
+import { useSignIn } from '@clerk/clerk-expo'
 import { useNavigation } from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import { TextInput, Button } from 'react-native'
+import { SignInFirstFactor, EmailCodeFactor } from '@clerk/types'
 
 //----------Code---------//
 //Demonstrating where to implement pressing the button.
 const LoginScreen: React.FC = () => {
-    const [emailAddress, setEmailAddress] = React.useState('')
-    const { isLoaded, signUp, setActive } = useSignUp()
-    const [pendingVerification, setPendingVerification] = React.useState(false)
-    const [code, setCode] = React.useState('')
+    const [emailAddress, setEmailAddress] = useState('')
+    const { isLoaded, signIn, setActive } = useSignIn()
+    const [pendingVerification, setPendingVerification] = useState(false)
+    const [code, setCode] = useState('')
     const navigation = useNavigation<StackNavigationProp<any>>();
 
     const { isSignedIn } = useAuth();
@@ -31,11 +32,24 @@ const LoginScreen: React.FC = () => {
       }
 
       try {
-          await signUp.create({
-              emailAddress,
-          })
+          const { supportedFirstFactors } = await signIn?.create({
+              identifier: emailAddress,
+          });
 
-          await signUp.prepareEmailAddressVerification({strategy: 'email_code'})
+          const isEmailCodeFactor = (factor: SignInFirstFactor): factor is EmailCodeFactor => {
+              return factor.strategy === 'email_code'
+          }
+          const emailCodeFactor = supportedFirstFactors?.find(isEmailCodeFactor)
+
+          if(emailCodeFactor) {
+              const { emailAddressId } = emailCodeFactor
+
+
+              await signIn?.prepareFirstFactor({
+                  strategy: 'email_code',
+                  emailAddressId,
+              })
+          }
 
           setPendingVerification(true)
       } catch (err: any) {
@@ -50,16 +64,18 @@ const LoginScreen: React.FC = () => {
             return
         }
 
+
+
         try {
-            const completeSignUp = await signUp.attemptEmailAddressVerification({
+            const signInAttempt = await signIn?.attemptFirstFactor({
+                strategy: 'email_code',
                 code,
             })
 
-            if (completeSignUp.status === 'complete') {
-                await setActive({ session: completeSignUp.createdSessionId })
+            if (signInAttempt.status === 'complete') {
+                await setActive ({ session: signInAttempt.createdSessionId })
+
                 navigation.navigate('LandingScreen')
-            } else {
-                console.error(JSON.stringify(completeSignUp, null, 2))
             }
         } catch (err: any) {
             // See https://clerk.com/docs/custom-flows/error-handling
@@ -97,9 +113,9 @@ const LoginScreen: React.FC = () => {
             <Button title="Verify Email" onPress={onPressVerify} />
             </>
         )}
-      {/*<LoginRegisterHyperlink toLogin={false}>*/}
-      {/*  Don't have an account? Register*/}
-      {/*</LoginRegisterHyperlink>*/}
+      <LoginRegisterHyperlink toLogin={false}>
+        Don't have an account? Register
+      </LoginRegisterHyperlink>
     </SafeAreaView>
   );
 };
