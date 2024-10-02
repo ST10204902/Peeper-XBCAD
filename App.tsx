@@ -26,10 +26,26 @@ const Stack = createStackNavigator();
 function OrganisationsNavigator() {
   return (
     <Stack.Navigator initialRouteName="OrgDetails">
-      <Stack.Screen name="OrgDetails" component={OrgDetailsScreen} />
-      <Stack.Screen name="ManageOrgsScreen" component={ManageOrgsScreen} />
-      <Stack.Screen name="RemoveOrgScreen" component={RemoveOrgScreen} />
-      <Stack.Screen name="RequestOrgScreen" component={RequestOrgScreen} />
+      <Stack.Screen
+        name="OrgDetails"
+        component={OrgDetailsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ManageOrgsScreen"
+        component={ManageOrgsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RemoveOrgScreen"
+        component={RemoveOrgScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RequestOrgScreen"
+        component={RequestOrgScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="RequestProgressScreen"
         component={RequestProgressScreen}
@@ -41,19 +57,26 @@ function OrganisationsNavigator() {
 function SettingsNavigator() {
   return (
     <Stack.Navigator initialRouteName="SettingsScreen">
-      <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+      <Stack.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="CustomizeAvatarScreen"
         component={CustomizeAvatarScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen name="ExportReportScreen" component={ExportReportScreen} />
       <Stack.Screen
         name="PrivacyPolicyScreen"
         component={PrivacyPolicyScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="TermsAndConditionsScreen"
         component={TermsAndConditionsScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -62,9 +85,21 @@ function SettingsNavigator() {
 function BottomNavigationBar() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Landing" component={LandingScreen} />
-      <Tab.Screen name="Organisations" component={OrganisationsNavigator} />
-      <Tab.Screen name="Settings" component={SettingsNavigator} />
+      <Tab.Screen
+        name="Landing"
+        component={LandingScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Organisations"
+        component={OrganisationsNavigator}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsNavigator}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 }
@@ -73,24 +108,36 @@ function AppNavigator() {
   return (
     <Stack.Navigator initialRouteName="BottomNavigationBar">
       {/* Change the initialRouteName to your required screen name for testing purposes */}
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="RegisterProfilePhotoScreen"
         component={RegisterProfilePhotoScreen}
+        options={{ headerShown: false }}
       />
-      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-      <Stack.Screen name="SafetyInfoScreen" component={SafetyInfoScreen} />
+      <Stack.Screen
+        name="RegisterScreen"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SafetyInfoScreen"
+        component={SafetyInfoScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="BottomNavigationBar"
         component={BottomNavigationBar}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
 }
 
 export default function App() {
-  
-
   return (
     <RecoilRoot>
       <NavigationContainer>
