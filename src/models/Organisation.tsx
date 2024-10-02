@@ -1,4 +1,6 @@
-interface Organisation {
+import { OrgAddress } from "./OrgAddress";
+
+export interface Organisation {
   org_id: string;
   orgName: string;
   orgAddress: OrgAddress;

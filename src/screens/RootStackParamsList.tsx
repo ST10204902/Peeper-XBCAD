@@ -9,14 +9,17 @@ export type RootStackParamsList = {
   RegisterProfilePhotoScreen: undefined;
   RegisterScreen: undefined;
   SafetyInfoScreen: undefined;
+  LandingScreen: undefined;
   // Bottom Nav Bar
   BottomNavigationBar: undefined;
   // Organisations
+  OrgDetails: undefined;
   ManageOrgsScreen: undefined;
   RemoveOrgScreen: undefined;
   RequestOrgScreen: undefined;
   RequestProgressScreen: undefined;
   // Settings Screen
+  SettingsScreen: undefined;
   CustomizeAvatarScreen: undefined;
   ExportReportScreen: undefined;
   PrivacyPolicyScreen: undefined;
