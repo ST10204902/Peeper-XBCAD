@@ -343,7 +343,6 @@ export default function LandingScreen() {
     <SafeAreaView style={styles.container}>
       {/* Map Component */}
       <MapComponent selectedLocation={selectedLocation} />
-
       {/* Bottom Sheet for Organisation List */}
       <BottomSheet
         ref={sheetRef}
