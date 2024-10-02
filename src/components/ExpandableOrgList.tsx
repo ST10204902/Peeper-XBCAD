@@ -8,12 +8,15 @@ interface Props {
 
 export default function ExpandableOrgList({ items }: Props) {
   return (
-    <View>
+    <View style={styles.listContainer}>
       <FlatList
-        style={styles.listContainer}
         data={items}
-        renderItem={({ item }) => (
-          <ExpandableOrgListItem orgName={item.orgName} />
+        renderItem={({ index, item }) => (
+          <ExpandableOrgListItem
+            orgName={item.orgName}
+            orgAddress={item.orgAddress}
+            oddOrEven={index % 2 === 0 ? "even" : "odd"}
+          />
         )}
       />
     </View>
@@ -24,5 +27,7 @@ const styles = StyleSheet.create({
   // Add styles here
   listContainer: {
     marginTop: 100,
+    backgroundColor: "#F3F3F3",
+    borderRadius: 30,
   },
 });
