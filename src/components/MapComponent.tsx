@@ -1,26 +1,42 @@
-// MapComponent.tsx
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
+import { View, StyleSheet } from "react-native";
 
-const MapComponent: React.FC = () => {
+interface MapComponentProps {
+  selectedLocation: { latitude: number; longitude: number } | null;
+}
+
+const MapComponent: React.FC<MapComponentProps> = ({ selectedLocation }) => {
+  const [region, setRegion] = useState({
+    latitude: -33.9249, // Default latitude (Cape Town)
+    longitude: 18.4241, // Default longitude (Cape Town)
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  // Update the region when selectedLocation changes
+  useEffect(() => {
+    if (selectedLocation) {
+      setRegion({
+        ...region,
+        latitude: selectedLocation.latitude,
+        longitude: selectedLocation.longitude,
+      });
+    }
+  }, [selectedLocation]);
+
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 37.78825, // Default latitude (you can change it)
-          longitude: -122.4324, // Default longitude (you can change it)
-          latitudeDelta: 0.0922, // Zoom level for latitude
-          longitudeDelta: 0.0421, // Zoom level for longitude
-        }}
-      >
-        {/* Example marker */}
-        <Marker
-          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
-          title="Marker Title"
-          description="Marker Description"
-        />
+      <MapView style={styles.map} region={region}>
+        {selectedLocation && (
+          <Marker
+            coordinate={{
+              latitude: selectedLocation.latitude,
+              longitude: selectedLocation.longitude,
+            }}
+            title="Selected Organisation"
+          />
+        )}
       </MapView>
     </View>
   );
@@ -28,10 +44,10 @@ const MapComponent: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Takes full screen
+    flex: 1,
   },
   map: {
-    ...StyleSheet.absoluteFillObject, // Makes the map fill the screen
+    ...StyleSheet.absoluteFillObject,
   },
 });
 
