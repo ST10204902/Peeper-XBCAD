@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { View, FlatList, Image, StyleSheet, Dimensions } from 'react-native';
 
-// Sample avatar data (you can replace these with actual avatar images)
 const avatars = [
-  { id: '1', src: require('./assets/Avatars/A1.png') },
+  { id: '1', src: require('.../') },
   { id: '2', src: require('./assets/Avatars/A2.png') },
   { id: '3', src: require('./assets/Avatars/A3.png') },
   { id: '4', src: require('./assets/Avatars/A4.png') },
@@ -12,7 +11,6 @@ const avatars = [
   { id: '7', src: require('./assets/Avatars/A7.png') },
   { id: '8', src: require('./assets/Avatars/A8.png') },
   { id: '9', src: require('./assets/Avatars/A9.png') },
-  // Add more avatars here
 ];
 
 const AvatarComponent = () => {
