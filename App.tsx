@@ -106,7 +106,7 @@ function BottomNavigationBar() {
 
 function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName="RegisterScreen">
+    <Stack.Navigator initialRouteName="BottomNavigationBar">
       {/* Change the initialRouteName to your required screen name for testing purposes */}
       <Stack.Screen
         name="LoginScreen"
