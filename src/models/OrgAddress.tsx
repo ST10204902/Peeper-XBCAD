@@ -1,4 +1,4 @@
-interface OrgAddress {
+export interface OrgAddress {
   streetAddress: string;
   suburb: string;
   city: string;
