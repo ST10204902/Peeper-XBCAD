@@ -68,53 +68,53 @@ function OrganisationsNavigator() {
 }
 
 function SettingsNavigator() {
-  return (
-    <Stack.Navigator initialRouteName="SettingsScreen">
-      <Stack.Screen
-        name="SettingsScreen"
-        component={SettingsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CustomizeAvatarScreen"
-        component={CustomizeAvatarScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen name="ExportReportScreen" component={ExportReportScreen} />
-      <Stack.Screen
-        name="PrivacyPolicyScreen"
-        component={PrivacyPolicyScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="TermsAndConditionsScreen"
-        component={TermsAndConditionsScreen}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
+    return (
+        <Stack.Navigator initialRouteName="SettingsScreen">
+            <Stack.Screen
+                name="SettingsScreen"
+                component={SettingsScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="CustomizeAvatarScreen"
+                component={CustomizeAvatarScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="ExportReportScreen" component={ExportReportScreen} />
+            <Stack.Screen
+                name="PrivacyPolicyScreen"
+                component={PrivacyPolicyScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="TermsAndConditionsScreen"
+                component={TermsAndConditionsScreen}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    );
 }
 
 function BottomNavigationBar() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Landing"
-        component={LandingScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Organisations"
-        component={OrganisationsNavigator}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsNavigator}
-        options={{ headerShown: false }}
-      />
-    </Tab.Navigator>
-  );
+    return (
+        <Tab.Navigator>
+            <Tab.Screen
+                name="Landing"
+                component={LandingScreen}
+                options={{ headerShown: false }}
+            />
+            <Tab.Screen
+                name="Organisations"
+                component={OrganisationsNavigator}
+                options={{ headerShown: false }}
+            />
+            <Tab.Screen
+                name="Settings"
+                component={SettingsNavigator}
+                options={{ headerShown: false }}
+            />
+        </Tab.Navigator>
+    );
 }
 
 function AppNavigator() {
@@ -187,10 +187,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });
