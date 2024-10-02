@@ -4,7 +4,7 @@ import { SafeAreaView, Alert } from "react-native";
 import CustomButton from "../components/LoginRegisterButtonComponent"; // Ensure the path is correct
 import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
 
-const App: React.FC = () => {
+const RegisterScreen: React.FC = () => {
   
   const handlePress = () => {
     Alert.alert("Button Pressed!", "You have pressed the button.");
@@ -25,4 +25,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default RegisterScreen;
