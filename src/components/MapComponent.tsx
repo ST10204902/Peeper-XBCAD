@@ -19,7 +19,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ selectedLocation }) => {
     if (selectedLocation) {
       setRegion({
         ...region,
-        latitude: selectedLocation.latitude,
+        latitude: selectedLocation.latitude - 0.02,
         longitude: selectedLocation.longitude,
       });
     }
