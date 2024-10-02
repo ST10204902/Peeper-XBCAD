@@ -21,7 +21,9 @@ import LoginScreen from "./src/screens/LoginScreen";
 import RegisterProfilePhotoScreen from "./src/screens/RegisterProfilePhotoScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
-import FontLoader from './src/components/FontLoader'; // Import FontLoader
+import FontLoader from './src/components/FontLoader';
+import {ClerkProvider} from "@clerk/clerk-expo"; // Import FontLoader
+import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 
 
 const Tab = createBottomTabNavigator();
@@ -109,47 +111,70 @@ function BottomNavigationBar() {
 }
 
 function AppNavigator() {
-  return (
-    <Stack.Navigator initialRouteName="RegisterScreen">
-      {/* Change the initialRouteName to your required screen name for testing purposes */}
-      <Stack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RegisterProfilePhotoScreen"
-        component={RegisterProfilePhotoScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RegisterScreen"
-        component={RegisterScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SafetyInfoScreen"
-        component={SafetyInfoScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BottomNavigationBar"
-        component={BottomNavigationBar}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
+    const { isSignedIn } = useUser(); // Fetch Clerk user state
+
+    return (
+        <Stack.Navigator initialRouteName="RegisterScreen">
+            {isSignedIn ? (
+                <>
+                    <Stack.Screen
+                        name="LandingScreen"
+                        component={LandingScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="BottomNavigationBar"
+                        component={BottomNavigationBar}
+                        options={{ headerShown: false }}
+                    />
+                </>
+            ) : (
+                <>
+                    <Stack.Screen
+                        name="RegisterScreen"
+                        component={RegisterScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="LoginScreen"
+                        component={LoginScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="RegisterProfilePhotoScreen"
+                        component={RegisterProfilePhotoScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="SafetyInfoScreen"
+                        component={SafetyInfoScreen}
+                        options={{ headerShown: false }}
+                    />
+                </>
+            )}
+        </Stack.Navigator>
+    );
 }
 
 export default function App() {
-  return (
-    <FontLoader>
-      <RecoilRoot>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </RecoilRoot>
-    </FontLoader>
+    const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+
+    if (!publishableKey) {
+        throw new Error(
+            'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
+        )
+    }
+
+    return (
+    <ClerkProvider publishableKey={publishableKey}>
+        <FontLoader>
+          <RecoilRoot>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </RecoilRoot>
+        </FontLoader>
+    </ClerkProvider>
   );
 }
 
