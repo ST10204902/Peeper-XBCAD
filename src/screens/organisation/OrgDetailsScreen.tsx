@@ -3,6 +3,7 @@ import React from "react";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
 import { OrgAddress } from "../../models/OrgAddress";
 import { Organisation } from "../../models/Organisation";
+import { StyleSheet, View } from "react-native";
 
 export default function OrgDetailsScreen() {
   //return <Text> OrgDetailsScreen </Text>;
@@ -43,5 +44,17 @@ export default function OrgDetailsScreen() {
       orgLongitude: 0,
     },
   ];
-  return <ExpandableOrgList items={itemList} />;
+  return (
+    <View style={styles.page}>
+      <ExpandableOrgList items={itemList} />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  // Add styles here
+  page: {
+    backgroundColor: "#FFFFFF",
+    flex: 1,
+  },
+});
