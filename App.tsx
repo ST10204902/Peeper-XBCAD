@@ -89,6 +89,8 @@ function AppNavigator() {
 }
 
 export default function App() {
+  
+
   return (
     <RecoilRoot>
       <NavigationContainer>
