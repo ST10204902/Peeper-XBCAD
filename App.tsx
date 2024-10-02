@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { RecoilRoot } from "recoil";
+import { ClerkProvider, SignedIn, SignedOut, useUser } from "@clerk/clerk-expo"; // Load the Clerk API from the .env file
 import LandingScreen from "./src/screens/LandingScreen";
 import SettingsScreen from "./src/screens/settings/SettingsScreen";
 import OrgDetailsScreen from "./src/screens/organisation/OrgDetailsScreen";
@@ -22,138 +23,144 @@ import RegisterProfilePhotoScreen from "./src/screens/RegisterProfilePhotoScreen
 import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
 import FontLoader from './src/components/FontLoader';
-import {ClerkProvider} from "@clerk/clerk-expo"; // Import FontLoader
-import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+
+if (!publishableKey) {
+    throw new Error(
+        'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
+    )
+}
 
 function OrganisationsNavigator() {
-  return (
-    <Stack.Navigator initialRouteName="OrgDetails">
-      <Stack.Screen
-        name="OrgDetails"
-        component={OrgDetailsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ManageOrgsScreen"
-        component={ManageOrgsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RemoveOrgScreen"
-        component={RemoveOrgScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RequestOrgScreen"
-        component={RequestOrgScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RequestProgressScreen"
-        component={RequestProgressScreen}
-      />
-    </Stack.Navigator>
-  );
+    return (
+        <Stack.Navigator initialRouteName="OrgDetails">
+            <Stack.Screen
+                name="OrgDetails"
+                component={OrgDetailsScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="ManageOrgsScreen"
+                component={ManageOrgsScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="RemoveOrgScreen"
+                component={RemoveOrgScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="RequestOrgScreen"
+                component={RequestOrgScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="RequestProgressScreen"
+                component={RequestProgressScreen}
+            />
+        </Stack.Navigator>
+    );
 }
 
 function SettingsNavigator() {
-  return (
-    <Stack.Navigator initialRouteName="SettingsScreen">
-      <Stack.Screen
-        name="SettingsScreen"
-        component={SettingsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CustomizeAvatarScreen"
-        component={CustomizeAvatarScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen name="ExportReportScreen" component={ExportReportScreen} />
-      <Stack.Screen
-        name="PrivacyPolicyScreen"
-        component={PrivacyPolicyScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="TermsAndConditionsScreen"
-        component={TermsAndConditionsScreen}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
+    return (
+        <Stack.Navigator initialRouteName="SettingsScreen">
+            <Stack.Screen
+                name="SettingsScreen"
+                component={SettingsScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="CustomizeAvatarScreen"
+                component={CustomizeAvatarScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="ExportReportScreen" component={ExportReportScreen} />
+            <Stack.Screen
+                name="PrivacyPolicyScreen"
+                component={PrivacyPolicyScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="TermsAndConditionsScreen"
+                component={TermsAndConditionsScreen}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    );
 }
 
 function BottomNavigationBar() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Landing"
-        component={LandingScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Organisations"
-        component={OrganisationsNavigator}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsNavigator}
-        options={{ headerShown: false }}
-      />
-    </Tab.Navigator>
-  );
+    return (
+        <Tab.Navigator>
+            <Tab.Screen
+                name="Landing"
+                component={LandingScreen}
+                options={{ headerShown: false }}
+            />
+            <Tab.Screen
+                name="Organisations"
+                component={OrganisationsNavigator}
+                options={{ headerShown: false }}
+            />
+            <Tab.Screen
+                name="Settings"
+                component={SettingsNavigator}
+                options={{ headerShown: false }}
+            />
+        </Tab.Navigator>
+    );
 }
 
 function AppNavigator() {
-    const { isSignedIn } = useUser(); // Fetch Clerk user state
+  const { isSignedIn } = useUser(); // Fetch Clerk user state
 
-    return (
-        <Stack.Navigator initialRouteName="RegisterScreen">
-            {isSignedIn ? (
-                <>
-                    <Stack.Screen
-                        name="LandingScreen"
-                        component={LandingScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="BottomNavigationBar"
-                        component={BottomNavigationBar}
-                        options={{ headerShown: false }}
-                    />
-                </>
-            ) : (
-                <>
-                    <Stack.Screen
-                        name="RegisterScreen"
-                        component={RegisterScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="LoginScreen"
-                        component={LoginScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="RegisterProfilePhotoScreen"
-                        component={RegisterProfilePhotoScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="SafetyInfoScreen"
-                        component={SafetyInfoScreen}
-                        options={{ headerShown: false }}
-                    />
-                </>
-            )}
-        </Stack.Navigator>
-    );
+  return (
+      <Stack.Navigator initialRouteName="RegisterScreen">
+          {isSignedIn ? (
+              <>
+                  <Stack.Screen
+                      name="LandingScreen"
+                      component={LandingScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="BottomNavigationBar"
+                      component={BottomNavigationBar}
+                      options={{ headerShown: false }}
+                  />
+              </>
+          ) : (
+              <>
+                  <Stack.Screen
+                      name="RegisterScreen"
+                      component={RegisterScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="LoginScreen"
+                      component={LoginScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="RegisterProfilePhotoScreen"
+                      component={RegisterProfilePhotoScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="SafetyInfoScreen"
+                      component={SafetyInfoScreen}
+                      options={{ headerShown: false }}
+                  />
+              </>
+          )}
+      </Stack.Navigator>
+  );
+    
 }
 
 export default function App() {
@@ -179,10 +186,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });
