@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#334FD7", // Electric blue background colour 
   },
+  
 });
 
 export default styles;
