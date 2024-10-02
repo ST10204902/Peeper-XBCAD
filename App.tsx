@@ -23,33 +23,10 @@ import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function BottomNavigationBar() {
+function OrganisationsNavigator() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Landing" component={LandingScreen} />
-      <Tab.Screen name="OrgDetails" component={OrgDetailsScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
-}
-
-function AppNavigator() {
-  return (
-    <Stack.Navigator initialRouteName="RegisterScreen">
-      {/* Change the initialRouteName to your required screen name for testing purposes */}
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen
-        name="RegisterProfilePhotoScreen"
-        component={RegisterProfilePhotoScreen}
-      />
-      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-      <Stack.Screen name="SafetyInfoScreen" component={SafetyInfoScreen} />
-      {/* Bottom Navigation Bar - includes navbar screens*/}
-      <Stack.Screen
-        name="BottomNavigationBar"
-        component={BottomNavigationBar}
-      />
-      {/* Organisations Screens */}
+    <Stack.Navigator initialRouteName="OrgDetails">
+      <Stack.Screen name="OrgDetails" component={OrgDetailsScreen} />
       <Stack.Screen name="ManageOrgsScreen" component={ManageOrgsScreen} />
       <Stack.Screen name="RemoveOrgScreen" component={RemoveOrgScreen} />
       <Stack.Screen name="RequestOrgScreen" component={RequestOrgScreen} />
@@ -57,7 +34,14 @@ function AppNavigator() {
         name="RequestProgressScreen"
         component={RequestProgressScreen}
       />
-      {/* Settings Screens */}
+    </Stack.Navigator>
+  );
+}
+
+function SettingsNavigator() {
+  return (
+    <Stack.Navigator initialRouteName="SettingsScreen">
+      <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
       <Stack.Screen
         name="CustomizeAvatarScreen"
         component={CustomizeAvatarScreen}
@@ -70,6 +54,35 @@ function AppNavigator() {
       <Stack.Screen
         name="TermsAndConditionsScreen"
         component={TermsAndConditionsScreen}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function BottomNavigationBar() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Landing" component={LandingScreen} />
+      <Tab.Screen name="Organisations" component={OrganisationsNavigator} />
+      <Tab.Screen name="Settings" component={SettingsNavigator} />
+    </Tab.Navigator>
+  );
+}
+
+function AppNavigator() {
+  return (
+    <Stack.Navigator initialRouteName="BottomNavigationBar">
+      {/* Change the initialRouteName to your required screen name for testing purposes */}
+      <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen
+        name="RegisterProfilePhotoScreen"
+        component={RegisterProfilePhotoScreen}
+      />
+      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <Stack.Screen name="SafetyInfoScreen" component={SafetyInfoScreen} />
+      <Stack.Screen
+        name="BottomNavigationBar"
+        component={BottomNavigationBar}
       />
     </Stack.Navigator>
   );
