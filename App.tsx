@@ -26,8 +26,9 @@ import FontLoader from './src/components/FontLoader';
 
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamsList>();
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+const prefix = Linking.createURL("/");
 
 if (!publishableKey) {
   throw new Error(
@@ -37,9 +38,9 @@ if (!publishableKey) {
 
 function OrganisationsNavigator() {
   return (
-    <Stack.Navigator initialRouteName="OrgDetails">
+    <Stack.Navigator initialRouteName="OrgDetailsScreen">
       <Stack.Screen
-        name="OrgDetails"
+        name="OrgDetailsScreen"
         component={OrgDetailsScreen}
         options={{ headerShown: false }}
       />
