@@ -1,4 +1,4 @@
-interface LocationLog {
+export interface LocationLog {
   timestamp: string; // ISO 8601 datetime
   latitude: number;
   longitude: number;
