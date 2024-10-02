@@ -1,3 +1,5 @@
+// App.tsx
+import React from 'react';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -19,6 +21,8 @@ import LoginScreen from "./src/screens/LoginScreen";
 import RegisterProfilePhotoScreen from "./src/screens/RegisterProfilePhotoScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
+import FontLoader from './src/components/FontLoader'; // Import FontLoader
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -139,11 +143,13 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <RecoilRoot>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
-    </RecoilRoot>
+    <FontLoader>
+      <RecoilRoot>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </RecoilRoot>
+    </FontLoader>
   );
 }
 
