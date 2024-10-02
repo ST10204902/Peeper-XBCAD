@@ -2,7 +2,6 @@
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import styles from '../styles/LoginRegisterHyperlinkStyle'; // Ensure the path is correct
 import { StackNavigationProp } from '@react-navigation/stack';
 
 interface LoginRegisterHyperlinkProps {
@@ -23,11 +22,20 @@ const LoginRegisterHyperlink: React.FC<LoginRegisterHyperlinkProps> = ({ toLogin
 
   return (
     <TouchableOpacity onPress={handlePress}>
-      <Text style={[styles.hyperlinkText, styles.hyperlinkText]}>{children}</Text>
+      <Text style={styles.hyperlinkText}>{children}</Text>
     </TouchableOpacity>
   );
 };
 
-
+const styles = StyleSheet.create({
+  hyperlinkText: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#FFFFFF',
+    backgroundColor: 'transparent',
+    textDecorationLine: 'underline',
+    marginTop: 20,
+  },
+});
 
 export default LoginRegisterHyperlink;
