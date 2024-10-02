@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Peeper-XBCAD",
+    "slug": "Peeper-XBCAD",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "config": {
+        "googleMapsApiKey": "API-KEY-GOES-HERE"
+      },
+      "supportsTablet": true
+    },
+    "android": {
+      "config": { 
+        "googleMapsApiKey": "API-KEY-GOES-HERE"
+       },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
