@@ -19,9 +19,10 @@ import LoginScreen from "./src/screens/LoginScreen";
 import RegisterProfilePhotoScreen from "./src/screens/RegisterProfilePhotoScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
+import { RootStackParamsList } from "./src/screens/RootStackParamsList";
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamsList>();
 
 function OrganisationsNavigator() {
   return (
