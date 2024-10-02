@@ -1,26 +1,13 @@
 import React, { useState } from 'react';
-import { TextInput, StyleSheet, View } from 'react-native';
+import { TextInput, StyleSheet, View, Text } from 'react-native';
 
 interface Props {
     FGColor: string;
     onEmailChange: (email: string) => void;
+    label: string; // Add label prop
 }
 
-
-
-
-/**
- * LoginRegisterInputComponent is a functional component that renders a text input field for a student's email.
- * It allows the parent component to receive updates when the email changes.
- *
- * @component
- * @param {Object} props - The properties object.
- * @param {string} props.FGColor - The foreground color to be used for the input text and placeholder.
- * @param {function} props.onEmailChange - Callback function to be called when the email text changes.
- *
- * @returns {JSX.Element} The rendered component.
- */
-function LoginRegisterInputComponent({ FGColor, onEmailChange }: Props) {
+function LoginRegisterInputComponent({ FGColor, onEmailChange, label }: Props) {
     const [email, setEmail] = useState('');
 
     const handleEmailChange = (text: string) => {
@@ -29,25 +16,41 @@ function LoginRegisterInputComponent({ FGColor, onEmailChange }: Props) {
     };
 
     return (
-        <View style={[styles.container, { borderColor: FGColor }]}>
-            <TextInput
-                style={[styles.input, { color: FGColor }]} // Use FGColor for input text color
-                placeholder="Student Email"
-                value={email}
-                onChangeText={handleEmailChange}
-                placeholderTextColor={FGColor} // Use FGColor for placeholder text color
-            />
+        <View style={styles.wrapper}>
+            <Text style={styles.label}>{label}</Text>
+            <View style={[styles.container, { borderColor: FGColor }]}>
+                <TextInput
+                    style={[styles.input, { color: FGColor }]} // Use FGColor for input text color
+                    placeholder="Student Email"
+                    value={email}
+                    onChangeText={handleEmailChange}
+                    placeholderTextColor={FGColor} // Use FGColor for placeholder text color
+                />
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    wrapper: {
+        width: 300, // Adjust width if needed
+        marginBottom: 16, // Space between input fields
+    },
     container: {
         backgroundColor: 'transparent', // Set background to transparent
         borderRadius: 10,
         padding: 5,
         borderWidth: 3,
-        width: 300, // Adjust width if needed
+    },
+    label: {
+        fontSize: 16,
+        color: '#ffffff',
+        marginBottom: 4,
+        position: 'absolute',
+        top: -25,
+        left: 10,
+        backgroundColor: 'transparent', // Match the background color of the parent
+        paddingHorizontal: 4,
     },
     input: {
         height: 40,
