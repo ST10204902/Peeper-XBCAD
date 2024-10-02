@@ -3,16 +3,15 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   button: {
-    backgroundColor: '#1E90FF',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
+    width: '90%', // Set the width to 90% to leave space on the sides
+    alignSelf: 'center', // Center the button within its parent container
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    // Default styles for button text
   },
 });
