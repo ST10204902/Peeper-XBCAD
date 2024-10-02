@@ -51,11 +51,15 @@ const styles = StyleSheet.create({
         left: 10,
         backgroundColor: 'transparent', // Match the background color of the parent
         paddingHorizontal: 4,
+        fontFamily: 'Rany-Medium',
+
     },
     input: {
         height: 40,
         paddingHorizontal: 10,
         fontSize: 16,
+        fontFamily: 'Rany-Medium',
+
     }
 });
 
