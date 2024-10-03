@@ -10,6 +10,7 @@ export type RootStackParamsList = {
   RegisterScreen: undefined;
   SafetyInfoScreen: undefined;
   LandingScreen: undefined;
+  ConfirmationScreen: undefined;
   // Bottom Nav Bar
   BottomNavigationBar: undefined;
   // Organisations
@@ -24,4 +25,5 @@ export type RootStackParamsList = {
   ExportReportScreen: undefined;
   PrivacyPolicyScreen: undefined;
   TermsAndConditionsScreen: undefined;
+  OrgDetailsScreen: undefined;
 };
