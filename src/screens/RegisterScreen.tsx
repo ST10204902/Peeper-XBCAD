@@ -7,6 +7,10 @@ import LoginRegisterInputComponent from "../components/loginRegisterInputCompone
 import {useAuth, useSignUp} from "@clerk/clerk-expo";
 import {useNavigation} from "@react-navigation/native";
 import {StackNavigationProp} from "@react-navigation/stack"; // Ensure the path is correct
+import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
+import {useAuth, useSignUp} from "@clerk/clerk-expo";
+import {useNavigation} from "@react-navigation/native";
+import {StackNavigationProp} from "@react-navigation/stack"; // Ensure the path is correct
 
 //----------Code---------//
 //Demonstrating where to implement pressing the button.
@@ -72,6 +76,30 @@ const RegisterScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+        {!pendingVerification && (
+        <>
+            <LoginRegisterInputComponent
+                label="Register with your Student Email:"
+                FGColor="#ffffff"
+                onEmailChange={handleEmailChange}
+            />
+            <CustomButton
+                onPress={handlePress}
+                title="Register"
+                textColor="#334FD7"
+                buttonColor="#ffffff"
+                fontFamily="Rany-Medium"
+                textSize={30}
+            />
+        </>
+        )}
+        {pendingVerification && (
+            <>
+                <TextInput value={code} placeholder="Code..." onChangeText={(code) => setCode(code)} />
+                <Button title="Verify Email" onPress={onPressVerify} />
+            </>
+        )}
+
         {!pendingVerification && (
         <>
             <LoginRegisterInputComponent
