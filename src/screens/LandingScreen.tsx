@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-
+import TrackingPopup from "../components/TrackingPopup";
 
 export default function LandingScreen() {
   const organisations: Organisation[] = [
@@ -309,6 +309,17 @@ export default function LandingScreen() {
     },
   ];
 
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+  const handleStartTracking = () => {
+  // IMPLEMENT THE TRACKING FUNCTIONALITY HERE
+    setIsPopupVisible(false); // Close the popup
+  };
+
+  const handleCancel = () => {
+    setIsPopupVisible(false); // Close the popup
+  };
+
   const [selectedLocation, setSelectedLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -332,6 +343,7 @@ export default function LandingScreen() {
     organisationName: String
   ) => {
     setSelectedLocation({ latitude, longitude });
+    setIsPopupVisible(true);
     console.log(`${organisationName} selected`);
   };
 
@@ -350,6 +362,13 @@ export default function LandingScreen() {
     <SafeAreaView style={styles.container}>
       {/* Map Component */}
       <MapComponent selectedLocation={selectedLocation} />
+
+      {/* Tracking Popup */}
+      <TrackingPopup
+        visible={isPopupVisible}
+        onStartTracking={handleStartTracking}
+        onCancel={handleCancel}
+      />
       {/* Bottom Sheet for Organisation List */}
       <BottomSheet
         ref={sheetRef}
