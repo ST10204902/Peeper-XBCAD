@@ -22,6 +22,7 @@ const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking,
               buttonColor="#A4DB51" // Green color
               fontFamily="Rany-Medium"
               textSize={16}
+              addFlex={true}
             />
             <CustomButton
               title="Cancel"
@@ -30,6 +31,7 @@ const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking,
               buttonColor="#EC4E4B" // Red color
               fontFamily="Rany-Medium"
               textSize={16}
+              addFlex={true}
             />
           </View>
         </View>

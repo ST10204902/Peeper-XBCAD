@@ -17,6 +17,7 @@ interface CustomButtonProps {
   fontFamily?: string; // Add an optional prop for font family
   textSize?: number; // Add an optional prop for text size
   label?: string; // Add an optional prop for the label above the button
+  addFlex?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -27,6 +28,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   fontFamily,
   textSize,
   label,
+  addFlex = false
 }) => {
   const [buttonHeight, setButtonHeight] = useState<number>(0);
 
@@ -52,8 +54,10 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     fontFamily: fontFamily || "Rany-Medium",
   };
 
+  const containerStyle = addFlex ? localStyles.flexContainer : localStyles.container;
+
   return (
-    <View style={localStyles.container}>
+    <View style={containerStyle}>
       {label && <Text style={labelTextStyle}>{label}</Text>}
       <TouchableOpacity
         style={[localStyles.button, dynamicButtonStyle]}
@@ -68,6 +72,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
 const localStyles = StyleSheet.create({
   container: {
+    flexDirection: "row",
+  },
+  flexContainer: {
     flexDirection: "row",
     flex: 1,
   },
