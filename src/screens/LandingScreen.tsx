@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState } from "react";
+import React, { useRef, useMemo, useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
@@ -317,6 +317,12 @@ export default function LandingScreen() {
 
   // Define snap points (different heights the bottom sheet can snap to)
   const snapPoints = useMemo(() => [100, "50%", "100%"], []);
+
+  useEffect(() => {
+    if (selectedLocation) {
+      sheetRef.current?.snapToIndex(0); // Snap to the closed position
+    }
+  }, [selectedLocation]);
 
   // Function to handle organisation item click
   const handleOrganisationPress = (
