@@ -1,4 +1,6 @@
-interface OrgRequest {
+import { OrgAddress } from "./OrgAddress";
+
+export interface OrgRequest {
   request_id: string;
   studentID: string;
   org_id: string;
