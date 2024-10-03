@@ -1,9 +1,9 @@
-import { OrgAddress } from "./OrgAddress";
+import { OrgAddressData } from "./OrgAddressData";
 
-export interface Organisation {
+export interface OrganisationData {
   org_id: string;
   orgName: string;
-  orgAddress: OrgAddress;
+  orgAddress: OrgAddressData;
   orgEmail: string;
   orgPhoneNo: string;
   orgLatitude: number;
