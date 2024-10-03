@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#334FD7", // Monster green background colour 
-    paddingHorizontal: 20,
+    padding: 20,
   },
   headingContainer: {
     alignSelf: 'flex-start', // Align to the left
