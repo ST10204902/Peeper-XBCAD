@@ -1,12 +1,12 @@
-import { SessionLog } from "./SessionLog";
+import { SessionLogData } from "./SessionLogData";
 
-export interface Student {
+export interface StudentData {
   student_id: string;
   studentNumber: string;
   email: string;
   profilePhotoURL?: string;
   activeOrgs: string[];
   locationData: {
-    [sessionLog_id: string]: SessionLog;
+    [sessionLog_id: string]: SessionLogData;
   };
 }

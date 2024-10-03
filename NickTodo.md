@@ -1,0 +1,6 @@
+- rename models to databaseModels
+- new folder called databaseClasses with new classes inside
+- refactor interface names to include +Data
+- Convert classes to .ts
+- Create classes that extend interfaces
+- Database utility that uses firebase context

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
-import { OrgAddress } from "../../models/OrgAddress";
-import { Organisation } from "../../models/Organisation";
+import { OrgAddressData } from "../../databaseModels/OrgAddressData";
+import { OrganisationData } from "../../databaseModels/OrganisationData";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
 import CustomButton from "../../components/CustomButton";
 
@@ -10,7 +10,7 @@ import CustomButton from "../../components/CustomButton";
  */
 export default function ManageOrgsScreen() {
   // Dummy data
-  const address: OrgAddress = {
+  const address: OrgAddressData = {
     streetAddress: "53 Main Rd",
     suburb: "Claremont",
     city: "Cape Town",
@@ -18,7 +18,7 @@ export default function ManageOrgsScreen() {
     postalCode: "7700",
   };
 
-  const itemList: Organisation[] = [
+  const itemList: OrganisationData[] = [
     {
       org_id: "1",
       orgName: "Massage The Pandas",
@@ -73,7 +73,7 @@ export default function ManageOrgsScreen() {
  * expandable orgList
  * @param org Corresponding organisation
  */
-function onOrgListButtonPressed(org: Organisation) {
+function onOrgListButtonPressed(org: OrganisationData) {
   alert(org.orgName);
 }
 
