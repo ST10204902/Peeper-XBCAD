@@ -1,15 +1,12 @@
-// RegisterScreen.tsx
-//----------Imports---------//
 import React, { useState } from "react";
 import { SafeAreaView, Alert, View } from "react-native";
-import CustomButton from "../components/LoginRegisterButtonComponent"; // Ensure the path is correct
+import CustomButton from "../components/CustomButton"; // Ensure the path is correct
 import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent"; // Ensure the path is correct
+import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent"; // Ensure the path is correct
 
-//----------Code---------//
-//Demonstrating where to implement pressing the button.
-const RegisterScreen: React.FC = () => {
+const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("");
 
   const handlePress = () => {
@@ -20,27 +17,35 @@ const RegisterScreen: React.FC = () => {
     setEmail(email);
   };
 
-  //Returns the components for the screen
   return (
     <SafeAreaView style={styles.container}>
-      <LoginRegisterInputComponent
-      label="Register with your Student Email:"
-        FGColor="#ffffff"
-        onEmailChange={handleEmailChange}
-      />
-      <CustomButton
-        onPress={handlePress}
-        title="Register"
-        textColor="#334FD7"
-        buttonColor="#ffffff"
-        fontFamily="Rany-Medium"
-        textSize={30}
-      />
-      <LoginRegisterHyperlink toLogin={true}>
-        Already have an account? Log in
-      </LoginRegisterHyperlink>
+      <View style={styles.headingContainer}>
+        <LoginRegisterHeadingComponent text="Start Your Journey Of Impact " color="#ffffff" fontSize={68}/>
+      </View>
+      <View style={styles.inputContainer}>
+        <LoginRegisterInputComponent
+          label="Register with your Student Email:"
+          FGColor="#ffffff"
+          onEmailChange={handleEmailChange}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <CustomButton
+          onPress={handlePress}
+          title="Register"
+          textColor="#334FD7"
+          buttonColor="#ffffff"
+          fontFamily="Rany-Medium"
+          textSize={30}
+        />
+      </View>
+      <View style={styles.hyperlinkContainer}>
+        <LoginRegisterHyperlink toLogin={true}>
+          Alredy have an account? Login
+        </LoginRegisterHyperlink>
+      </View>
     </SafeAreaView>
   );
 };
 
-export default RegisterScreen;
+export default LoginScreen;
