@@ -24,7 +24,6 @@ export default function ConfirmationScreen({ navigation }: Props) {
 
       await setActive({ session: completeSignUp.createdSessionId });
 
-      //log the user in
       
 
       
