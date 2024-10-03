@@ -1,11 +1,11 @@
-import { OrgAddress } from "./OrgAddress";
+import { OrgAddressData } from "./OrgAddressData";
 
-export interface OrgRequest {
+export interface OrgRequestData {
   request_id: string;
   studentID: string;
   org_id: string;
   name: string;
-  orgAddress: OrgAddress;
+  orgAddress: OrgAddressData;
   email?: string;
   phoneNo?: string;
   approvalStatus: number; // Assuming this is an ENUM
