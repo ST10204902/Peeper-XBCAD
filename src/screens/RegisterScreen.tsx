@@ -4,7 +4,7 @@ import CustomButton from "../components/CustomButton"; // Ensure the path is cor
 import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
-
+import { Student } from "../databaseModels/databaseClasses/Student";
 //----------Code---------//
 //Demonstrating where to implement pressing the button.
 import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent"; // Import the heading component
@@ -12,7 +12,6 @@ import {  useAuth, useSignUp  } from "@clerk/clerk-expo";
 import {  useNavigation  } from "@react-navigation/native";
 import {  StackNavigationProp  } from "@react-navigation/stack"; // Ensure the path is correct
 import { StudentData } from "../databaseModels/StudentData";
-import { Student } from "../databaseModels/databaseClasses/Student";
 import ConfirmationInputComponent from '../components/ConfirmationInputComponent';
 
 const RegisterScreen: React.FC = () => {
