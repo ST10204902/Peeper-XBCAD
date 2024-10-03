@@ -75,7 +75,7 @@ const LoginScreen: React.FC = () => {
             if (signInAttempt.status === 'complete') {
                 await setActive ({ session: signInAttempt.createdSessionId })
 
-                navigation.navigate('LandingScreen')
+                navigation.navigate('BottomNavigationBar')
             }
         } catch (err: any) {
             // See https://clerk.com/docs/custom-flows/error-handling
