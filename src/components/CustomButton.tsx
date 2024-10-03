@@ -40,7 +40,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onPress, title, textColor, 
     <View style={localStyles.container}>
       {label && <Text style={labelTextStyle}>{label}</Text>}
       <TouchableOpacity style={[localStyles.button, dynamicButtonStyle]} onLayout={handleLayout} onPress={onPress}>
-        <Text style={[localStyles.buttonText, dynamicTextStyle]}>
+        <Text style={[dynamicTextStyle]}>
           {title}
         </Text>
       </TouchableOpacity>
@@ -50,28 +50,15 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onPress, title, textColor, 
 
 const localStyles = StyleSheet.create({
   container: {
-    width: '90%',
-    alignSelf: 'center',
-    marginVertical: 10, // Adjust as needed for spacing
+    flexDirection: "row",
   },
   button: {
+    flex: 1,
     paddingVertical: 15,
     paddingHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  buttonText: {
-    // Define text styles here
-  },
-  hyperlinkText: {
-    fontSize: 20,
-    textAlign: 'center',
-    backgroundColor: 'transparent',
-    color: 'white',
-  },
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 export default CustomButton;
