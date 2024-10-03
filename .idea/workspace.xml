@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a99ed646-7c6e-41fe-986d-e62aba7daa95" name="Changes" comment="">
+    <list default="true" id="a99ed646-7c6e-41fe-986d-e62aba7daa95" name="Changes" comment="Change Login nav to BottomNavigationBar">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/LoginScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/LoginScreen.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/RegisterScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/RegisterScreen.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,9 +67,22 @@
       <workItem from="1727899825071" duration="8932000" />
       <workItem from="1727941839082" duration="2243000" />
     </task>
+    <task id="LOCAL-00001" summary="Change Login nav to BottomNavigationBar">
+      <option name="closed" value="true" />
+      <created>1727952626623</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1727952626623</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Change Login nav to BottomNavigationBar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change Login nav to BottomNavigationBar" />
   </component>
 </project>
