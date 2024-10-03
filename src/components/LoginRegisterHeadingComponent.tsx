@@ -5,6 +5,7 @@ interface LoginRegisterHeadingProps {
   text: string;
   color?: string; // Optional prop for font color
   fontSize?: number; // Optional prop for font size
+ 
 }
 
 const LoginRegisterHeadingComponent: React.FC<LoginRegisterHeadingProps> = ({ text, color = '#333', fontSize = 75 }) => {
@@ -17,6 +18,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Quinttance',
     textAlign: 'left',
     marginTop: 20,
+    color: '#ffffff',
   },
 });
 
