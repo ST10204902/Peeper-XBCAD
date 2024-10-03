@@ -69,10 +69,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 const localStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    flexDirection: "row",
   },
   button: {
-    flex: 1,
     flex: 1,
     paddingVertical: 15,
     paddingHorizontal: 20,
