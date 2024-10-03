@@ -55,7 +55,7 @@ const RegisterScreen: React.FC = () => {
 
             if (completeSignUp.status === 'complete') {
                 await setActive({ session: completeSignUp.createdSessionId })
-                navigation.navigate('LandingScreen')
+                navigation.navigate('BottomNavigationBar')
             } else {
                 console.error(JSON.stringify(completeSignUp, null, 2))
             }
