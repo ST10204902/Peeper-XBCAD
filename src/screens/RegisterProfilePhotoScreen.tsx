@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import AvatarComponent from "../components/AvatarComponent";
-import CustomButton from "../components/LoginRegisterButtonComponent";
+import CustomButton from "../components/CustomButton";
 import { useState } from "react";
 
 function SubmitButtonEvent() {
