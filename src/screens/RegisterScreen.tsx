@@ -72,31 +72,7 @@ const RegisterScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-        {!pendingVerification && (
-        <>
-            <LoginRegisterInputComponent
-                label="Register with your Student Email:"
-                FGColor="#ffffff"
-                onEmailChange={handleEmailChange}
-            />
-            <CustomButton
-                onPress={handlePress}
-                title="Register"
-                textColor="#334FD7"
-                buttonColor="#ffffff"
-                fontFamily="Rany-Medium"
-                textSize={30}
-            />
-        </>
-        )}
-        {pendingVerification && (
-            <>
-                <TextInput value={code} placeholder="Code..." onChangeText={(code) => setCode(code)} />
-                <Button title="Verify Email" onPress={onPressVerify} />
-            </>
-        )}
-
-        {!pendingVerification && (
+      {!pendingVerification && (
         <>
             <LoginRegisterInputComponent
                 label="Register with your Student Email:"
