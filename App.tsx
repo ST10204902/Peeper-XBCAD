@@ -24,6 +24,9 @@ import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
 import { RootStackParamsList } from "./src/screens/RootStackParamsList";
 import FontLoader from "./src/components/FontLoader"; // Import FontLoader
+import LandingIcon from "./src/assets/icons/LandingIcon";
+import OrgDetailsIcon from "./src/assets/icons/OrgDetailsIcon";
+import SettingsIcon from "./src/assets/icons/SettingsIcon";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamsList>();
@@ -94,9 +97,44 @@ function SettingsNavigator() {
   );
 }
 
+const screenOptions = ({ route }: { route: any }) => ({
+  tabBarActiveTintColor: "#4F4F4F",
+  tabBarInactiveTintColor: "#969696",
+  tabBarStyle: {
+    backgroundColor: "#F6F6F6",
+    paddingBottom: 40,
+    paddingTop: 35,
+    height: 90,
+  },
+  tabBarShowLabel: false,
+  tabBarIcon: ({ focused }: { focused: boolean }) => {
+    let iconName;
+
+    if (route.name === "Landing") {
+      return focused ? (
+        <LandingIcon size={44} color={"#4F4F4F"} />
+      ) : (
+        <LandingIcon size={38} color={"#969696"} />
+      );
+    } else if (route.name === "Organisations") {
+      return focused ? (
+        <OrgDetailsIcon size={44} color={"#4F4F4F"} />
+      ) : (
+        <OrgDetailsIcon size={38} color={"#969696"} />
+      );
+    } else if (route.name === "Settings") {
+      return focused ? (
+        <SettingsIcon size={44} color={"#4F4F4F"} />
+      ) : (
+        <SettingsIcon size={38} color={"#969696"} />
+      );
+    }
+  },
+});
+
 function BottomNavigationBar() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
         name="Landing"
         component={LandingScreen}
@@ -120,67 +158,66 @@ function AppNavigator() {
   const { isSignedIn } = useUser(); // Fetch Clerk user state
 
   return (
-      <Stack.Navigator initialRouteName="RegisterScreen">
-          {isSignedIn ? (
-              <>
-                  <Stack.Screen
-                      name="LandingScreen"
-                      component={LandingScreen}
-                      options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                      name="BottomNavigationBar"
-                      component={BottomNavigationBar}
-                      options={{ headerShown: false }}
-                  />
-              </>
-          ) : (
-              <>
-                  <Stack.Screen
-                      name="RegisterScreen"
-                      component={RegisterScreen}
-                      options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                      name="LoginScreen"
-                      component={LoginScreen}
-                      options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                      name="RegisterProfilePhotoScreen"
-                      component={RegisterProfilePhotoScreen}
-                      options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                      name="SafetyInfoScreen"
-                      component={SafetyInfoScreen}
-                      options={{ headerShown: false }}
-                  />
-              </>
-          )}
-      </Stack.Navigator>
+    <Stack.Navigator initialRouteName="RegisterScreen">
+      {isSignedIn ? (
+        <>
+          <Stack.Screen
+            name="LandingScreen"
+            component={LandingScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="BottomNavigationBar"
+            component={BottomNavigationBar}
+            options={{ headerShown: false }}
+          />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name="RegisterScreen"
+            component={RegisterScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="LoginScreen"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="RegisterProfilePhotoScreen"
+            component={RegisterProfilePhotoScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SafetyInfoScreen"
+            component={SafetyInfoScreen}
+            options={{ headerShown: false }}
+          />
+        </>
+      )}
+    </Stack.Navigator>
   );
-    
 }
 
 export default function App() {
-    const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+  const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
-    if (!publishableKey) {
-        throw new Error(
-            'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
-        )
-    }
+  if (!publishableKey) {
+    throw new Error(
+      "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+    );
+  }
 
-    return (
+  return (
     <ClerkProvider publishableKey={publishableKey}>
-        <FontLoader>
-          <RecoilRoot>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-          </RecoilRoot>
-        </FontLoader>
+      <FontLoader>
+        <RecoilRoot>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </RecoilRoot>
+      </FontLoader>
     </ClerkProvider>
   );
 }
