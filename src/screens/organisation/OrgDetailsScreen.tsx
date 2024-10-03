@@ -5,7 +5,7 @@ import StudentHeaderComponent from "../../components/StudentHeaderComponent";
 import CustomButton from "../../components/CustomButton";
 import EmergencyContacts from "../../components/EmergencyContacts";
 
-const OrgDetailsScreen= () => {
+const OrgDetailsScreen= () => { 
   const currentStudent = null//set student here
 
   return (
