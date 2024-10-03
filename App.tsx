@@ -1,7 +1,7 @@
 // App.tsx
 import React from 'react';
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,12 +23,12 @@ import RegisterProfilePhotoScreen from "./src/screens/RegisterProfilePhotoScreen
 import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
 import FontLoader from './src/components/FontLoader';
+import { RootStackParamsList } from './src/screens/RootStackParamsList';
 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamsList>();
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
-const prefix = Linking.createURL("/");
 
 if (!publishableKey) {
   throw new Error(
