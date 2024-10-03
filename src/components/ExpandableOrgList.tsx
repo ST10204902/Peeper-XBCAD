@@ -1,5 +1,5 @@
 import { View, FlatList, StyleSheet } from "react-native";
-import { Organisation } from "../models/Organisation";
+import { OrganisationData } from "../databaseModels/OrganisationData";
 import ExpandableOrgListItem from "./ExpandableOrgListItem";
 import React from "react";
 
@@ -11,9 +11,9 @@ import React from "react";
  * @onListButtonClicked Function run when the listButtonComp is clicked
  */
 interface Props {
-  items: Organisation[];
+  items: OrganisationData[];
   listButtonComp: React.ReactNode;
-  onListButtonClicked: (selectedOrg: Organisation) => void;
+  onListButtonClicked: (selectedOrg: OrganisationData) => void;
 }
 
 /**
