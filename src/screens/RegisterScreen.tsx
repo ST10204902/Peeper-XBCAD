@@ -4,6 +4,9 @@ import CustomButton from "../components/CustomButton"; // Ensure the path is cor
 import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
+
+//----------Code---------//
+//Demonstrating where to implement pressing the button.
 import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent"; // Import the heading component
 import {  useAuth, useSignUp  } from "@clerk/clerk-expo";
 import {  useNavigation  } from "@react-navigation/native";
@@ -13,13 +16,13 @@ import { Student } from "../databaseModels/databaseClasses/Student";
 import ConfirmationInputComponent from '../components/ConfirmationInputComponent';
 
 const RegisterScreen: React.FC = () => {
-    const [emailAddress, setEmailAddress] = React.useState('')
-    const { isLoaded, signUp, setActive } = useSignUp()
-    const [pendingVerification, setPendingVerification] = React.useState(false)
-    const [code, setCode] = React.useState('')
-    const navigation = useNavigation<StackNavigationProp<any>>();
-
-    const { isSignedIn } = useAuth();
+  const [emailAddress, setEmailAddress] = React.useState("");
+  const { isLoaded, signUp, setActive } = useSignUp();
+  const [pendingVerification, setPendingVerification] = React.useState(false);
+  const [code, setCode] = React.useState("");
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  const { userId: clerkUserId } = useAuth();
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     if (isSignedIn) {
@@ -32,27 +35,25 @@ const RegisterScreen: React.FC = () => {
       return;
     }
 
-    try {
-      await signUp.create({
-        emailAddress,
-      });
-    
+        try {
+            await signUp.create({
+                emailAddress,
+            })
 
-            await signUp.prepareEmailAddressVerification({strategy: 'email_code'})
+      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
-            setPendingVerification(true)
-        } catch (err: any) {
-            // See https://clerk.com/docs/custom-flows/error-handling
-            // for more info on error handling
-            console.error(JSON.stringify(err, null, 2))
-        }
-    };
-
-  const onPressVerify = async () => {
-    if (!isLoaded) {
-      return;
+      setPendingVerification(true);
+    } catch (err: any) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error(JSON.stringify(err, null, 2));
     }
+  };
 
+    const onPressVerify = async () => {
+        if (!isLoaded) {
+            return
+        }
 
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
