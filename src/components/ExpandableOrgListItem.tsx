@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { OrgAddress } from "../models/OrgAddress";
+import { OrgAddressData } from "../databaseModels/OrgAddressData";
 
 /**
  * @orgName name of the organisation
@@ -10,7 +10,7 @@ import { OrgAddress } from "../models/OrgAddress";
  */
 interface Props {
   orgName: string;
-  orgAddress: OrgAddress;
+  orgAddress: OrgAddressData;
   oddOrEven: "odd" | "even";
   listButton: ReactNode;
 }
