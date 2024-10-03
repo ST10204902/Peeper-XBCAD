@@ -23,8 +23,6 @@ import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
 import FontLoader from "./src/components/FontLoader"; // Import FontLoader
 
-import { RootStackParamsList } from "./src/screens/RootStackParamsList";
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamsList>();
 
@@ -111,7 +109,7 @@ function BottomNavigationBar() {
 
 function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName="RegisterScreen">
+    <Stack.Navigator initialRouteName="BottomNavigationBar">
       {/* Change the initialRouteName to your required screen name for testing purposes */}
       <Stack.Screen
         name="LoginScreen"
