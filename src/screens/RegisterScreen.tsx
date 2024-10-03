@@ -7,10 +7,6 @@ import LoginRegisterInputComponent from "../components/loginRegisterInputCompone
 import {useAuth, useSignUp} from "@clerk/clerk-expo";
 import {useNavigation} from "@react-navigation/native";
 import {StackNavigationProp} from "@react-navigation/stack"; // Ensure the path is correct
-import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
-import {useAuth, useSignUp} from "@clerk/clerk-expo";
-import {useNavigation} from "@react-navigation/native";
-import {StackNavigationProp} from "@react-navigation/stack"; // Ensure the path is correct
 
 //----------Code---------//
 //Demonstrating where to implement pressing the button.
