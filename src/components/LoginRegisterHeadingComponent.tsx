@@ -15,7 +15,7 @@ const LoginRegisterHeadingComponent: React.FC<LoginRegisterHeadingProps> = ({ te
 const styles = StyleSheet.create({
   heading: {
     fontSize: 75, // Default font size
-    fontFamily: 'Quinttance',
+    fontFamily: 'Quittance',
     textAlign: 'left',
     marginTop: 20,
     color: '#ffffff',
