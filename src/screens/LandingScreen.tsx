@@ -4,6 +4,7 @@ import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
+
 export default function LandingScreen() {
   const organisations: Organisation[] = [
     {
