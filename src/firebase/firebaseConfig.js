@@ -11,6 +11,7 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyC79dLUv5wmpvYmreVMDS0KMFcmw-RUEMk",
   authDomain: "peeper-xbcad.firebaseapp.com",
+  databaseURL: "https://peeper-xbcad-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "peeper-xbcad",
   storageBucket: "peeper-xbcad.appspot.com",
   messagingSenderId: "761357003841",
@@ -20,8 +21,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
 const database = getDatabase(app);
 
 
-export { app, analytics, database };
+export { app, database, firebaseConfig };

@@ -1,4 +1,4 @@
-export interface Viewport {
+export interface ViewportData {
   low: {
     latitude: number;
     longitude: number;
