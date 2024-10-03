@@ -7,6 +7,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#A4DB51", // Monster green background colour 
   },
+
+  
 });
 
 export default styles;
