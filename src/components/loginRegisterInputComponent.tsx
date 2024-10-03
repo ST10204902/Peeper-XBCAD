@@ -16,7 +16,7 @@ function LoginRegisterInputComponent({ FGColor, onEmailChange, label }: Props) {
     };
 
     return (
-        <View style={styles.wrapper}>
+        <View>
             <Text style={styles.label}>{label}</Text>
             <View style={[styles.container, { borderColor: FGColor }]}>
                 <TextInput
@@ -32,26 +32,20 @@ function LoginRegisterInputComponent({ FGColor, onEmailChange, label }: Props) {
 }
 
 const styles = StyleSheet.create({
-    wrapper: {
-        width: 300, // Adjust width if needed
-        marginBottom: 16, // Space between input fields
-    },
     container: {
         backgroundColor: 'transparent', // Set background to transparent
-        borderRadius: 10,
+        borderRadius: 20,
         padding: 5,
         borderWidth: 3,
     },
     label: {
         fontSize: 16,
         color: '#ffffff',
-        marginBottom: 4,
-        position: 'absolute',
-        top: -25,
-        left: 10,
+        marginBottom: 10,
         backgroundColor: 'transparent', // Match the background color of the parent
         paddingHorizontal: 4,
         fontFamily: 'Rany-Medium',
+        marginStart: 5,
 
     },
     input: {
