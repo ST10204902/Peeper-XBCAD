@@ -1,36 +1,42 @@
-import React, { useState } from 'react';
-import { TextInput, StyleSheet, View, Text } from 'react-native';
+import React from 'react';
+import { TextInput, View, Text, StyleSheet, ViewStyle } from 'react-native';
 
 interface Props {
-    FGColor: string;
-    onEmailChange: (email: string) => void;
-    label: string; // Add label prop
-    
+  label: string;
+  FGColor: string;
+  onEmailChange: (text: string) => void;
+  value?: string;
+  keyboardType?: string;
+  maxLength?: number;
+  style?: ViewStyle;
 }
 
-function LoginRegisterInputComponent({ FGColor, onEmailChange, label }: Props) {
-    const [email, setEmail] = useState('');
-
-    const handleEmailChange = (text: string) => {
-        setEmail(text);
-        onEmailChange(text); // Call the parent component's callback
-    };
-
-    return (
-        <View>
+const ConfirmationScreen: React.FC<Props> = ({
+  label,
+  FGColor,
+  onEmailChange,
+  value,
+  keyboardType = 'default',
+  maxLength,
+  style,
+}) => {
+  return (
+     <View>
             <Text style={styles.label}>{label}</Text>
             <View style={[styles.container, { borderColor: FGColor }]}>
                 <TextInput
                     style={[styles.input, { color: FGColor }]} // Use FGColor for input text color
-                    placeholder="Student Email"
-                    value={email}
-                    onChangeText={handleEmailChange}
+                    placeholder="Input 6-digit code"
+                    value={value}
+                    onChangeText={onEmailChange}
                     placeholderTextColor={FGColor} // Use FGColor for placeholder text color
+                    keyboardType='numeric'
+                    maxLength={6}
                 />
             </View>
         </View>
-    );
-}
+  );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -39,6 +45,7 @@ const styles = StyleSheet.create({
         padding: 5,
         borderWidth: 3,
     },
+    
     label: {
         fontSize: 16,
         color: '#ffffff',
@@ -58,4 +65,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LoginRegisterInputComponent;
+export default ConfirmationScreen;
