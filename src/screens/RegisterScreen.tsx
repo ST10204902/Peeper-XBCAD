@@ -35,10 +35,10 @@ const RegisterScreen: React.FC = () => {
       return;
     }
 
-        try {
-            await signUp.create({
-                emailAddress,
-            })
+    try {
+      await signUp.create({
+        emailAddress,
+      });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
@@ -50,10 +50,10 @@ const RegisterScreen: React.FC = () => {
     }
   };
 
-    const onPressVerify = async () => {
-        if (!isLoaded) {
-            return
-        }
+  const onPressVerify = async () => {
+    if (!isLoaded) {
+      return;
+    }
 
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
