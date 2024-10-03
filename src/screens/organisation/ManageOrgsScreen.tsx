@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { OrgAddress } from "../../models/OrgAddress";
 import { Organisation } from "../../models/Organisation";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
-import CustomButton from "../../components/LoginRegisterButtonComponent";
+import CustomButton from "../../components/CustomButton";
 
 /**
  * Component For the ManageOrgsScreen
