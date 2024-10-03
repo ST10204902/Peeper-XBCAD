@@ -23,7 +23,7 @@ const LoginScreen: React.FC = () => {
     const { isSignedIn } = useAuth();
 
     if (isSignedIn) {
-        navigation.navigate('LandingScreen')
+        navigation.navigate('BottomNavigationBar')
     }
 
     const handlePress = async () => {
