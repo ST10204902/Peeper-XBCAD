@@ -1,11 +1,12 @@
 // App.tsx
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { RecoilRoot } from "recoil";
+import { ClerkProvider, SignedIn, SignedOut, useUser } from "@clerk/clerk-expo"; // Load the Clerk API from the .env file
 import LandingScreen from "./src/screens/LandingScreen";
 import SettingsScreen from "./src/screens/settings/SettingsScreen";
 import OrgDetailsScreen from "./src/screens/organisation/OrgDetailsScreen";
@@ -26,12 +27,19 @@ import FontLoader from "./src/components/FontLoader"; // Import FontLoader
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamsList>();
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+if (!publishableKey) {
+  throw new Error(
+    "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+  );
+}
 
 function OrganisationsNavigator() {
   return (
-    <Stack.Navigator initialRouteName="OrgDetails">
+    <Stack.Navigator initialRouteName="OrgDetailsScreen">
       <Stack.Screen
-        name="OrgDetails"
+        name="OrgDetailsScreen"
         component={OrgDetailsScreen}
         options={{ headerShown: false }}
       />
@@ -109,47 +117,71 @@ function BottomNavigationBar() {
 }
 
 function AppNavigator() {
+  const { isSignedIn } = useUser(); // Fetch Clerk user state
+
   return (
-    <Stack.Navigator initialRouteName="BottomNavigationBar">
-      {/* Change the initialRouteName to your required screen name for testing purposes */}
-      <Stack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RegisterProfilePhotoScreen"
-        component={RegisterProfilePhotoScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RegisterScreen"
-        component={RegisterScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SafetyInfoScreen"
-        component={SafetyInfoScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BottomNavigationBar"
-        component={BottomNavigationBar}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
+      <Stack.Navigator initialRouteName="RegisterScreen">
+          {isSignedIn ? (
+              <>
+                  <Stack.Screen
+                      name="LandingScreen"
+                      component={LandingScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="BottomNavigationBar"
+                      component={BottomNavigationBar}
+                      options={{ headerShown: false }}
+                  />
+              </>
+          ) : (
+              <>
+                  <Stack.Screen
+                      name="RegisterScreen"
+                      component={RegisterScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="LoginScreen"
+                      component={LoginScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="RegisterProfilePhotoScreen"
+                      component={RegisterProfilePhotoScreen}
+                      options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                      name="SafetyInfoScreen"
+                      component={SafetyInfoScreen}
+                      options={{ headerShown: false }}
+                  />
+              </>
+          )}
+      </Stack.Navigator>
   );
+    
 }
 
 export default function App() {
-  return (
-    <FontLoader>
-      <RecoilRoot>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </RecoilRoot>
-    </FontLoader>
+    const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+
+    if (!publishableKey) {
+        throw new Error(
+            'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
+        )
+    }
+
+    return (
+    <ClerkProvider publishableKey={publishableKey}>
+        <FontLoader>
+          <RecoilRoot>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </RecoilRoot>
+        </FontLoader>
+    </ClerkProvider>
   );
 }
 
