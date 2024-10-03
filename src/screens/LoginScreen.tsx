@@ -6,16 +6,17 @@ import registerStyles from "../styles/RegisterScreenStyle"; // Ensure the path i
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
 import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent"; // Import the heading component
-import { useAuth, useSignUp } from "@clerk/clerk-expo";
+import { useAuth, useSignIn } from "@clerk/clerk-expo";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack"; // Ensure the path is correct
 import ConfirmationInputComponent from '../components/ConfirmationInputComponent';
+import { SignInFirstFactor, EmailCodeFactor } from '@clerk/types';
 
 const LoginScreen: React.FC = () => {
-  const [emailAddress, setEmailAddress] = React.useState('');
-  const { isLoaded, signUp, setActive } = useSignUp();
-  const [pendingVerification, setPendingVerification] = React.useState(false);
-  const [code, setCode] = React.useState('');
+  const [emailAddress, setEmailAddress] = useState('');
+  const { isLoaded, signIn, setActive } = useSignIn();
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState('');
   const navigation = useNavigation<StackNavigationProp<any>>();
 
   const { isSignedIn } = useAuth();
@@ -30,11 +31,23 @@ const LoginScreen: React.FC = () => {
     }
 
     try {
-      await signUp.create({
-        emailAddress,
+      const { supportedFirstFactors } = await signIn?.create({
+        identifier: emailAddress,
       });
 
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
+      const isEmailCodeFactor = (factor: SignInFirstFactor): factor is EmailCodeFactor => {
+        return factor.strategy === 'email_code';
+      };
+      const emailCodeFactor = supportedFirstFactors?.find(isEmailCodeFactor);
+
+      if (emailCodeFactor) {
+        const { emailAddressId } = emailCodeFactor;
+
+        await signIn?.prepareFirstFactor({
+          strategy: 'email_code',
+          emailAddressId,
+        });
+      }
 
       setPendingVerification(true);
     } catch (err: any) {
@@ -48,15 +61,14 @@ const LoginScreen: React.FC = () => {
     }
 
     try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
+      const signInAttempt = await signIn?.attemptFirstFactor({
+        strategy: 'email_code',
         code,
       });
 
-      if (completeSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
-        navigation.navigate('BottomNavigationBar');
-      } else {
-        console.error(JSON.stringify(completeSignUp, null, 2));
+      if (signInAttempt.status === 'complete') {
+        await setActive({ session: signInAttempt.createdSessionId });
+        navigation.navigate('LandingScreen');
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
