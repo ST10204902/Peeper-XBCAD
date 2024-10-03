@@ -1,7 +1,7 @@
 // src/components/FontLoader.tsx
-import React, { useEffect, useState } from 'react';
-import * as Font from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import React, { useEffect, useState } from "react";
+import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
 const FontLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -14,8 +14,8 @@ const FontLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         // Load fonts
         await Font.loadAsync({
-          'Rany-Medium': require('../assets/fonts/Rany-Medium.otf'),
-          'Quinttance': require('../assets/fonts/Quittance.otf'),
+          "Rany-Medium": require("../assets/fonts/Rany-Medium.otf"),
+          "Quittance": require("../assets/fonts/Quittance.otf"),
         });
 
         setFontsLoaded(true);
@@ -30,7 +30,7 @@ const FontLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, []);
 
   if (!fontsLoaded) {
-    return null ;
+    return null;
   }
 
   return <>{children}</>;
