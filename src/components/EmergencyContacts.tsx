@@ -27,7 +27,7 @@ const EmergencyContacts = () => {
       </View>
     </LinearGradient>
   );
-};
+}; 
 
 const styles = StyleSheet.create({
   container: {
