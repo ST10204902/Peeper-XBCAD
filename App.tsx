@@ -21,6 +21,7 @@ import LoginScreen from "./src/screens/LoginScreen";
 import RegisterProfilePhotoScreen from "./src/screens/RegisterProfilePhotoScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import SafetyInfoScreen from "./src/screens/SafetyInfoScreen";
+import { RootStackParamsList } from "./src/screens/RootStackParamsList";
 import FontLoader from "./src/components/FontLoader"; // Import FontLoader
 
 import { RootStackParamsList } from "./src/screens/RootStackParamsList";
