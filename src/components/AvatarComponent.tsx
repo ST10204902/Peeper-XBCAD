@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
 
 const avatars = [
-  { id: '1', src: require('../assets/Avatars/A1.png') },
-  { id: '2', src: require('../assets/Avatars/A2.png') },
-  { id: '3', src: require('../assets/Avatars/A3.png') },
-  { id: '4', src: require('../assets/Avatars/A4.png') },
-  { id: '5', src: require('../assets/Avatars/A5.png') },
-  { id: '6', src: require('../assets/Avatars/A6.png') },
-  { id: '7', src: require('../assets/Avatars/A7.png') },
-  { id: '8', src: require('../assets/Avatars/A8.png') },
-  { id: '9', src: require('../assets/Avatars/A9.png') },
+  { id: '1', src: require('../assets/Avatars/A1.png'), uri: '../assets/Avatars/A1.png' },
+  { id: '2', src: require('../assets/Avatars/A2.png'), uri: '../assets/Avatars/A2.png' },
+  { id: '3', src: require('../assets/Avatars/A3.png'), uri: '../assets/Avatars/A3.png' },
+  { id: '4', src: require('../assets/Avatars/A4.png'), uri: '../assets/Avatars/A4.png' },
+  { id: '5', src: require('../assets/Avatars/A5.png'), uri: '../assets/Avatars/A5.png' },
+  { id: '6', src: require('../assets/Avatars/A6.png'), uri: '../assets/Avatars/A6.png' },
+  { id: '7', src: require('../assets/Avatars/A7.png'), uri: '../assets/Avatars/A7.png' },
+  { id: '8', src: require('../assets/Avatars/A8.png'), uri: '../assets/Avatars/A8.png' },
+  { id: '9', src: require('../assets/Avatars/A9.png'), uri: '../assets/Avatars/A9.png' },
 ];
 
 const { width } = Dimensions.get('window');
 
-const AvatarComponent = () => {
+const AvatarComponent = ({ onAvatarSelected }: { onAvatarSelected: (uri: string) => void }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<number>(0);
   const flatListRef = React.useRef<FlatList>(null);
 
@@ -23,6 +23,11 @@ const AvatarComponent = () => {
     setSelectedAvatar(index);
     flatListRef.current?.scrollToIndex({ animated: true, index });
   };
+
+  useEffect(() => {
+    // Call the callback function with the URI of the selected avatar
+    onAvatarSelected(avatars[selectedAvatar].uri);
+  }, [selectedAvatar]);
 
   const renderItem = ({ item }: { item: { id: string; src: any } }) => {
     return (
@@ -118,4 +123,5 @@ const styles = StyleSheet.create({
     color: '#D3D3D3',
   },
 });
+
 export default AvatarComponent;
