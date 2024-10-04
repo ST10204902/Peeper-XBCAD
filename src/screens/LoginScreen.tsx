@@ -22,7 +22,7 @@ const LoginScreen: React.FC = () => {
 
   useEffect(() => {
     if (isSignedIn) {
-      navigation.navigate('LandingScreen');
+      navigation.navigate('BottomNavigationBar');
     }
   }, [isSignedIn, navigation]);
 
@@ -71,7 +71,7 @@ const LoginScreen: React.FC = () => {
 
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        navigation.navigate('LandingScreen');
+        navigation.navigate('BottomNavigationBar');
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
