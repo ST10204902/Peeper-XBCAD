@@ -15,7 +15,9 @@ const FontLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         // Load fonts
         await Font.loadAsync({
           "Rany-Medium": require("../assets/fonts/Rany-Medium.otf"),
-          "Quittance": require("../assets/fonts/Quittance.otf"),
+          "Rany-Bold": require("../assets/fonts/Rany-Bold.otf"),
+          "Rany-Regular": require("../assets/fonts/Rany.otf"),
+          Quittance: require("../assets/fonts/Quittance.otf"),
         });
 
         setFontsLoaded(true);
