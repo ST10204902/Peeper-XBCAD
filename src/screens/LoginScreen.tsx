@@ -20,9 +20,11 @@ const LoginScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isSignedIn } = useAuth();
 
-  if (isSignedIn) {
-    navigation.navigate('LandingScreen');
-  }
+  useEffect(() => {
+    if (isSignedIn) {
+      navigation.navigate('LandingScreen');
+    }
+  }, [isSignedIn, navigation]);
 
   const handlePress = async () => {
     if (!isLoaded) {
