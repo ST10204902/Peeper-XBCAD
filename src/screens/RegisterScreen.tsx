@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Alert, View, TextInput, Button } from "react-native";
+import { SafeAreaView, Alert, View, } from "react-native";
 import CustomButton from "../components/CustomButton"; // Ensure the path is correct
 import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
@@ -15,10 +15,10 @@ import { StudentData } from "../databaseModels/StudentData";
 import ConfirmationInputComponent from '../components/ConfirmationInputComponent';
 
 const RegisterScreen: React.FC = () => {
-  const [emailAddress, setEmailAddress] = React.useState("");
+  const [emailAddress, setEmailAddress] = useState("");
   const { isLoaded, signUp, setActive } = useSignUp();
-  const [pendingVerification, setPendingVerification] = React.useState(false);
-  const [code, setCode] = React.useState("");
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState("");
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { userId: clerkUserId } = useAuth();
   const { isSignedIn } = useAuth();
@@ -68,7 +68,7 @@ const RegisterScreen: React.FC = () => {
           
 
           const uid = completeSignUp.createdUserId || "";
-          
+
           console.log("Clerk User ID:", uid); // Log Clerk User ID
           Alert.alert(`Welcome, ${uid}!`);
 
@@ -116,9 +116,9 @@ const RegisterScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headingContainer}>
-        <LoginRegisterHeadingComponent 
-        text={pendingVerification ? "Your OTP Awaits! Enter It Below!" : "Start Your Journey Of Impact"} 
-        color="#ffffff" 
+        <LoginRegisterHeadingComponent
+        text={pendingVerification ? "Your OTP Awaits! Enter It Below!" : "Start Your Journey Of Impact"}
+        color="#ffffff"
         fontSize={65}/>
       </View>
       {!pendingVerification && (
@@ -129,6 +129,8 @@ const RegisterScreen: React.FC = () => {
               FGColor="#ffffff"
               onEmailChange={handleEmailChange}
             />
+          </View>
+          <View style={styles.inputContainer}>
           </View>
           <View style={styles.buttonContainer}>
             <CustomButton
