@@ -69,7 +69,6 @@ const LoginScreen: React.FC = () => {
       });
 
       if (signInAttempt.status === "complete") {
-        alert("Here1");
         await setActive({ session: signInAttempt.createdSessionId });
         navigation.navigate("BottomNavigationBar");
       }
