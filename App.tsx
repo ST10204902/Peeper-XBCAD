@@ -1,7 +1,7 @@
 // App.tsx
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { Linking, StyleSheet, Text, View } from "react-native";
+import { Linking, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -214,7 +214,10 @@ export default function App() {
       <FontLoader>
         <RecoilRoot>
           <NavigationContainer>
-            <AppNavigator />
+            <SafeAreaView >
+            </SafeAreaView>
+              <AppNavigator />
+            
           </NavigationContainer>
         </RecoilRoot>
       </FontLoader>
@@ -226,7 +229,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
