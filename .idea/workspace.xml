@@ -4,19 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a99ed646-7c6e-41fe-986d-e62aba7daa95" name="Changes" comment="Change Login nav to BottomNavigationBar">
+    <list default="true" id="a99ed646-7c6e-41fe-986d-e62aba7daa95" name="Changes" comment="Add search bar component">
+      <change afterPath="$PROJECT_DIR$/src/assets/icons/searchIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/SearchBarComponent.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/LoginScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/LoginScreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/RegisterScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/RegisterScreen.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Rebase.Settings">
+    <option name="NEW_BASE" value="dev" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="test-email-link-auth" />
+        <entry key="$PROJECT_DIR$" value="dev" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -37,7 +49,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "search-component",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -48,6 +60,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/assets/icons" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -83,6 +100,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Change Login nav to BottomNavigationBar" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change Login nav to BottomNavigationBar" />
+    <MESSAGE value="Add search bar component" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add search bar component" />
   </component>
 </project>
