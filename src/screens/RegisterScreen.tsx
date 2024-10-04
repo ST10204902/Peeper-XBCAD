@@ -65,6 +65,8 @@ const RegisterScreen: React.FC = () => {
 
           await new Promise((resolve) => setTimeout(resolve, 1000));
 
+          
+
           const uid = completeSignUp.createdUserId || "";
           
           console.log("Clerk User ID:", uid); // Log Clerk User ID

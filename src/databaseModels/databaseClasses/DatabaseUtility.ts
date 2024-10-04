@@ -41,6 +41,20 @@ export class DatabaseUtility {
     }
   }
 
+  static async getAllData<T>(path: string): Promise<T[]> {
+    try {
+      const snapshot = await get(this.getRef(path));
+      const data: T[] = [];
+      snapshot.forEach((child) => {
+        data.push(child.val() as T);
+      });
+      return data;
+    } catch (error) {
+      console.error(`Error fetching data from ${path}:`, error);
+      return [];
+    }
+  }
+
   static async setData<T>(path: string, data: T): Promise<void> {
     try {
       await set(this.getRef(path), data);
