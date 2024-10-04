@@ -39,6 +39,11 @@ export class Organisation implements OrganisationData {
     await DatabaseUtility.deleteData(`organisations/${this.org_id}`);
   }
 
+  static async getAllOrganisations(): Promise<Organisation[]> {
+    const data = await DatabaseUtility.getAllData<OrganisationData>('organisations');
+    return data.map((org) => new Organisation(org));
+  }
+
   toJSON(): OrganisationData {
     return {
       org_id: this.org_id,
