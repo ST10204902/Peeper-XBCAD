@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, View } from "react-native";
 import CustomButton from "../components/CustomButton"; // Ensure the path is correct
 import styles from "../styles/LoginScreenStyle"; // Ensure the path is correct
@@ -6,7 +6,7 @@ import registerStyles from "../styles/RegisterScreenStyle"; // Ensure the path i
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
 import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent"; // Import the heading component
-import { useAuth, useSignIn } from "@clerk/clerk-expo";
+import { useAuth, useClerk, useSignIn } from "@clerk/clerk-expo";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack"; // Ensure the path is correct
 import ConfirmationInputComponent from '../components/ConfirmationInputComponent';
@@ -14,16 +14,18 @@ import { SignInFirstFactor, EmailCodeFactor } from '@clerk/types';
 
 const LoginScreen: React.FC = () => {
   const [emailAddress, setEmailAddress] = useState('');
-  const { isLoaded, signIn, setActive } = useSignIn();
+  const { isLoaded, signIn } = useSignIn();
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
+  const { setActive } = useClerk();
   const navigation = useNavigation<StackNavigationProp<any>>();
-
   const { isSignedIn } = useAuth();
 
-  if (isSignedIn) {
-    navigation.navigate('LandingScreen');
-  }
+  useEffect(() => {
+    if (isSignedIn) {
+      navigation.navigate('LandingScreen');
+    }
+  }, [isSignedIn, navigation]);
 
   const handlePress = async () => {
     if (!isLoaded) {
@@ -68,6 +70,7 @@ const LoginScreen: React.FC = () => {
 
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId });
+
         navigation.navigate('LandingScreen');
       }
     } catch (err: any) {
