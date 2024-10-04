@@ -27,6 +27,7 @@ import FontLoader from "./src/components/FontLoader"; // Import FontLoader
 import LandingIcon from "./src/assets/icons/LandingIcon";
 import OrgDetailsIcon from "./src/assets/icons/OrgDetailsIcon";
 import SettingsIcon from "./src/assets/icons/SettingsIcon";
+import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamsList>();
@@ -213,6 +214,8 @@ export default function App() {
     <ClerkProvider publishableKey={publishableKey}>
       <FontLoader>
         <RecoilRoot>
+          {/* Safe Area view goes above */}
+          <CurrentTrackingBanner />
           <NavigationContainer>
             <AppNavigator />
           </NavigationContainer>
