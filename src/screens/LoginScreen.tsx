@@ -9,20 +9,20 @@ import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingCom
 import { useAuth, useSignIn } from "@clerk/clerk-expo";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack"; // Ensure the path is correct
-import ConfirmationInputComponent from '../components/ConfirmationInputComponent';
-import { SignInFirstFactor, EmailCodeFactor } from '@clerk/types';
+import ConfirmationInputComponent from "../components/ConfirmationInputComponent";
+import { SignInFirstFactor, EmailCodeFactor } from "@clerk/types";
 
 const LoginScreen: React.FC = () => {
-  const [emailAddress, setEmailAddress] = useState('');
+  const [emailAddress, setEmailAddress] = useState("");
   const { isLoaded, signIn, setActive } = useSignIn();
   const [pendingVerification, setPendingVerification] = useState(false);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
   const navigation = useNavigation<StackNavigationProp<any>>();
 
   const { isSignedIn } = useAuth();
 
   if (isSignedIn) {
-    navigation.navigate('LandingScreen');
+    navigation.navigate("BottomNavigationBar");
   }
 
   const handlePress = async () => {
@@ -35,8 +35,10 @@ const LoginScreen: React.FC = () => {
         identifier: emailAddress,
       });
 
-      const isEmailCodeFactor = (factor: SignInFirstFactor): factor is EmailCodeFactor => {
-        return factor.strategy === 'email_code';
+      const isEmailCodeFactor = (
+        factor: SignInFirstFactor
+      ): factor is EmailCodeFactor => {
+        return factor.strategy === "email_code";
       };
       const emailCodeFactor = supportedFirstFactors?.find(isEmailCodeFactor);
 
@@ -44,7 +46,7 @@ const LoginScreen: React.FC = () => {
         const { emailAddressId } = emailCodeFactor;
 
         await signIn?.prepareFirstFactor({
-          strategy: 'email_code',
+          strategy: "email_code",
           emailAddressId,
         });
       }
@@ -62,13 +64,14 @@ const LoginScreen: React.FC = () => {
 
     try {
       const signInAttempt = await signIn?.attemptFirstFactor({
-        strategy: 'email_code',
+        strategy: "email_code",
         code,
       });
 
-      if (signInAttempt.status === 'complete') {
+      if (signInAttempt.status === "complete") {
+        alert("Here1");
         await setActive({ session: signInAttempt.createdSessionId });
-        navigation.navigate('LandingScreen');
+        navigation.navigate("BottomNavigationBar");
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
@@ -80,14 +83,26 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={[
-      pendingVerification ? registerStyles.container : styles.container,
-      { backgroundColor: styles.container.backgroundColor }
-    ]}>
-      <View style={pendingVerification ? registerStyles.headingContainer : styles.headingContainer}>
-        <LoginRegisterHeadingComponent 
-          text={pendingVerification ? "Your OTP Awaits! Enter It Below!" : "Keep Making Change"} 
-          color="#ffffff" 
+    <SafeAreaView
+      style={[
+        pendingVerification ? registerStyles.container : styles.container,
+        { backgroundColor: styles.container.backgroundColor },
+      ]}
+    >
+      <View
+        style={
+          pendingVerification
+            ? registerStyles.headingContainer
+            : styles.headingContainer
+        }
+      >
+        <LoginRegisterHeadingComponent
+          text={
+            pendingVerification
+              ? "Your OTP Awaits! Enter It Below!"
+              : "Keep Making Change"
+          }
+          color="#ffffff"
           fontSize={65}
         />
       </View>
@@ -126,7 +141,11 @@ const LoginScreen: React.FC = () => {
             />
           </View>
           <View style={registerStyles.buttonContainer}>
-            <CustomButton title="Verify Email" onPress={onPressVerify} textColor="#A4DB51" />
+            <CustomButton
+              title="Verify Email"
+              onPress={onPressVerify}
+              textColor="#A4DB51"
+            />
           </View>
         </>
       )}
