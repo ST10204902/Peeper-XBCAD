@@ -6,10 +6,20 @@ import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import TrackingPopup from "../components/TrackingPopup";
 import { OrganisationData } from "../databaseModels/OrganisationData";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
+import { useLocationTracking } from "../hooks/useLocationTracking";
+import { Student } from "../databaseModels/databaseClasses/Student";
+import { StudentData } from "../databaseModels/StudentData";
+import { useUser } from "@clerk/clerk-expo";
+
+
 
 export default function LandingScreen() {
   const [organisations, setOrganisations] = useState<OrganisationData[]>([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const { isTracking, startTracking, stopTracking, errorMsg   } = useLocationTracking();
+  const [currentStudent, setCurrentStudent] = useState<Student>();
+
+  const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null);
 
   useEffect(() => {
     const fetchOrganisations = async () => {
@@ -24,10 +34,7 @@ export default function LandingScreen() {
     fetchOrganisations();
   }, []);
 
-  
-
   const handleStartTracking = () => {
-  // IMPLEMENT THE TRACKING FUNCTIONALITY HERE
     setIsPopupVisible(false); // Close the popup
   };
 
@@ -35,10 +42,7 @@ export default function LandingScreen() {
     setIsPopupVisible(false); // Close the popup
   };
 
-  const [selectedLocation, setSelectedLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
+ 
 
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -46,20 +50,18 @@ export default function LandingScreen() {
   const snapPoints = useMemo(() => [100, "50%", "100%"], []);
 
   useEffect(() => {
-    if (selectedLocation) {
+    if (selectedOrganisation) {
       sheetRef.current?.snapToIndex(0); // Snap to the closed position
     }
-  }, [selectedLocation]);
+  }, [selectedOrganisation]);
 
   // Function to handle organisation item click
   const handleOrganisationPress = (
-    latitude: number,
-    longitude: number,
-    organisationName: String
+    pSelectedOrganisation: OrganisationData,
   ) => {
-    setSelectedLocation({ latitude, longitude });
+    setSelectedOrganisation(new Organisation(pSelectedOrganisation));
     setIsPopupVisible(true);
-    console.log(`${organisationName} selected`);
+    console.log(`${pSelectedOrganisation.orgName} selected`);
   };
 
   const renderItem = ({ item, index }: { item: OrganisationData; index: number }) => (
@@ -67,16 +69,16 @@ export default function LandingScreen() {
       orgName={item.orgName}
       oddOrEven={index % 2 === 0 ? "even" : "odd"} // Alternate between 'odd' and 'even'
       onPress={() => {
-        handleOrganisationPress(item.orgLatitude, item.orgLongitude, item.orgName);
-        console.log("Pressed:", item.orgName);
+        handleOrganisationPress(item);
       }}
     />
   );
 
   return (
     <SafeAreaView style={styles.container}>
+
       {/* Map Component */}
-      <MapComponent selectedLocation={selectedLocation} />
+      <MapComponent selectedOrganisation={selectedOrganisation} />
 
       {/* Tracking Popup */}
       <TrackingPopup
