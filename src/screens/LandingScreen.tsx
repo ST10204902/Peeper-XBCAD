@@ -10,6 +10,7 @@ import { useLocationTracking } from "../hooks/useLocationTracking";
 import { Student } from "../databaseModels/databaseClasses/Student";
 import { StudentData } from "../databaseModels/StudentData";
 import { useUser } from "@clerk/clerk-expo";
+import { useNavigation } from "@react-navigation/native";
 
 
 
@@ -18,7 +19,7 @@ export default function LandingScreen() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const { isTracking, startTracking, stopTracking, errorMsg   } = useLocationTracking();
   const [currentStudent, setCurrentStudent] = useState<Student>();
-
+  const { user } = useUser(); // Get the current user from the Clerk context
   const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null);
 
   useEffect(() => {
@@ -33,6 +34,30 @@ export default function LandingScreen() {
 
     fetchOrganisations();
   }, []);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        if (!user)
+        {
+          console.error("Landing Screen ln39: ", "clerk user not found");
+         // add navigation to login screen here
+           return;
+        }
+        const student = await Student.fetchById(user.id);
+        if (!student)
+        {
+          console.error("Landing Screen ln44: ", "Student not found");
+           return;
+        }
+        setCurrentStudent(student);
+      } catch (error) {
+        console.error("Error fetching student:", error);
+      }
+    };
+
+    fetchStudent();
+  }, [user]);
 
   const handleStartTracking = () => {
     setIsPopupVisible(false); // Close the popup
