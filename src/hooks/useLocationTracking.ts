@@ -1,35 +1,33 @@
 import { useState, useEffect, useRef } from 'react';
 import * as ExpoLocation from 'expo-location';
-import * as TaskManager from 'expo-task-manager';
 import { SessionLog } from '../databaseModels/databaseClasses/SessionLog';
-import { SessionLogData } from '../databaseModels/SessionLogData';
-import { LocationLogData } from '../databaseModels/LocationLogData';
 import { LocationLog } from '../databaseModels/databaseClasses/LocationLog';
 import { Student } from '../databaseModels/databaseClasses/Student';
 import { Organisation } from '../databaseModels/databaseClasses/Organisation';
-import { DatabaseUtility } from '../databaseModels/databaseClasses/DatabaseUtility';
-import { Platform } from 'react-native';
-import { useUser } from "@clerk/clerk-expo";
+import { LocationLogData } from '../databaseModels/LocationLogData';
 import { Viewport } from '../databaseModels/databaseClasses/Viewport';
-import { ViewportData } from '../databaseModels/ViewportData';
 
-const LOCATION_TASK_NAME = 'background-location-task';
 export function useLocationTracking() {
     const [isTracking, setIsTracking] = useState(false);
-    const [sessionLog, setSessionLog] = useState<SessionLog | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const locationSubscriptionRef = useRef<any>(null); // Store subscription reference for cleanup
-
+    const sessionLogRef = useRef<SessionLog | null>(null); // Ref to hold the latest session log
+    const studentRef = useRef<Student | null>(null);
 
     const startTracking = async (student: Student, organisation: Organisation) => {
         console.log('Starting tracking called');
+        // bad things happen when the user is able to start tracking multiple times
+        if (isTracking) {
+            setErrorMsg('Tracking already in progress');
+            return;
+        }
 
-        // request permissions
+        // Request permissions
         let { status: foregroundStatus } = await ExpoLocation.requestForegroundPermissionsAsync();
         if (foregroundStatus !== 'granted') {
             setErrorMsg('Permission to access location was denied');
             return;
-            }
+        }
 
         let { status: backgroundStatus } = await ExpoLocation.requestBackgroundPermissionsAsync();
         if (backgroundStatus !== 'granted') {
@@ -37,58 +35,74 @@ export function useLocationTracking() {
             return;
         }
 
-        // create a new session log
+        // if the permissions are granted, start tracking
+        setIsTracking(true);
+
+        // Create a new session log
         const newSessionID = generateUniqueId();
-         // Initialize a new SessionLog
         const newSessionLog = new SessionLog({
             sessionLog_id: newSessionID,
             orgID: organisation.org_id,
             sessionStartTime: new Date().toISOString(),
             sessionEndTime: '',
             locationLogs: [],
-            viewport: {
-                low: { latitude: 0, longitude: 0 },
-                high: { latitude: 0, longitude: 0 },
-            },
+            viewport: { low: { latitude: 0, longitude: 0 }, high: { latitude: 0, longitude: 0 } }
         });
 
         // Save the session log to the database
         student.locationData[newSessionID] = newSessionLog;
+        console.log('Current student set: ', student);
 
-        await student.save();
-        console.log('Session log saved to student');
+        // Save the session log to the ref for future use
+        sessionLogRef.current = newSessionLog;
+        studentRef.current = student;
         
-        // set the state variables
-        setSessionLog(newSessionLog);
-        setIsTracking(true);
 
-        // start simulating tracking by subscribing to location get updates
+        await student.save().then(() => {
+        console.log('Session log saved to student');
+        });
 
         // Start tracking the location every 5 seconds
         locationSubscriptionRef.current = await ExpoLocation.watchPositionAsync(
             { accuracy: ExpoLocation.Accuracy.High, timeInterval: 5000, distanceInterval: 0 },
-            handleLocationUpdate // This function will be called when location updates occur
+            handleLocationUpdate
         );
+    };
 
-    }
-
-
-    const stopTracking = async (student: Student) => {
+    const stopTracking = async () => {
         console.log('Stopping tracking called');
-        // get the current session log
-        const currentSessionLog = sessionLog;
+       
+        const currentSessionLog = sessionLogRef.current;
         if (!currentSessionLog) {
+            setErrorMsg('No session log found while stopping tracking');
             return;
         }
 
+        const currentStudent = studentRef.current;
+        if (!currentStudent) {
+            setErrorMsg('No student found while stopping tracking');
+            return;
+        }
+
+        // if all the checks pass, stop tracking
+        setIsTracking(false);
 
         // Add session end time and calculate viewport (bounding box)
         currentSessionLog.sessionEndTime = new Date().toISOString();
-        currentSessionLog.viewport = calculateBoundingBox(currentSessionLog.locationLogs);
 
-         // Save updated session log to the student model
-        student.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
-        await student.save();
+        // Calculate the bounding box
+        const boundingBox = calculateBoundingBox(currentSessionLog.locationLogs);
+
+        // setting the viewport like this cos i don't trust anything anymore
+        currentSessionLog.viewport.high = boundingBox.high;
+        currentSessionLog.viewport.low = boundingBox.low;
+
+        // Save updated session log to the student model
+        currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
+
+        await currentStudent.save().then(() => {
+            console.log('Session log saved to student while stopping tracking');
+        });
 
         // Clean up location subscription
         if (locationSubscriptionRef.current) {
@@ -96,21 +110,27 @@ export function useLocationTracking() {
             locationSubscriptionRef.current = null;
         }
 
-        // Reset state to stop tracking
-        setSessionLog(null);
-        setIsTracking(false);
+        const toReturn =  JSON.parse(JSON.stringify(sessionLogRef.current)) as typeof sessionLogRef.current;
+        sessionLogRef.current = null; // Reset the session log ref
 
-
-    }
+        return toReturn;
+    };
 
     function handleLocationUpdate(location: ExpoLocation.LocationObject) {
         console.log('handleLocationUpdate was called');
-        const currentSessionLog = sessionLog;
+
+        const currentSessionLog = sessionLogRef.current;
         if (!currentSessionLog) {
+            console.log('No session log found while updating location');
+            return;
+        }
+        
+        const currentStudent = studentRef.current;
+        if (!currentStudent) {
+            console.log('Current student not found while updating location');
             return;
         }
 
-        // Log the new location information in the session log
         const ISOTimeStamp = new Date(location.timestamp).toISOString();
         const newLocationLog = new LocationLog({
             timestamp: ISOTimeStamp,
@@ -121,16 +141,17 @@ export function useLocationTracking() {
         });
 
         currentSessionLog.locationLogs.push(newLocationLog);
-        setSessionLog(currentSessionLog);
+
+        currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
+
+        currentStudent.save().then(() => {
+            console.log('New location log saved to student');
+        });
     }
 
-
-    // create an event that simulates location updates on a 5 second interval for testing
-     // Simulate tracking updates for testing purposes (triggering location update every 5 seconds)
-     useEffect(() => {
+    useEffect(() => {
         if (isTracking) {
-            // Use ExpoLocation watchPositionAsync or mock data here if needed for testing
-            console.log("Tracking in progress...");
+            console.log('Tracking in progress...');
         }
 
         // Cleanup function to stop tracking when component unmounts or tracking is stopped
@@ -144,29 +165,32 @@ export function useLocationTracking() {
     return { isTracking, startTracking, stopTracking, errorMsg };
 }
 
-
 // Helper function to calculate bounding box
 function calculateBoundingBox(locationLogs: LocationLogData[]) {
-    let minLat = Infinity;
-    let minLng = Infinity;
-    let maxLat = -Infinity;
-    let maxLng = -Infinity;
+    let minLatSoFar = 90;
+    let minlngSoFar = 180;
+    let maxLatSoFar = -90;
+    let maxLngSoFar = -180;
   
     locationLogs.forEach((log) => {
-      if (log.latitude < minLat) minLat = log.latitude;
-      if (log.latitude > maxLat) maxLat = log.latitude;
-      if (log.longitude < minLng) minLng = log.longitude;
-      if (log.longitude > maxLng) maxLng = log.longitude;
+      if (log.latitude < minLatSoFar) minLatSoFar = log.latitude;
+      if (log.latitude > maxLatSoFar) maxLatSoFar = log.latitude;
+      if (log.longitude < minlngSoFar) minlngSoFar = log.longitude;
+      if (log.longitude > maxLngSoFar) maxLngSoFar = log.longitude;
     });
+
+    //TODO: Add some padding to the viewport
   
-    return {
-      low: { latitude: minLat, longitude: minLng },
-      high: { latitude: maxLat, longitude: maxLng },
-    } as Viewport;
+    let viewport = new Viewport();
+    viewport.low.latitude = minLatSoFar;
+    viewport.low.longitude = minlngSoFar;
+    viewport.high.latitude = maxLatSoFar;
+    viewport.high.longitude = maxLngSoFar;
+
+    return viewport;
   }
 
-  // Helper function to generate a unique ID
-
+  // Helper function to generate a unique ID (chat generated)
 function generateUniqueId(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
