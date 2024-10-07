@@ -1,40 +1,50 @@
 import React, { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import { View, StyleSheet } from "react-native";
+import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 
 interface MapComponentProps {
-  selectedLocation: { latitude: number; longitude: number } | null;
+  selectedOrganisation: Organisation | null;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ selectedLocation }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ selectedOrganisation }) => {
+  const defaultLatitude = -33.9249; // Cape Town latitude
+  const defaultLongitude = 18.4241; // Cape Town longitude
+
   const [region, setRegion] = useState({
-    latitude: -33.9249, // Default latitude (Cape Town)
-    longitude: 18.4241, // Default longitude (Cape Town)
+    latitude: selectedOrganisation?.orgLatitude ?? defaultLatitude,
+    longitude: selectedOrganisation?.orgLongitude ?? defaultLongitude,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
 
-  // Update the region when selectedLocation changes
   useEffect(() => {
-    if (selectedLocation) {
-      setRegion({
-        ...region,
-        latitude: selectedLocation.latitude,
-        longitude: selectedLocation.longitude,
-      });
+    if (selectedOrganisation) {
+      setRegion((prevRegion) => ({
+        ...prevRegion,
+        latitude: selectedOrganisation.orgLatitude,
+        longitude: selectedOrganisation.orgLongitude,
+      }));
+    } else {
+      // Reset to default location when no organisation is selected
+      setRegion((prevRegion) => ({
+        ...prevRegion,
+        latitude: defaultLatitude,
+        longitude: defaultLongitude,
+      }));
     }
-  }, [selectedLocation]);
+  }, [selectedOrganisation]);
 
   return (
     <View style={styles.container}>
       <MapView style={styles.map} region={region}>
-        {selectedLocation && (
+        {selectedOrganisation && (
           <Marker
             coordinate={{
-              latitude: selectedLocation.latitude,
-              longitude: selectedLocation.longitude,
+              latitude: selectedOrganisation.orgLatitude,
+              longitude: selectedOrganisation.orgLongitude,
             }}
-            title="Selected Organisation"
+            title={selectedOrganisation.orgName}
           />
         )}
       </MapView>
