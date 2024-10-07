@@ -16,8 +16,12 @@ export class SessionLog implements SessionLogData {
     this.orgID = data.orgID;
     this.sessionStartTime = data.sessionStartTime;
     this.sessionEndTime = data.sessionEndTime;
-    this.locationLogs = data.locationLogs.map((log) => new LocationLog(log));
-    this.viewport = new Viewport(data.viewport);
+     // Check if locationLogs exists and is an array
+    this.locationLogs = Array.isArray(data.locationLogs) 
+    ? data.locationLogs.map((log) => new LocationLog(log)) 
+    :[] ;  // Default to an empty array if it's undefined or not an array
+     // Safeguard against undefined viewport
+    this.viewport = data.viewport ? new Viewport(data.viewport) : new Viewport({ low: { latitude: 0, longitude: 0 }, high: { latitude: 0, longitude: 0 } });
   }
 
   toJSON(): SessionLogData {

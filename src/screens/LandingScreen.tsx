@@ -8,9 +8,9 @@ import { OrganisationData } from "../databaseModels/OrganisationData";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import { useLocationTracking } from "../hooks/useLocationTracking";
 import { Student } from "../databaseModels/databaseClasses/Student";
-import { StudentData } from "../databaseModels/StudentData";
 import { useUser } from "@clerk/clerk-expo";
-import { useNavigation } from "@react-navigation/native";
+import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
+import StudentLocationMap from "../components/StudentLocationMap";
 
 
 
@@ -21,7 +21,12 @@ export default function LandingScreen() {
   const [currentStudent, setCurrentStudent] = useState<Student>();
   const { user } = useUser(); // Get the current user from the Clerk context
   const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null);
-
+  const [sessionData, setSessionData] = useState<SessionLog>();
+  const [endTracking, setEndTracking] = useState(false);
+  const sheetRef = useRef<BottomSheet>(null);
+  // Define snap points (different heights the bottom sheet can snap to)
+  const snapPoints = useMemo(() => [100, "50%", "100%"], []);
+  
   useEffect(() => {
     const fetchOrganisations = async () => {
       try{
@@ -59,34 +64,35 @@ export default function LandingScreen() {
     fetchStudent();
   }, [user]);
 
-  const handleStartTracking = () => {
-    setIsPopupVisible(false); // Close the popup
-  };
-
-  const handleCancel = () => {
-    setIsPopupVisible(false); // Close the popup
-  };
-
- 
-
-  const sheetRef = useRef<BottomSheet>(null);
-
-  // Define snap points (different heights the bottom sheet can snap to)
-  const snapPoints = useMemo(() => [100, "50%", "100%"], []);
-
   useEffect(() => {
     if (selectedOrganisation) {
-      sheetRef.current?.snapToIndex(0); // Snap to the closed position
+      sheetRef.current?.snapToIndex(0); // Snap to the closed position when an organisation is selected
     }
   }, [selectedOrganisation]);
+ 
 
-  // Function to handle organisation item click
-  const handleOrganisationPress = (
-    pSelectedOrganisation: OrganisationData,
-  ) => {
-    setSelectedOrganisation(new Organisation(pSelectedOrganisation));
+   // Function to handle organisation item click
+   const handleOrganisationPress = (pSelectedOrganisation: OrganisationData) => {
     setIsPopupVisible(true);
+    setSelectedOrganisation(new Organisation(pSelectedOrganisation));
     console.log(`${pSelectedOrganisation.orgName} selected`);
+  };
+
+  const handleStartTracking = () => {
+    if (!currentStudent || !selectedOrganisation) {
+      console.error("Student or organisation not found");
+      return;
+    }
+    startTracking(currentStudent, selectedOrganisation).then(() => {
+      setIsPopupVisible(false); // Close the popup
+    });
+  };
+
+  const handleCancel = async () => {
+    setIsPopupVisible(false); // Close the popup
+    if (isTracking && currentStudent) {
+      stopTracking()
+    };
   };
 
   const renderItem = ({ item, index }: { item: OrganisationData; index: number }) => (
@@ -98,13 +104,12 @@ export default function LandingScreen() {
       }}
     />
   );
-
+  
   return (
     <SafeAreaView style={styles.container}>
-
       {/* Map Component */}
-      <MapComponent selectedOrganisation={selectedOrganisation} />
-
+       <MapComponent selectedOrganisation={selectedOrganisation} /> 
+      
       {/* Tracking Popup */}
       <TrackingPopup
         visible={isPopupVisible}
