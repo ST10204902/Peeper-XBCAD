@@ -45,9 +45,11 @@ export class DatabaseUtility {
     try {
       const snapshot = await get(this.getRef(path));
       const data: T[] = [];
-      snapshot.forEach((child) => {
-        data.push(child.val() as T);
-      });
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          data.push(childSnapshot.val());
+        });
+      }
       return data;
     } catch (error) {
       console.error(`Error fetching data from ${path}:`, error);
