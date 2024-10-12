@@ -1,8 +1,13 @@
 import Svg, { Path } from "react-native-svg";
 
+/**
+ * SVG Icon for the Navigation bar used to represent the OrgDetailsScreen
+ * @param SizeAndColor the size and color of the svg
+ * @returns a created org details icon with the specified size and color
+ */
 export default function OrgDetailsIcon({
-  size,
-  color,
+  size, // Size in px
+  color, // Color
 }: {
   size: number;
   color: string;
@@ -22,3 +27,4 @@ export default function OrgDetailsIcon({
     </Svg>
   );
 }
+// End of file
