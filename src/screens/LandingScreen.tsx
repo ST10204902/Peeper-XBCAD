@@ -6,30 +6,39 @@ import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import TrackingPopup from "../components/TrackingPopup";
 import { OrganisationData } from "../databaseModels/OrganisationData";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
-import { useLocationTracking } from "../hooks/useLocationTracking";
+import { useLocationTracking } from "../hooks/useLocationTracking"; // Custom hook for location tracking
 import { Student } from "../databaseModels/databaseClasses/Student";
-import { useUser } from "@clerk/clerk-expo";
+import { useUser } from "@clerk/clerk-expo"; // Authentication context from Clerk
 import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
 
-
-
+/**
+ * Landing screen component for displaying the organisation list and tracking popup.
+ */
 export default function LandingScreen() {
-  const [organisations, setOrganisations] = useState<OrganisationData[]>([]);
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const { isTracking, startTracking, stopTracking, errorMsg   } = useLocationTracking();
-  const [currentStudent, setCurrentStudent] = useState<Student>();
-  const { user } = useUser(); // Get the current user from the Clerk context
-  const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null);
-  const [sessionData, setSessionData] = useState<SessionLog>();
-  const [endTracking, setEndTracking] = useState(false);
-  const sheetRef = useRef<BottomSheet>(null);
-  // Define snap points (different heights the bottom sheet can snap to)
-  const snapPoints = useMemo(() => [100, "50%", "100%"], []);
+
+  //-----------------------------------------------------------//
+  //                          STATES                           //
+  //-----------------------------------------------------------//
+  const [organisations, setOrganisations] = useState<OrganisationData[]>([]); // State to hold organisation data
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
+  const { isTracking, startTracking, stopTracking, errorMsg } = useLocationTracking(); // Import location tracking functions from hook
+  const [currentStudent, setCurrentStudent] = useState<Student>(); // State to hold current student's data
+  const { user } = useUser(); // Get the current authenticated user from Clerk
+  const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null); // State for the selected organisation
+  const [sessionData, setSessionData] = useState<SessionLog>(); // State to hold session data
+  const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
+  const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
+  const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
   
+  //-----------------------------------------------------------//
+  //                          EFFECTS                          //
+  //-----------------------------------------------------------//
+
+  // Fetch organisations from the database when component is mounted
   useEffect(() => {
     const fetchOrganisations = async () => {
-      try{
+      try {
         const orgs = await Organisation.getAllOrganisations();
         setOrganisations(orgs);
       } catch (error) {
@@ -40,20 +49,19 @@ export default function LandingScreen() {
     fetchOrganisations();
   }, []);
 
+  // Fetch current student data based on the logged-in user
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        if (!user)
-        {
+        if (!user) {
           console.error("Landing Screen ln39: ", "clerk user not found");
-         // add navigation to login screen here
-           return;
+          // Add navigation to login screen here
+          return;
         }
         const student = await Student.fetchById(user.id);
-        if (!student)
-        {
+        if (!student) {
           console.error("Landing Screen ln44: ", "Student not found");
-           return;
+          return;
         }
         setCurrentStudent(student);
       } catch (error) {
@@ -64,80 +72,108 @@ export default function LandingScreen() {
     fetchStudent();
   }, [user]);
 
+  // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
     if (selectedOrganisation) {
-      sheetRef.current?.snapToIndex(0); // Snap to the closed position when an organisation is selected
+      sheetRef.current?.snapToIndex(0); // Snap to the first index (collapsed)
     }
   }, [selectedOrganisation]);
- 
 
-   // Function to handle organisation item click
-   const handleOrganisationPress = (pSelectedOrganisation: OrganisationData) => {
-    setIsPopupVisible(true);
-    setSelectedOrganisation(new Organisation(pSelectedOrganisation));
+  //-----------------------------------------------------------//
+  //                          METHODS                          //
+  //-----------------------------------------------------------//
+
+  /* Handle organisation item click to show popup and set selected organisation
+    * @param pSelectedOrganisation - The selected organisation data
+    */
+  const handleOrganisationPress = (pSelectedOrganisation: OrganisationData) => {
+    setIsPopupVisible(true); // Show the tracking popup
+    setSelectedOrganisation(new Organisation(pSelectedOrganisation)); // Set the selected organisation
     console.log(`${pSelectedOrganisation.orgName} selected`);
   };
 
+  /*
+    * Handle start tracking button click to start tracking the student's location
+    */
   const handleStartTracking = () => {
     if (!currentStudent || !selectedOrganisation) {
       console.error("Student or organisation not found");
       return;
     }
     startTracking(currentStudent, selectedOrganisation).then(() => {
-      setIsPopupVisible(false); // Close the popup
+      setIsPopupVisible(false); // Close the popup after starting tracking
     });
   };
 
+  /*
+  * Cancel tracking, close popup, and stop tracking if it's already running
+  */
   const handleCancel = async () => {
     setIsPopupVisible(false); // Close the popup
     if (isTracking && currentStudent) {
-      stopTracking()
-    };
+      stopTracking(); // Stop tracking if it's active
+    }
   };
 
+  /*
+    * Render each organisation list item with alternating colors for styling
+    * @param item - The organisation data
+    * @param index - The index of the item in the list
+    */
   const renderItem = ({ item, index }: { item: OrganisationData; index: number }) => (
     <OrganisationListItem
       orgName={item.orgName}
-      oddOrEven={index % 2 === 0 ? "even" : "odd"} // Alternate between 'odd' and 'even'
+       // Alternate between 'odd' and 'even'
+      oddOrEven={index % 2 === 0 ? "even" : "odd"}
       onPress={() => {
-        handleOrganisationPress(item);
+        // Handle item press to select organisation
+        handleOrganisationPress(item); 
       }}
     />
   );
-  
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Map Component */}
-       <MapComponent selectedOrganisation={selectedOrganisation} /> 
-      
-      {/* Tracking Popup */}
+      {/* Map Component displaying selected organisation */}
+      <MapComponent selectedOrganisation={selectedOrganisation} />
+
+      {/* Tracking Popup for start/stop tracking */}
       <TrackingPopup
         visible={isPopupVisible}
         onStartTracking={handleStartTracking}
         onCancel={handleCancel}
       />
-      {/* Bottom Sheet for Organisation List */}
+
+      {/* Bottom Sheet containing the organisation list */}
       <BottomSheet
         ref={sheetRef}
-        index={0} // Initial position (0 = collapsed)
-        snapPoints={snapPoints} // Snap points for the bottom sheet
-        enablePanDownToClose={false} // Prevent closing with a swipe down
+        // Initial position (collapsed)
+        index={0} 
+        // Snap points for different heights
+        snapPoints={snapPoints} 
+        // Prevent closing the sheet by swiping down
+        enablePanDownToClose={false} 
       >
         <View style={styles.sheetHeader}>
           <Text style={styles.sheetHeading}>Organisation List</Text>
         </View>
 
-        {/* Scrollable Organisation List */}
+        {/* Scrollable list of organisations */}
         <BottomSheetFlatList
           data={organisations}
-          keyExtractor={(item) => item.org_id}
-          renderItem={renderItem}
+          // Use organisation ID as key
+          keyExtractor={(item) => item.org_id} 
+          // Render each item using renderItem function
+          renderItem={renderItem} 
           contentContainerStyle={styles.listContentContainer}
         />
       </BottomSheet>
     </SafeAreaView>
   );
 }
+//-----------------------------------------------------------//
+//                          STYLES                           //
+//-----------------------------------------------------------//
 
 const styles = StyleSheet.create({
   container: {
@@ -152,7 +188,7 @@ const styles = StyleSheet.create({
   sheetHeading: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#161616", // White text
+    color: "#161616",
     marginBottom: 10,
   },
   listContentContainer: {
@@ -167,3 +203,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+//------------------------***EOF***-----------------------------//
