@@ -1,8 +1,13 @@
 import Svg, { Path } from "react-native-svg";
 
+/**
+ * SVG Icon for the Navigation bar used to represent the LandingScreen
+ * @param SizeAndColor the size and color of the svg
+ * @returns a created landing icon with the specified size and color
+ */
 export default function LandingIcon({
-  size,
-  color,
+  size, // Size in px
+  color, // Color
 }: {
   size: number;
   color: string;
@@ -22,3 +27,4 @@ export default function LandingIcon({
     </Svg>
   );
 }
+// End of file
