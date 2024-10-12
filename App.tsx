@@ -28,7 +28,14 @@ import LandingIcon from "./src/assets/icons/LandingIcon";
 import OrgDetailsIcon from "./src/assets/icons/OrgDetailsIcon";
 import SettingsIcon from "./src/assets/icons/SettingsIcon";
 
+/**
+ * Object for managing navigation for the BottomNavigationBar
+ */
 const Tab = createBottomTabNavigator();
+
+/**
+ * Object for managing all the navigation
+ */
 const Stack = createStackNavigator<RootStackParamsList>();
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
@@ -38,6 +45,10 @@ if (!publishableKey) {
   );
 }
 
+/**
+ * Navigation component for navigation under the Organisations tab on the bottom navigation bar
+ * @returns a new OrganisationsNavigator component
+ */
 function OrganisationsNavigator() {
   return (
     <Stack.Navigator initialRouteName="OrgDetailsScreen">
@@ -69,6 +80,10 @@ function OrganisationsNavigator() {
   );
 }
 
+/**
+ * Navigation component for navigation under the Settings tab on the bottom navigation bar
+ * @returns a new SettingsNavigator component
+ */
 function SettingsNavigator() {
   return (
     <Stack.Navigator initialRouteName="SettingsScreen">
@@ -97,6 +112,10 @@ function SettingsNavigator() {
   );
 }
 
+/**
+ * Screen options for the bottom tab bar (BottomNavigationBar)
+ * @returns a new screenOptions component
+ */
 const screenOptions = ({ route }: { route: any }) => ({
   tabBarActiveTintColor: "#4F4F4F",
   tabBarInactiveTintColor: "#969696",
@@ -132,6 +151,10 @@ const screenOptions = ({ route }: { route: any }) => ({
   },
 });
 
+/**
+ * Navigation component for the navbar in the application
+ * @returns a new BottomNavigationBar Component
+ */
 function BottomNavigationBar() {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
@@ -154,6 +177,10 @@ function BottomNavigationBar() {
   );
 }
 
+/**
+ * Navigation component for navigation under the Settings tab on the bottom navigation bar
+ * @returns a new SettingsNavigator component
+ */
 function AppNavigator() {
   const { isSignedIn } = useUser(); // Fetch Clerk user state
 
@@ -200,6 +227,10 @@ function AppNavigator() {
   );
 }
 
+/**
+ * App component for entry into the applicaiton
+ * @returns a new App component
+ */
 export default function App() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
@@ -214,10 +245,8 @@ export default function App() {
       <FontLoader>
         <RecoilRoot>
           <NavigationContainer>
-            <SafeAreaView >
-            </SafeAreaView>
-              <AppNavigator />
-            
+            <SafeAreaView></SafeAreaView>
+            <AppNavigator />
           </NavigationContainer>
         </RecoilRoot>
       </FontLoader>
@@ -231,3 +260,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 });
+// End of File
