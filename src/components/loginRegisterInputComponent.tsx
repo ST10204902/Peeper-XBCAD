@@ -9,14 +9,13 @@ interface Props {
 }
 
 /**
- * A component that renders a labeled input field for email registration or login.
- * 
+ * LoginRegisterInputComponent is a functional component that renders an input field for email.
+ * It allows the user to input their email address and notifies the parent component of changes.
  * @component
  * @param {Object} props - The properties object.
  * @param {string} props.FGColor - The foreground color for the input text and placeholder.
  * @param {function} props.onEmailChange - Callback function to handle changes to the email input.
  * @param {string} props.label - The label text to display above the input field.
- * 
  * @example
  * <LoginRegisterInputComponent
  *   FGColor="#000000"
