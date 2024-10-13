@@ -1,0 +1,1 @@
+- clerk stay logged in
