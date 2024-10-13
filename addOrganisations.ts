@@ -6,6 +6,7 @@ import { getDatabase, ref, set } from "firebase/database";
 import { OrgAddressData } from "./src/databaseModels/OrgAddressData";
 import { OrganisationData } from "./src/databaseModels/OrganisationData";
 
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyC79dLUv5wmpvYmreVMDS0KMFcmw-RUEMk",
   authDomain: "peeper-xbcad.firebaseapp.com",
