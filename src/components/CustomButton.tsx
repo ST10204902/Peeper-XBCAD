@@ -9,14 +9,27 @@ import {
   StyleSheet,
 } from "react-native";
 
+/**
+ * Props for the CustomButton component.
+ * 
+ * @interface CustomButtonProps
+ * @property {function} onPress - Function to handle the button press event.
+ * @property {string} title - The title text to display on the button.
+ * @property {string} [textColor] - Optional color for the button text.
+ * @property {string} [buttonColor] - Optional color for the button background.
+ * @property {string} [fontFamily] - Optional font family for the button text.
+ * @property {number} [textSize] - Optional size for the button text.
+ * @property {string} [label] - Optional label for accessibility purposes.
+ * @property {boolean} [addFlex] - Optional flag to add flex styling to the button.
+ */
 interface CustomButtonProps {
   onPress: (event: GestureResponderEvent) => void;
   title: string;
-  textColor?: string; // Add an optional prop for text color
-  buttonColor?: string; // Add an optional prop for button color
-  fontFamily?: string; // Add an optional prop for font family
-  textSize?: number; // Add an optional prop for text size
-  label?: string; // Add an optional prop for the label above the button
+  textColor?: string; 
+  buttonColor?: string; 
+  fontFamily?: string; 
+  textSize?: number; 
+  label?: string; 
   addFlex?: boolean;
 }
 
@@ -70,6 +83,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   );
 };
 
+/**
+ * Styles for the custom button. 
+ */
 const localStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
