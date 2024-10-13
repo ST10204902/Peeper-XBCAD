@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="3" failures="0" errors="0" time="2.119">
-  <testsuite name="DatabaseUtility.getAllData" errors="0" failures="0" skipped="0" timestamp="2024-10-13T10:56:58" time="1.65" tests="2">
-    <testcase classname="DatabaseUtility.getAllData should return an array of data when data exists" name="DatabaseUtility.getAllData should return an array of data when data exists" time="0.008">
+<testsuites name="jest tests" tests="3" failures="0" errors="0" time="3.732">
+  <testsuite name="DatabaseUtility.getAllData" errors="0" failures="0" skipped="0" timestamp="2024-10-13T17:39:56" time="3.199" tests="2">
+    <testcase classname="DatabaseUtility.getAllData should return an array of data when data exists" name="DatabaseUtility.getAllData should return an array of data when data exists" time="0.007">
     </testcase>
-    <testcase classname="DatabaseUtility.getAllData should return an empty array when there is an error fetching data" name="DatabaseUtility.getAllData should return an empty array when there is an error fetching data" time="0.011">
+    <testcase classname="DatabaseUtility.getAllData should return an empty array when there is an error fetching data" name="DatabaseUtility.getAllData should return an empty array when there is an error fetching data" time="0.013">
     </testcase>
   </testsuite>
-  <testsuite name="Admin Class" errors="0" failures="0" skipped="0" timestamp="2024-10-13T10:56:58" time="1.669" tests="1">
+  <testsuite name="Admin Class" errors="0" failures="0" skipped="0" timestamp="2024-10-13T17:39:56" time="3.25" tests="1">
     <testcase classname="Admin Class should initialize properties correctly" name="Admin Class should initialize properties correctly" time="0.007">
     </testcase>
   </testsuite>
