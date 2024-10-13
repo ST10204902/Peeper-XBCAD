@@ -49,6 +49,9 @@ function LoginRegisterInputComponent({ FGColor, onEmailChange, label }: Props) {
     );
 }
 
+/**
+ * Styles for the LoginRegisterInputComponent. 
+ */
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'transparent', // Set background to transparent
