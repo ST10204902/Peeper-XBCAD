@@ -1,7 +1,8 @@
 // App.tsx
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { Linking, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
