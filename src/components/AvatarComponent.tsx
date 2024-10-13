@@ -15,6 +15,23 @@ const avatars = [
 
 const { width } = Dimensions.get('window');
 
+/**
+ * AvatarComponent is a React functional component that allows users to select an avatar from a horizontal list.
+ * It provides left and right arrows to navigate through the avatars and calls a callback function when an avatar is selected.
+ *
+ * @param {Object} props - The component props.
+ * @param {(uri: string) => void} props.onAvatarSelected - Callback function that is called with the URI of the selected avatar.
+ *
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @component
+ * @example
+ * const handleAvatarSelected = (uri) => {
+ *   console.log("Selected avatar URI:", uri);
+ * };
+ * 
+ * <AvatarComponent onAvatarSelected={handleAvatarSelected} />
+ */
 const AvatarComponent = ({ onAvatarSelected }: { onAvatarSelected: (uri: string) => void }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<number>(0);
   const flatListRef = React.useRef<FlatList>(null);
