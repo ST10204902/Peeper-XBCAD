@@ -14,6 +14,53 @@ import {  StackNavigationProp  } from "@react-navigation/stack"; // Ensure the p
 import { StudentData } from "../databaseModels/StudentData";
 import ConfirmationInputComponent from '../components/ConfirmationInputComponent';
 
+/**
+ * RegisterScreen component handles the user registration process.
+ * 
+ * This component allows users to register using their email address and verify their email
+ * through a code sent to their email. It also handles navigation based on the user's sign-in status.
+ * 
+ * @component
+ * @returns {React.FC} A functional component that renders the registration screen.
+ * 
+ * @example
+ * <RegisterScreen />
+ * 
+ * @remarks
+ * - Uses Clerk for authentication and email verification.
+ * - Navigates to "LandingScreen" if the user is already signed in.
+ * - Displays different UI based on whether the email verification is pending.
+ * 
+ * @function
+ * @name RegisterScreen
+ * 
+ * @hook
+ * @name useSignUp
+ * @description Provides sign-up related functions and state.
+ * 
+ * @hook
+ * @name useAuth
+ * @description Provides authentication related functions and state.
+ * 
+ * @hook
+ * @name useNavigation
+ * @description Provides navigation functions.
+ * 
+ * @state {string} emailAddress - The email address entered by the user.
+ * @state {boolean} pendingVerification - Indicates if email verification is pending.
+ * @state {string} code - The verification code entered by the user.
+ * 
+ * @callback handlePress
+ * @description Handles the registration button press, initiates the sign-up process, and prepares email verification.
+ * 
+ * @callback onPressVerify
+ * @description Handles the verification button press, attempts to verify the email, and completes the sign-up process.
+ * 
+ * @callback handleEmailChange
+ * @description Updates the email address state when the user changes the email input.
+ * 
+ * @throws Will log errors to the console if any step in the sign-up or verification process fails.
+ */
 const RegisterScreen: React.FC = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -113,6 +160,9 @@ const RegisterScreen: React.FC = () => {
     setEmailAddress(emailAddress);
   };
 
+  /**
+ * The RegisterScreen component renders the registration screen.
+ */
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headingContainer}>
