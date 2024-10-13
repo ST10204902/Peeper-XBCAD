@@ -9,6 +9,17 @@ interface LoginRegisterHyperlinkProps {
   children: React.ReactNode;
 }
 
+/**
+ * A functional component that renders a hyperlink which navigates to either the Login or Register screen
+ * based on the `toLogin` prop.
+ *
+ * @param {Object} props - The props object.
+ * @param {boolean} props.toLogin - Determines whether the hyperlink navigates to the Login screen (if true)
+ *                                  or the Register screen (if false).
+ * @param {React.ReactNode} props.children - The content to be displayed inside the hyperlink.
+ *
+ * @returns {JSX.Element} The rendered hyperlink component.
+ */
 const LoginRegisterHyperlink: React.FC<LoginRegisterHyperlinkProps> = ({ toLogin, children }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
 
@@ -27,6 +38,9 @@ const LoginRegisterHyperlink: React.FC<LoginRegisterHyperlinkProps> = ({ toLogin
   );
 };
 
+/**
+ * Styles for hyperlink text.
+ */
 const styles = StyleSheet.create({
   hyperlinkText: {
     fontSize: 20,
