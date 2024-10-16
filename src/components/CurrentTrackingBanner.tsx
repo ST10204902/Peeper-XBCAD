@@ -8,20 +8,60 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
-import { SessionLogData } from "../databaseModels/SessionLogData";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isTrackingState } from "../atoms/atoms";
+import { useEffect, useState } from "react";
 
-interface Props {
-  isTracking: boolean;
-  onStopTracking: (sessionToLog: SessionLogData) => void;
-  organisationName: string;
-}
-
-export default function CurrentTrackingBanner({
-  isTracking,
-  onStopTracking,
-  organisationName,
-}: Props) {
+/**
+ * Component responsible for displaying the current tracking session to the user.
+ * Displays the time elapsed and organisation name for which the user is tracking.
+ * Also allows the user to stop tracking, causing the component to refresh,
+ * and not render because isTracking is false;
+ * @returns A created CurrentTrackingBanner Component
+ */
+export default function CurrentTrackingBanner() {
   // Don't render the component if not tracking
+  const [isTracking, setIsTracking] = useRecoilState(isTrackingState);
+  const [elapsedTime, setElapsedTime] = useState(0); // Manage elapsed time in seconds
+
+  // useEffect to start the timer when tracking starts
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined;
+
+    if (isTracking) {
+      // Start the timer
+      timer = setInterval(() => {
+        setElapsedTime((prevTime) => prevTime + 1);
+      }, 1000);
+    } else {
+      // Stop the timer when tracking stops
+      setElapsedTime(0); // Reset the timer when tracking is stopped
+      if (timer) {
+        clearInterval(timer);
+      }
+    }
+
+    const formatTime = (seconds: number) => {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${String(minutes).padStart(2, "0")}:${String(
+        remainingSeconds
+      ).padStart(2, "0")}`;
+    };
+
+    // Cleanup: Clear the timer when the component unmounts or tracking stops
+    return () => clearInterval(timer);
+  }, [isTracking]);
+
+  // Helper function to format time as MM:SS
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(
+      remainingSeconds
+    ).padStart(2, "0")}`;
+  };
+
   if (!isTracking) {
     return null;
   }
@@ -29,15 +69,17 @@ export default function CurrentTrackingBanner({
   return (
     <SafeAreaView style={styles.root_container}>
       <TrackingBackground />
-
       <View style={styles.text_container}>
         <Text style={styles.header}> Tracking Your Location </Text>
         <View style={styles.details_container}>
-          <Text style={styles.org_name}>{organisationName}</Text>
-          <Text style={styles.elapsed_time}> 26:45 </Text>
+          <Text style={styles.org_name}>{"organisationName"}</Text>
+          <Text style={styles.elapsed_time}> {formatTime(elapsedTime)} </Text>
         </View>
       </View>
-      <Pressable style={styles.stop_button}>
+      <Pressable
+        style={styles.stop_button}
+        onPress={() => setIsTracking(false)}
+      >
         <ImageBackground
           style={styles.button_image}
           source={require("../assets/stop_tracking_button.png")}
