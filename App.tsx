@@ -3,6 +3,7 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as SecureStore from "expo-secure-store";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -236,6 +237,31 @@ function AppNavigator() {
 export default function App() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
+  const localTokenCache = {
+    async getToken(key: string) {
+      try {
+        const item = await SecureStore.getItemAsync(key);
+        if (item) {
+          console.log(`${key} was used 🔐 \n`);
+        } else {
+          console.log("No values stored under key: " + key);
+        }
+        return item;
+      } catch (error) {
+        console.error("SecureStore get item error: ", error);
+        await SecureStore.deleteItemAsync(key);
+        return null;
+      }
+    },
+    async saveToken(key: string, value: string) {
+      try {
+        return SecureStore.setItemAsync(key, value);
+      } catch (err) {
+        return;
+      }
+    },
+  };
+
   if (!publishableKey) {
     throw new Error(
       "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
@@ -243,7 +269,7 @@ export default function App() {
   }
 
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider publishableKey={publishableKey} tokenCache={localTokenCache}>
       <FontLoader>
         <RecoilRoot>
           {/* Safe Area view goes above */}

@@ -40,7 +40,10 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "ts-node": "^10.9.2",
+    "expo-constants": "~16.0.2",
+    "expo-secure-store": "~13.0.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
