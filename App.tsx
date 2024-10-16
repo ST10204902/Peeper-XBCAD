@@ -6,7 +6,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { RecoilRoot } from "recoil";
+import {
+  RecoilRoot,
+  RecoilState,
+  useRecoilState,
+  useRecoilValue,
+} from "recoil";
 import { ClerkProvider, SignedIn, SignedOut, useUser } from "@clerk/clerk-expo"; // Load the Clerk API from the .env file
 import LandingScreen from "./src/screens/LandingScreen";
 import SettingsScreen from "./src/screens/settings/SettingsScreen";
@@ -29,6 +34,7 @@ import LandingIcon from "./src/assets/icons/LandingIcon";
 import OrgDetailsIcon from "./src/assets/icons/OrgDetailsIcon";
 import SettingsIcon from "./src/assets/icons/SettingsIcon";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
+import { isTrackingState } from "./src/atoms/atoms";
 
 /**
  * Object for managing navigation for the BottomNavigationBar
@@ -247,6 +253,7 @@ export default function App() {
       <FontLoader>
         <RecoilRoot>
           {/* Safe Area view goes above */}
+          <CurrentTrackingBanner />
           <NavigationContainer>
             <SafeAreaView></SafeAreaView>
             <AppNavigator />
