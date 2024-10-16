@@ -2,6 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
+/**
+ * EmergencyContacts component renders a screen with emergency contact information.
+ * It displays a gradient background with a header and a list of emergency contact numbers.
+ *
+ * @returns {JSX.Element} The rendered EmergencyContacts component.
+ */
 const EmergencyContacts = () => {
   return (
     <LinearGradient colors={['#ea4b4b', '#fe7143']} style={styles.container}>
