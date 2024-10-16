@@ -247,7 +247,6 @@ export default function App() {
       <FontLoader>
         <RecoilRoot>
           {/* Safe Area view goes above */}
-          <CurrentTrackingBanner />
           <NavigationContainer>
             <SafeAreaView></SafeAreaView>
             <AppNavigator />

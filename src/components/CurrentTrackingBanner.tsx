@@ -8,8 +8,24 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
+import { SessionLogData } from "../databaseModels/SessionLogData";
 
-export default function CurrentTrackingBanner() {
+interface Props {
+  isTracking: boolean;
+  onStopTracking: (sessionToLog: SessionLogData) => void;
+  organisationName: string;
+}
+
+export default function CurrentTrackingBanner({
+  isTracking,
+  onStopTracking,
+  organisationName,
+}: Props) {
+  // Don't render the component if not tracking
+  if (!isTracking) {
+    return null;
+  }
+
   return (
     <SafeAreaView style={styles.root_container}>
       <TrackingBackground />
@@ -17,8 +33,8 @@ export default function CurrentTrackingBanner() {
       <View style={styles.text_container}>
         <Text style={styles.header}> Tracking Your Location </Text>
         <View style={styles.details_container}>
-          <Text style={styles.org_name}> Org name</Text>
-          <Text style={styles.elapsed_time}> 26:45</Text>
+          <Text style={styles.org_name}>{organisationName}</Text>
+          <Text style={styles.elapsed_time}> 26:45 </Text>
         </View>
       </View>
       <Pressable style={styles.stop_button}>
@@ -31,11 +47,9 @@ export default function CurrentTrackingBanner() {
   );
 }
 
-const display = "none";
-
 const styles = StyleSheet.create({
   root_container: {
-    display: display,
+    display: "flex",
     paddingBottom: 20,
     paddingHorizontal: 30,
     flexDirection: "row",
