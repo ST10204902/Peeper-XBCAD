@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient"; // Import the expo gradient
 import { Student } from "../databaseModels/databaseClasses/Student";
 
-interface ProgressComponentProps {
+interface StudentHeaderComponentProps {
   currentStudent: Student;
 }
 
@@ -12,11 +12,12 @@ const calculateTotalLoggedHours = (student: Student): number => {
 
   Object.values(student.locationData).forEach((sessionLog) => {
     const sessionStartTime = new Date(sessionLog.sessionStartTime);
-    const sessionEndTime = new Date(sessionLog.sessionEndTime);
-
+    const sessionEndTime = new Date(sessionLog.sessionEndTime) || sessionStartTime; // If session end time is not set, use start time
+    console.log("SessionID: ", sessionLog.sessionLog_id);
+    console.log("Session start time: ", sessionStartTime);
+    console.log("Session end time: ", sessionEndTime);
     // Calculate the difference in hours between session start and end time
-    const sessionDurationMs =
-      sessionEndTime.getTime() - sessionStartTime.getTime();
+    const sessionDurationMs = sessionEndTime.getTime() - sessionStartTime.getTime();
     const sessionDurationHours = sessionDurationMs / (1000 * 60 * 60); // Convert milliseconds to hours
 
     totalHours += sessionDurationHours;
@@ -25,11 +26,12 @@ const calculateTotalLoggedHours = (student: Student): number => {
   return totalHours;
 };
 
-const StudentHeaderComponent: React.FC<ProgressComponentProps> = ({
+const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   currentStudent,
 }) => {
   const completedHours = calculateTotalLoggedHours(currentStudent);
-  const progress = (completedHours / 4) * 100;
+  const progress =  (completedHours / 4) * 100 ;
+  const completedHoursRounded = Math.round(completedHours * 100) / 100;
   const code = currentStudent.studentNumber;
   const avatar = { uri: currentStudent.profilePhotoURL };
 
@@ -40,7 +42,7 @@ const StudentHeaderComponent: React.FC<ProgressComponentProps> = ({
         <Text style={styles.code}>{code}</Text>
         <Text
           style={styles.progressText}
-        >{`${completedHours} out of 4 hours completed`}</Text>
+        >{`${completedHoursRounded} out of 4 hours completed`}</Text>
         <View style={styles.progressBar}>
           <View style={styles.progressBar}>
             <LinearGradient
@@ -67,15 +69,21 @@ const styles = StyleSheet.create({
   },
   container2: {
     alignItems: "center",
+    justifyContent: "center",
   },
-
+  studentNumber: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 4,
+  },
   emoji: {
     width: 100,
     height: 100,
+    borderRadius: 50,
   },
   code: {
-    fontSize: 40,
-    fontWeight: "bold",
+    fontFamily: "Quittance",
+    fontSize: 30,
   },
   progressText: {
     fontSize: 16,
@@ -92,5 +100,4 @@ const styles = StyleSheet.create({
     backgroundColor: "orange",
   },
 });
-
 export default StudentHeaderComponent;
