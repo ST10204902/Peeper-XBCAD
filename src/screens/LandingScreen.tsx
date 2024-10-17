@@ -114,9 +114,6 @@ export default function LandingScreen() {
   */
   const handleCancel = async () => {
     setIsPopupVisible(false); // Close the popup
-    if (isTracking && currentStudent) {
-      stopTracking(); // Stop tracking if it's active
-    }
   };
 
   /*
