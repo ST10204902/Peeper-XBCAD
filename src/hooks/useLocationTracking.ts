@@ -6,6 +6,8 @@ import { Student } from '../databaseModels/databaseClasses/Student';
 import { Organisation } from '../databaseModels/databaseClasses/Organisation';
 import { LocationLogData } from '../databaseModels/LocationLogData';
 import { Viewport } from '../databaseModels/databaseClasses/Viewport';
+import { useRecoilState } from 'recoil';
+import { isTrackingState } from '../atoms/atoms';
 
 //-----------------------------------------------------------//
 //                          HOOKS                            //
@@ -19,10 +21,10 @@ export function useLocationTracking() {
     //                          STATES                           //
     //-----------------------------------------------------------//
 
-    // Tracking state
-    const [isTracking, setIsTracking] = useState(false); 
+    
     // Error message state
     const [errorMsg, setErrorMsg] = useState<string | null>(null); 
+    const [isTracking, setIsTracking] = useRecoilState(isTrackingState); // Recoil state for tracking status
     //-----------------------------------------------------------//
     //                          REFS                             //
     //-----------------------------------------------------------//
@@ -33,6 +35,7 @@ export function useLocationTracking() {
     const sessionLogRef = useRef<SessionLog | null>(null); 
     // Ref to store the current student
     const studentRef = useRef<Student | null>(null); 
+
 
     //-----------------------------------------------------------//
     //                          METHODS                          //
@@ -60,8 +63,9 @@ export function useLocationTracking() {
             return;
         }
 
-        // Enable tracking
+        // Set tracking status to active
         setIsTracking(true);
+         
 
         // Create and initialize a new session log
         const newSessionID = generateUniqueId();
@@ -106,9 +110,6 @@ export function useLocationTracking() {
             setErrorMsg('No session log or student found while stopping tracking');
             return;
         }
-
-        // Disable tracking
-        setIsTracking(false);
 
         // Finalize the session log with an end time
         currentSessionLog.sessionEndTime = new Date().toISOString();
@@ -178,6 +179,10 @@ export function useLocationTracking() {
     useEffect(() => {
         if (isTracking) {
             console.log('Tracking in progress...');
+        }
+        else
+        {
+            stopTracking();
         }
 
         // Clean up location tracking when component unmounts or isTracking changes
