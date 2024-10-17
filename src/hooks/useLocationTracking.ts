@@ -78,6 +78,8 @@ export function useLocationTracking() {
             viewport: { low: { latitude: 0, longitude: 0 }, high: { latitude: 0, longitude: 0 } }
         });
 
+        
+
         // Save the session log to the student object
         student.locationData[newSessionID] = newSessionLog;
 

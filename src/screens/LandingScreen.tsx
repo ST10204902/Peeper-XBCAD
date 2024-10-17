@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -12,8 +12,10 @@ import { useUser } from "@clerk/clerk-expo"; // Authentication context from Cler
 import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
 import { useRecoilState } from "recoil";
-import { isTrackingState } from "../atoms/atoms";
+import { isTrackingState, elapsed_time } from "../atoms/atoms";
+import { requestNotificationPermissions, showOrUpdateTrackingNotification,clearTrackingNotification, checkNotificationSettings } from '../services/trackingNotification';
 
+import * as Notifications from 'expo-notifications';
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -32,11 +34,46 @@ export default function LandingScreen() {
   const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
+  const [isTrackingAtom, setIsTracking] = useRecoilState(isTrackingState);
+  const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
 
   
   //-----------------------------------------------------------//
   //                          EFFECTS                          //
   //-----------------------------------------------------------//
+
+  useEffect(() => {
+    requestNotificationPermissions();
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isTracking && selectedOrganisation) {
+      interval = setInterval(async () => {
+        setElapsedTime((prev) => {
+          const newTime = prev + 1;
+          showOrUpdateTrackingNotification(selectedOrganisation.orgName, newTime)
+            .then((notificationId) => {
+              if (notificationId) {
+                console.log(`Notification updated with ID: ${notificationId}`);
+              } else {
+                console.log('Failed to update notification');
+              }
+            });
+          return newTime;
+        });
+      }, 1000);
+    } else {
+      setElapsedTime(0);
+      clearTrackingNotification();
+    }
+    return () => {
+      clearInterval(interval);
+      if (!isTracking) {
+        clearTrackingNotification();
+      }
+    };
+  }, [isTracking, selectedOrganisation]);
 
   // Fetch organisations from the database when component is mounted
   useEffect(() => {
@@ -82,6 +119,41 @@ export default function LandingScreen() {
     }
   }, [selectedOrganisation]);
 
+  useEffect(() => {
+    const setupNotifications = async () => {
+      const permissionGranted = await requestNotificationPermissions();
+      if (permissionGranted) {
+        // Set up notification categories with a button
+        await Notifications.setNotificationCategoryAsync('tracking', [
+          {
+            identifier: 'stop',
+            buttonTitle: 'Stop Tracking',
+            options: {
+              isDestructive: true,
+              isAuthenticationRequired: false,
+            },
+          },
+        ]);
+
+        // Set up notification handler
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          }),
+        });
+
+        // Listen for notification responses (button presses)
+        const subscription = Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+
+        return () => subscription.remove();
+      }
+    };
+
+    setupNotifications();
+  }, []);
+
   //-----------------------------------------------------------//
   //                          METHODS                          //
   //-----------------------------------------------------------//
@@ -103,10 +175,26 @@ export default function LandingScreen() {
       console.error("Student or organisation not found");
       return;
     }
-    startTracking(currentStudent, selectedOrganisation).then(() => {
-      setIsPopupVisible(false); // Close the popup after starting tracking
-      
+    startTracking(currentStudent, selectedOrganisation).then(async () => {
+      if (errorMsg !== null) {
+        setIsPopupVisible(false);
+        await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
+      } else {
+        console.error("Error starting tracking:", errorMsg);
+      }
     });
+  };
+
+  const handleStopTracking = async () => {
+    await stopTracking();
+    setIsTracking(false);
+    await clearTrackingNotification();
+  };
+
+  const handleNotificationResponse = (response: any) => {
+    if (response.actionIdentifier === 'stop') {
+      handleStopTracking();
+    }
   };
 
   /*
@@ -144,7 +232,15 @@ export default function LandingScreen() {
         onStartTracking={handleStartTracking}
         onCancel={handleCancel}
       />
-
+      {isTracking && (
+        <View >
+          <Text>Tracking: {selectedOrganisation?.orgName}</Text>
+          <Text>Time: {elapsedTime} seconds</Text>
+          <Pressable onPress={handleStopTracking}>
+            <Text>Stop Tracking</Text>
+            </Pressable>
+        </View>
+      )}
       {/* Bottom Sheet containing the organisation list */}
       <BottomSheet
         ref={sheetRef}
