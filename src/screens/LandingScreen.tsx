@@ -32,7 +32,7 @@ export default function LandingScreen() {
   const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
-  const [isTrackingActive, setIsTrackingActive] = useRecoilState(isTrackingState); // Recoil state for tracking status
+
   
   //-----------------------------------------------------------//
   //                          EFFECTS                          //
@@ -105,7 +105,7 @@ export default function LandingScreen() {
     }
     startTracking(currentStudent, selectedOrganisation).then(() => {
       setIsPopupVisible(false); // Close the popup after starting tracking
-      setIsTrackingActive(true); // Set tracking status to active
+      
     });
   };
 
@@ -115,7 +115,6 @@ export default function LandingScreen() {
   const handleCancel = async () => {
     setIsPopupVisible(false); // Close the popup
     if (isTracking && currentStudent) {
-      setIsTrackingActive(false); 
       stopTracking(); // Stop tracking if it's active
     }
   };
