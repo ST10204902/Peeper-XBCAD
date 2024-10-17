@@ -9,7 +9,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isTrackingState } from "../atoms/atoms";
+import { elapsed_time, isTrackingState } from "../atoms/atoms";
 import { useEffect, useState } from "react";
 
 /**
@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 export default function CurrentTrackingBanner() {
   // Don't render the component if not tracking
   const [isTracking, setIsTracking] = useRecoilState(isTrackingState);
-  const [elapsedTime, setElapsedTime] = useState(0); // Manage elapsed time in seconds
+  const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time); // Manage elapsed time using Recoil
 
   // useEffect to start the timer when tracking starts
   useEffect(() => {
