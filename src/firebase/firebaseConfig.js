@@ -1,4 +1,3 @@
-
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from "firebase/database";
@@ -8,12 +7,13 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyC79dLUv5wmpvYmreVMDS0KMFcmw-RUEMk",
   authDomain: "peeper-xbcad.firebaseapp.com",
-  databaseURL: "https://peeper-xbcad-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL:
+    "https://peeper-xbcad-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "peeper-xbcad",
   storageBucket: "peeper-xbcad.appspot.com",
   messagingSenderId: "761357003841",
   appId: "1:761357003841:web:97de31e23cc0c0f449aac0",
-  measurementId: "G-8K27P2SQER"
+  measurementId: "G-8K27P2SQER",
 };
 
 // Initialize Firebase

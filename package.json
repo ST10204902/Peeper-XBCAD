@@ -19,9 +19,13 @@
     "@react-navigation/stack": "^6.4.1",
     "expo": "~51.0.37",
     "expo-auth-session": "~5.5.2",
+    "expo-constants": "~16.0.2",
     "expo-font": "~12.0.10",
     "expo-linear-gradient": "~13.0.2",
     "expo-location": "~17.0.1",
+    "expo-print": "~13.0.1",
+    "expo-secure-store": "~13.0.2",
+    "expo-sharing": "^12.0.1",
     "expo-splash-screen": "^0.27.6",
     "expo-status-bar": "~1.12.1",
     "expo-web-browser": "~13.0.3",
@@ -41,9 +45,7 @@
     "react-native-svg": "15.2.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "recoil": "^0.7.7",
-    "ts-node": "^10.9.2",
-    "expo-constants": "~16.0.2",
-    "expo-secure-store": "~13.0.2"
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
