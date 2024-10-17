@@ -8,7 +8,9 @@ import { Student } from "../databaseModels/databaseClasses/Student";
  */
 export type RootStackParamsList = {
   LoginScreen: undefined;
-  RegisterProfilePhotoScreen: Student;
+  RegisterProfilePhotoScreen: {
+    handleSaveStudent: (profilePhotoURL: string) => Promise<void>;
+  };
   RegisterScreen: undefined;
   SafetyInfoScreen: undefined;
   LandingScreen: undefined;

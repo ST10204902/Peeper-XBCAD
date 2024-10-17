@@ -1,4 +1,4 @@
-import { Alert, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import AvatarComponent from "../components/AvatarComponent";
 import CustomButton from "../components/CustomButton";
 import { useState } from "react";
@@ -9,50 +9,79 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { RootStackParamsList } from "./RootStackParamsList";
-
-type RegisterProfilePhotoScreenRouteProp = RouteProp<
-  RootStackParamsList,
-  "RegisterProfilePhotoScreen"
->;
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function RegisterProfilePhotoScreen() {
   const [avatarURI, setAvatarURI] = useState("");
 
   // Getting student from navigation
-  const route = useRoute<RegisterProfilePhotoScreenRouteProp>();
+  const route =
+    useRoute<RouteProp<RootStackParamsList, "RegisterProfilePhotoScreen">>();
   const navigation =
     useNavigation<NavigationProp<RootStackParamsList, "BottomNavigationBar">>();
 
-  // Access newStudent from the navigation route params
-  const newStudent = route.params;
+  // Getting the handleSaveStudent used to save the avatar photo to the new student and save it to the firebase
+  const { handleSaveStudent } = route.params;
 
   const handleSubmit = async () => {
-    // Save profile photo logic here
     try {
-      await newStudent.save();
-      Alert.alert(newStudent.email);
-      // Navigate to BottomNavigationBar after success
-      navigation.navigate("BottomNavigationBar");
+      if (handleSaveStudent && typeof handleSaveStudent === "function") {
+        // Call the function passed via navigation
+        await handleSaveStudent(avatarURI);
+
+        // Navigate after saving
+        navigation.navigate("BottomNavigationBar");
+      } else {
+        console.error("handleSaveStudent is not a function");
+      }
     } catch (error) {
-      console.error(`Error saving new student: `, error);
+      console.error("Error saving profile photo:", error);
     }
   };
 
   return (
-    <View>
-      <Text>Almost Done!</Text>
-      <Text>Choose Avatar:</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.label_almost_done}>Almost Done!</Text>
+      <Text style={styles.label_choose_avatar}>Choose Avatar:</Text>
       <AvatarComponent onAvatarSelected={(uri: string) => setAvatarURI(uri)} />
-      <CustomButton
-        onPress={handleSubmit}
-        title="SUBMIT"
-        textColor="black"
-        buttonColor="#EC4E4B"
-        fontFamily="Quittance"
-        textSize={20}
-      />
-    </View>
+      <View style={styles.submit_button_container}>
+        <CustomButton
+          onPress={() => {
+            handleSubmit();
+          }}
+          title="SUBMIT"
+          textColor="black"
+          buttonColor="#EC4E4B"
+          fontFamily="Quittance"
+          textSize={20}
+          addFlex={true}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 10,
+    flex: 1,
+  },
+  label_almost_done: {
+    fontFamily: "Quittance",
+    fontSize: 30,
+    marginStart: 20,
+  },
+  label_choose_avatar: {
+    marginTop: 2,
+    marginStart: 20,
+    fontSize: 23,
+    fontFamily: "Rany-Bold",
+  },
+  submit_button_container: {
+    marginHorizontal: 20,
+    marginBottom: 30,
+    height: 65,
+  },
+});
 
 export default RegisterProfilePhotoScreen;

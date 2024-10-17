@@ -123,29 +123,35 @@ const RegisterScreen: React.FC = () => {
             throw new Error("No Clerk User ID found");
           }
 
-          // Create a new student instance
-          const newStudentData: StudentData = {
-            student_id: uid,
-            studentNumber: "", // Set default or prompt user for input
-            email: signUp.emailAddress || "",
-            activeOrgs: [],
-            locationData: {},
+          // const to save the user once their profile photo has been added
+          const handleSaveStudent = async (profilePhotoURL: string) => {
+            // Create a new student instance
+            const newStudentData: StudentData = {
+              student_id: uid,
+              studentNumber: "", // Set default or prompt user for input
+              email: signUp.emailAddress || "",
+              activeOrgs: [],
+              locationData: {},
+              profilePhotoURL: profilePhotoURL,
+            };
+
+            const newStudent = new Student(newStudentData);
+            console.log("New Student Data:", newStudentData); // Log new student data
+
+            // Save to Firebase
+            await newStudent
+              .save()
+              .then(() => {
+                Alert.alert(newStudent.email);
+              })
+              .catch((error) => {
+                console.error(`Error saving new student: ${newStudent}`, error); // Log error if save fails
+              });
           };
 
-          const newStudent = new Student(newStudentData);
-          console.log("New Student Data:", newStudentData); // Log new student data
-
-          // Save to Firebase
-          await newStudent
-            .save()
-            .then(() => {
-              Alert.alert(newStudent.email);
-            })
-            .catch((error) => {
-              console.error(`Error saving new student: ${newStudent}`, error); // Log error if save fails
-            });
-
-          navigation.navigate("RegisterProfilePhotoScreen", newStudent);
+          navigation.navigate("RegisterProfilePhotoScreen", {
+            handleSaveStudent,
+          });
         } catch (error) {
           console.error("Error during sign-up process:", error); // Log any caught errors
         }
