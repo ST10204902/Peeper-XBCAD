@@ -11,6 +11,8 @@ import { Student } from "../databaseModels/databaseClasses/Student";
 import { useUser } from "@clerk/clerk-expo"; // Authentication context from Clerk
 import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
+import { useRecoilState } from "recoil";
+import { isTrackingState } from "../atoms/atoms";
 
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
@@ -30,6 +32,7 @@ export default function LandingScreen() {
   const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
+
   
   //-----------------------------------------------------------//
   //                          EFFECTS                          //
@@ -102,6 +105,7 @@ export default function LandingScreen() {
     }
     startTracking(currentStudent, selectedOrganisation).then(() => {
       setIsPopupVisible(false); // Close the popup after starting tracking
+      
     });
   };
 
@@ -110,9 +114,6 @@ export default function LandingScreen() {
   */
   const handleCancel = async () => {
     setIsPopupVisible(false); // Close the popup
-    if (isTracking && currentStudent) {
-      stopTracking(); // Stop tracking if it's active
-    }
   };
 
   /*
