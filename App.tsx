@@ -198,11 +198,6 @@ function AppNavigator() {
       {isSignedIn ? (
         <>
           <Stack.Screen
-            name="LandingScreen"
-            component={LandingScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
             name="BottomNavigationBar"
             component={BottomNavigationBar}
             options={{ headerShown: false }}
