@@ -12,6 +12,10 @@ import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
+//Get current student object
+const user = useUser() ?? null;
+let currentStudent: Student | null = null;
+
 const haversineDistance = (
   lat1: number,
   lon1: number,
@@ -414,24 +418,34 @@ async function testHTML(
   return htmlContent;
 }
 
-const fetchCurrentStudent = async (userId: string) => {
-  return await Student.fetchById(userId);
+const fetchCurrentStudent = async () => {
+  if (user.user?.id) {
+    currentStudent = await Student.fetchById(user.user.id);
+  }
 };
 
 export default function PDFShareComponent() {
-  const user = useUser().user;
-  const [currentStudent, setCurrentStudent] =
-    React.useState<StudentData | null>(null);
+  const print = async () => {
+    try {
+      await fetchCurrentStudent();
+      if (currentStudent) {
+        const htmlContent = await testHTML(currentStudent, logoBase64);
 
-  React.useEffect(() => {
-    const fetchStudent = async () => {
-      if (user?.id) {
-        const student = await fetchCurrentStudent(user.id);
-        setCurrentStudent(student);
+        await Print.printAsync({
+          html: htmlContent,
+        });
+      } else {
+        throw new Error("Current student data is not available.");
       }
-    };
-    fetchStudent();
-  }, [user]);
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert("Error", error.message);
+        console.error("Failed to print", error);
+      } else {
+        Alert.alert("Error", "An unknown error occurred.");
+      }
+    }
+  };
 
   const printToFile = async () => {
     try {
@@ -452,9 +466,8 @@ export default function PDFShareComponent() {
     }
   };
 
-  return (
-    <View>
-      <Button title="Export Data" onPress={printToFile} />
-    </View>
-  );
+  <View>
+    <Button title="Print" onPress={print} />
+    <Button title="Export Data" onPress={printToFile} />
+  </View>;
 }
