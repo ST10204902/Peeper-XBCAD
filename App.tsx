@@ -195,38 +195,31 @@ function AppNavigator() {
 
   return (
     <Stack.Navigator initialRouteName="RegisterScreen">
-      {isSignedIn ? (
-        <>
-          <Stack.Screen
-            name="BottomNavigationBar"
-            component={BottomNavigationBar}
-            options={{ headerShown: false }}
-          />
-        </>
-      ) : (
-        <>
-          <Stack.Screen
-            name="RegisterScreen"
-            component={RegisterScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="RegisterProfilePhotoScreen"
-            component={RegisterProfilePhotoScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="SafetyInfoScreen"
-            component={SafetyInfoScreen}
-            options={{ headerShown: false }}
-          />
-        </>
-      )}
+      <Stack.Screen
+        name="BottomNavigationBar"
+        component={BottomNavigationBar}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RegisterProfilePhotoScreen"
+        component={RegisterProfilePhotoScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RegisterScreen"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SafetyInfoScreen"
+        component={SafetyInfoScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
