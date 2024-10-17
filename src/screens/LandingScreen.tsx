@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Alert } from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -18,22 +18,22 @@ import { isTrackingState } from "../atoms/atoms";
  * Landing screen component for displaying the organisation list and tracking popup.
  */
 export default function LandingScreen() {
-
   //-----------------------------------------------------------//
   //                          STATES                           //
   //-----------------------------------------------------------//
   const [organisations, setOrganisations] = useState<OrganisationData[]>([]); // State to hold organisation data
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
-  const { isTracking, startTracking, stopTracking, errorMsg } = useLocationTracking(); // Import location tracking functions from hook
+  const { isTracking, startTracking, stopTracking, errorMsg } =
+    useLocationTracking(); // Import location tracking functions from hook
   const [currentStudent, setCurrentStudent] = useState<Student>(); // State to hold current student's data
   const { user } = useUser(); // Get the current authenticated user from Clerk
-  const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null); // State for the selected organisation
+  const [selectedOrganisation, setSelectedOrganisation] =
+    useState<Organisation | null>(null); // State for the selected organisation
   const [sessionData, setSessionData] = useState<SessionLog>(); // State to hold session data
   const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
 
-  
   //-----------------------------------------------------------//
   //                          EFFECTS                          //
   //-----------------------------------------------------------//
@@ -87,8 +87,8 @@ export default function LandingScreen() {
   //-----------------------------------------------------------//
 
   /* Handle organisation item click to show popup and set selected organisation
-    * @param pSelectedOrganisation - The selected organisation data
-    */
+   * @param pSelectedOrganisation - The selected organisation data
+   */
   const handleOrganisationPress = (pSelectedOrganisation: OrganisationData) => {
     setIsPopupVisible(true); // Show the tracking popup
     setSelectedOrganisation(new Organisation(pSelectedOrganisation)); // Set the selected organisation
@@ -96,8 +96,8 @@ export default function LandingScreen() {
   };
 
   /*
-    * Handle start tracking button click to start tracking the student's location
-    */
+   * Handle start tracking button click to start tracking the student's location
+   */
   const handleStartTracking = () => {
     if (!currentStudent || !selectedOrganisation) {
       console.error("Student or organisation not found");
@@ -105,30 +105,35 @@ export default function LandingScreen() {
     }
     startTracking(currentStudent, selectedOrganisation).then(() => {
       setIsPopupVisible(false); // Close the popup after starting tracking
-      
     });
   };
 
   /*
-  * Cancel tracking, close popup, and stop tracking if it's already running
-  */
+   * Cancel tracking, close popup, and stop tracking if it's already running
+   */
   const handleCancel = async () => {
     setIsPopupVisible(false); // Close the popup
   };
 
   /*
-    * Render each organisation list item with alternating colors for styling
-    * @param item - The organisation data
-    * @param index - The index of the item in the list
-    */
-  const renderItem = ({ item, index }: { item: OrganisationData; index: number }) => (
+   * Render each organisation list item with alternating colors for styling
+   * @param item - The organisation data
+   * @param index - The index of the item in the list
+   */
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: OrganisationData;
+    index: number;
+  }) => (
     <OrganisationListItem
       orgName={item.orgName}
-       // Alternate between 'odd' and 'even'
+      // Alternate between 'odd' and 'even'
       oddOrEven={index % 2 === 0 ? "even" : "odd"}
       onPress={() => {
         // Handle item press to select organisation
-        handleOrganisationPress(item); 
+        handleOrganisationPress(item);
       }}
     />
   );
@@ -149,11 +154,11 @@ export default function LandingScreen() {
       <BottomSheet
         ref={sheetRef}
         // Initial position (collapsed)
-        index={0} 
+        index={0}
         // Snap points for different heights
-        snapPoints={snapPoints} 
+        snapPoints={snapPoints}
         // Prevent closing the sheet by swiping down
-        enablePanDownToClose={false} 
+        enablePanDownToClose={false}
       >
         <View style={styles.sheetHeader}>
           <Text style={styles.sheetHeading}>Organisation List</Text>
@@ -163,9 +168,9 @@ export default function LandingScreen() {
         <BottomSheetFlatList
           data={organisations}
           // Use organisation ID as key
-          keyExtractor={(item) => item.org_id} 
+          keyExtractor={(item) => item.org_id}
           // Render each item using renderItem function
-          renderItem={renderItem} 
+          renderItem={renderItem}
           contentContainerStyle={styles.listContentContainer}
         />
       </BottomSheet>
