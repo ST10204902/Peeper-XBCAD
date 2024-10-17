@@ -11,6 +11,43 @@ import {
 import { RootStackParamsList } from "./RootStackParamsList";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+/**
+ * RegisterProfilePhotoScreen component handles the avatar selection process during registration.
+ *
+ * This component allows users to select an avatar and submit it to be saved in their profile.
+ * Upon successful submission, the user's account is saved to firebase and they are navigated to the BottomNavigationBar.
+ *
+ * @component
+ * @returns {JSX.Element} A functional component that renders the avatar selection screen during registration.
+ *
+ * @example
+ * <RegisterProfilePhotoScreen />
+ *
+ * @remarks
+ * - Receives the handleSaveStudent function via navigation params to save the avatar.
+ * - Navigates to "BottomNavigationBar" after the avatar is successfully saved.
+ *
+ * @function
+ * @name RegisterProfilePhotoScreen
+ *
+ * @hook
+ * @name useRoute
+ * @description Accesses navigation parameters, including handleSaveStudent.
+ *
+ * @hook
+ * @name useNavigation
+ * @description Provides navigation functions to move to the BottomNavigationBar.
+ *
+ * @param {function} handleSaveStudent - Function passed via route params used to save the selected avatar to the user profile.
+ *
+ * @callback handleSubmit
+ * @description Calls the handleSaveStudent function to save the avatar and navigates the user to the next screen upon success.
+ *
+ * @state {string} avatarURI - Stores the selected avatar's URI.
+ *
+ * @throws Will log errors to the console if there is an issue saving the avatar.
+ */
+
 function RegisterProfilePhotoScreen() {
   const [avatarURI, setAvatarURI] = useState("");
 
