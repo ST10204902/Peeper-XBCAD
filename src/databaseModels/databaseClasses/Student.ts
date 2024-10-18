@@ -20,6 +20,7 @@ export class Student implements StudentData {
     this.activeOrgs = data.activeOrgs || [];
     this.locationData = {};
 
+
     if (data.locationData) {
       for (const key in data.locationData) {
         if (data.locationData.hasOwnProperty(key)) {

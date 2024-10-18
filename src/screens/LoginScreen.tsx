@@ -14,62 +14,62 @@ import { SignInFirstFactor, EmailCodeFactor } from "@clerk/types";
 
 /**
  * LoginScreen component handles the user login process.
- * 
+ *
  * This component allows users to log in using their email address. It supports
- * email-based authentication and handles the verification process using a 
+ * email-based authentication and handles the verification process using a
  * one-time password (OTP) sent to the user's email.
- * 
+ *
  * @component
  * @returns {React.FC} A functional component representing the login screen.
- * 
+ *
  * @example
  * // Usage example:
  * <LoginScreen />
- * 
+ *
  * @remarks
  * - If the user is already signed in, they are redirected to the 'LandingScreen'.
- * - The component manages the state for email address, verification code, and 
+ * - The component manages the state for email address, verification code, and
  *   pending verification status.
- * - It uses the `useSignIn` hook to handle the sign-in process and the `useAuth` 
+ * - It uses the `useSignIn` hook to handle the sign-in process and the `useAuth`
  *   hook to check the authentication status.
- * 
+ *
  * @function handlePress
- * Initiates the sign-in process by creating a sign-in attempt with the provided 
- * email address. If an email code factor is supported, it prepares the first 
+ * Initiates the sign-in process by creating a sign-in attempt with the provided
+ * email address. If an email code factor is supported, it prepares the first
  * factor for email code verification.
- * 
+ *
  * @function onPressVerify
- * Attempts to verify the email code entered by the user. If the verification is 
+ * Attempts to verify the email code entered by the user. If the verification is
  * successful, it sets the active session and navigates to the 'LandingScreen'.
- * 
+ *
  * @function handleEmailChange
  * Updates the email address state when the user changes the input.
- * 
+ *
  * @hook useState
  * Manages the state for email address, verification code, and pending verification status.
- * 
+ *
  * @hook useSignIn
  * Provides methods for handling the sign-in process.
- * 
+ *
  * @hook useAuth
  * Provides the authentication status of the user.
- * 
+ *
  * @hook useNavigation
  * Provides navigation methods for navigating between screens.
  */
 const LoginScreen: React.FC = () => {
-  const [emailAddress, setEmailAddress] = useState('');
+  const [emailAddress, setEmailAddress] = useState("");
   const { isLoaded, signIn, setActive } = useSignIn();
   const [pendingVerification, setPendingVerification] = useState(false);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isSignedIn } = useAuth();
 
-  useEffect(() => {
-    if (isSignedIn) {
-      navigation.navigate('BottomNavigationBar');
-    }
-  }, [isSignedIn, navigation]);
+  // useEffect(() => {
+  //   if (isSignedIn) {
+  //     navigation.navigate('BottomNavigationBar');
+  //   }
+  // }, [isSignedIn, navigation]);
 
   const handlePress = async () => {
     if (!isLoaded) {
@@ -116,7 +116,6 @@ const LoginScreen: React.FC = () => {
 
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        navigation.navigate('BottomNavigationBar');
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
@@ -128,8 +127,8 @@ const LoginScreen: React.FC = () => {
   };
 
   /**
- * The LoginScreen component renders the login screen for the application.
- */
+   * The LoginScreen component renders the login screen for the application.
+   */
   return (
     <SafeAreaView
       style={[
