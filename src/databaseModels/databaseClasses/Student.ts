@@ -3,6 +3,8 @@ import { DatabaseUtility } from "./DatabaseUtility";
 import { StudentData } from "../StudentData";
 import { SessionLogData } from "../SessionLogData";
 import { SessionLog } from "./SessionLog";
+import { Viewport } from "./Viewport";
+import { LocationLog } from "./LocationLog";
 
 export class Student implements StudentData {
   student_id: string;
@@ -10,25 +12,38 @@ export class Student implements StudentData {
   email: string;
   profilePhotoURL?: string;
   activeOrgs: string[];
-  locationData: { [sessionLog_id: string]: SessionLog };
+  locationData: {
+    [sessionLog_id: string]: SessionLog;
+  };
 
   constructor(data: StudentData) {
-    this.student_id = data.student_id;
-    this.studentNumber = data.studentNumber || "";
-    this.email = data.email || "";
-    this.profilePhotoURL = data.profilePhotoURL || ""; // Initialize with default value
-    this.activeOrgs = data.activeOrgs || [];
+    this.student_id = data.student_id ?? "" ;
+    this.studentNumber = data.studentNumber ?? "";
+    this.email = data.email ?? "";
+    this.profilePhotoURL = data.profilePhotoURL ?? ""; // Initialize with default value
+    this.activeOrgs = data.activeOrgs ?? [];
     this.locationData = {};
+    for (const key in data.locationData) {
+      if (data.locationData.hasOwnProperty(key)) {
+      //console.log("RAW DATA:", data.locationData[key]);
 
-
-    if (data.locationData) {
-      for (const key in data.locationData) {
-        if (data.locationData.hasOwnProperty(key)) {
-          this.locationData[key] = new SessionLog(data.locationData[key]);
-        }
+      if (typeof data.locationData[key] === 'object') {
+        this.locationData[key] = new SessionLog({
+        orgID: data.locationData[key].orgID ?? "",
+        sessionStartTime: data.locationData[key].sessionStartTime || "",
+        sessionEndTime: data.locationData[key].sessionEndTime || "",
+        sessionLog_id: data.locationData[key].sessionLog_id || key,
+        viewport: new Viewport(data.locationData[key].viewport),
+        locationLogs: data.locationData[key].locationLogs.map((log: any) => new LocationLog(log))
+        });
+      } else {
+        console.error("Error: locationData is not an object");
+      }
+      //console.log("TRANSFORMED DATA:", JSON.stringify(this.toJSON(), null, 2));
       }
     }
-  }
+}
+
 
   static async fetchById(student_id: string): Promise<Student | null> {
     const data = await DatabaseUtility.getData<StudentData>(
