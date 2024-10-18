@@ -16,29 +16,30 @@ const OrgDetailsScreen = () => {
   React.useEffect(() => {
     const fetchStudent = async () => {
       const student = await Student.fetchById(clerkUser.user?.id ?? "");
-      console.log("Student: ", student?.email);
       setCurrentStudent(student);
       setLoading(false);
     };
-    fetchStudent();
+
+       fetchStudent();
   }, [clerkUser.user?.id]);
 
+ 
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
         <Text>Loading...</Text>
-      ) : (
+            ) : (
         currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
-      )}
-      <CustomButton
+            )}
+            <CustomButton
         onPress={() => {}}
         title="Organisation Management"
         textColor="black"
         buttonColor="#A4DB51"
         fontFamily="Quittance"
         textSize={20}
-      />
-      <MapSessionHistory />
+            />
+            {currentStudent && <MapSessionHistory {...currentStudent.toJSON()} />}
       <Text style={styles.BeSafeText}>Be Safe!</Text>
       <EmergencyContacts />
     </SafeAreaView>

@@ -13,9 +13,6 @@ const calculateTotalLoggedHours = (student: Student): number => {
   Object.values(student.locationData).forEach((sessionLog) => {
     const sessionStartTime = new Date(sessionLog.sessionStartTime);
     const sessionEndTime = new Date(sessionLog.sessionEndTime) || sessionStartTime; // If session end time is not set, use start time
-    console.log("SessionID: ", sessionLog.sessionLog_id);
-    console.log("Session start time: ", sessionStartTime);
-    console.log("Session end time: ", sessionEndTime);
     // Calculate the difference in hours between session start and end time
     const sessionDurationMs = sessionEndTime.getTime() - sessionStartTime.getTime();
     const sessionDurationHours = sessionDurationMs / (1000 * 60 * 60); // Convert milliseconds to hours
