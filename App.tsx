@@ -1,5 +1,5 @@
 // App.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,6 +36,12 @@ import OrgDetailsIcon from "./src/assets/icons/OrgDetailsIcon";
 import SettingsIcon from "./src/assets/icons/SettingsIcon";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import { isTrackingState } from "./src/atoms/atoms";
+
+import { registerForPushNotifications } from './src/services/RequestNotificationPermissions';
+
+import * as Notifications from 'expo-notifications';
+
+
 import { Student } from "./src/databaseModels/databaseClasses/Student";
 import { StudentData } from "./src/databaseModels/StudentData";
 
@@ -240,6 +246,18 @@ function AppNavigator() {
  */
 export default function App() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+  useEffect(() => {
+    registerForPushNotifications();
+  }, []);
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
 
   const localTokenCache = {
     async getToken(key: string) {
