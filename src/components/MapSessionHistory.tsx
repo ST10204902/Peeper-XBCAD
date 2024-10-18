@@ -47,6 +47,10 @@ const MapSessionHistory: React.FC = () => {
     ? currentStudent.locationData
     : [];
 
+    studentSessions.forEach(element => {
+      console.log("Session: ", element);
+    });
+
   const uniqueOrgIDs = Array.from(new Set(studentSessions.map((session) => session.orgID)));
 
   // get all the start locations for the sessions with unique organisation IDs
@@ -55,7 +59,10 @@ const MapSessionHistory: React.FC = () => {
   );
   sessionStartLocations.filter((location) => location !== null);
 
-  console.log("Session Start Locations: ", sessionStartLocations);
+  sessionStartLocations.forEach(element => {
+    console.log("StartLocation: ", element);
+  });
+
   function sessionMapMarkers() {
     return sessionStartLocations.map((location, index) => {
       return (
@@ -65,7 +72,7 @@ const MapSessionHistory: React.FC = () => {
             latitude: location?.latitude ?? defaultLatitude,
             longitude: location?.longitude ?? defaultLongitude,
           }}
-          // title={allOrganisations[location?.orgName] ?? "Location"}
+           title={userOrgs?.orgName ?? "Location"}
         />
       );
     });
@@ -103,7 +110,7 @@ const MapSessionHistory: React.FC = () => {
     <View style={styles.container}>
       {!loading && (
         <MapView style={styles.mapStyle} region={region}>
-          {/* {sessionMapMarkers} */}
+         {sessionMapMarkers()}
         </MapView>
       )}
     </View>
