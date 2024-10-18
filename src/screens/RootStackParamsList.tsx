@@ -1,3 +1,5 @@
+import { Student } from "../databaseModels/databaseClasses/Student";
+
 /**
  * This list contains each of the screens and what they require when being navigated to
  * This exists for the purpose of type safety. If you want to change which props are
@@ -6,7 +8,9 @@
  */
 export type RootStackParamsList = {
   LoginScreen: undefined;
-  RegisterProfilePhotoScreen: undefined;
+  RegisterProfilePhotoScreen: {
+    handleSaveStudent: (profilePhotoURL: string) => Promise<void>;
+  };
   RegisterScreen: undefined;
   SafetyInfoScreen: undefined;
   LandingScreen: undefined;

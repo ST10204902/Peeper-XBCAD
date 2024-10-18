@@ -36,10 +36,14 @@ import OrgDetailsIcon from "./src/assets/icons/OrgDetailsIcon";
 import SettingsIcon from "./src/assets/icons/SettingsIcon";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import { isTrackingState } from "./src/atoms/atoms";
+
 import { registerForPushNotifications } from './src/services/RequestNotificationPermissions';
 
 import * as Notifications from 'expo-notifications';
 
+
+import { Student } from "./src/databaseModels/databaseClasses/Student";
+import { StudentData } from "./src/databaseModels/StudentData";
 
 /**
  * Object for managing navigation for the BottomNavigationBar
@@ -195,11 +199,12 @@ function BottomNavigationBar() {
  * @returns a new SettingsNavigator component
  */
 function AppNavigator() {
-  const { isSignedIn } = useUser(); // Fetch Clerk user state
+  const { isSignedIn, user } = useUser(); // Fetch Clerk user state
+  const onboardingComplete = user?.unsafeMetadata?.onboardingComplete;
 
   return (
     <Stack.Navigator initialRouteName="RegisterScreen">
-      {isSignedIn ? (
+      {isSignedIn && onboardingComplete ? (
         <>
           <Stack.Screen
             name="BottomNavigationBar"

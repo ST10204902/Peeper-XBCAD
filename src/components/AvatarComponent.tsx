@@ -1,19 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  FlatList,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import AvatarArrowRight from "../assets/icons/AvatarArrowRight";
+import AvatarArrowLeft from "../assets/icons/AvatarArrowLeft";
 
 const avatars = [
-  { id: '1', src: require('../assets/Avatars/A1.png'), uri: '../assets/Avatars/A1.png' },
-  { id: '2', src: require('../assets/Avatars/A2.png'), uri: '../assets/Avatars/A2.png' },
-  { id: '3', src: require('../assets/Avatars/A3.png'), uri: '../assets/Avatars/A3.png' },
-  { id: '4', src: require('../assets/Avatars/A4.png'), uri: '../assets/Avatars/A4.png' },
-  { id: '5', src: require('../assets/Avatars/A5.png'), uri: '../assets/Avatars/A5.png' },
-  { id: '6', src: require('../assets/Avatars/A6.png'), uri: '../assets/Avatars/A6.png' },
-  { id: '7', src: require('../assets/Avatars/A7.png'), uri: '../assets/Avatars/A7.png' },
-  { id: '8', src: require('../assets/Avatars/A8.png'), uri: '../assets/Avatars/A8.png' },
-  { id: '9', src: require('../assets/Avatars/A9.png'), uri: '../assets/Avatars/A9.png' },
+  {
+    id: "1",
+    src: require("../assets/Avatars/A1.png"),
+    uri: "../assets/Avatars/A1.png",
+  },
+  {
+    id: "2",
+    src: require("../assets/Avatars/A2.png"),
+    uri: "../assets/Avatars/A2.png",
+  },
+  {
+    id: "3",
+    src: require("../assets/Avatars/A3.png"),
+    uri: "../assets/Avatars/A3.png",
+  },
+  {
+    id: "4",
+    src: require("../assets/Avatars/A4.png"),
+    uri: "../assets/Avatars/A4.png",
+  },
+  {
+    id: "5",
+    src: require("../assets/Avatars/A5.png"),
+    uri: "../assets/Avatars/A5.png",
+  },
+  {
+    id: "6",
+    src: require("../assets/Avatars/A6.png"),
+    uri: "../assets/Avatars/A6.png",
+  },
+  {
+    id: "7",
+    src: require("../assets/Avatars/A7.png"),
+    uri: "../assets/Avatars/A7.png",
+  },
+  {
+    id: "8",
+    src: require("../assets/Avatars/A8.png"),
+    uri: "../assets/Avatars/A8.png",
+  },
+  {
+    id: "9",
+    src: require("../assets/Avatars/A9.png"),
+    uri: "../assets/Avatars/A9.png",
+  },
 ];
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 /**
  * AvatarComponent is a React functional component that allows users to select an avatar from a horizontal list.
@@ -29,10 +75,14 @@ const { width } = Dimensions.get('window');
  * const handleAvatarSelected = (uri) => {
  *   console.log("Selected avatar URI:", uri);
  * };
- * 
+ *
  * <AvatarComponent onAvatarSelected={handleAvatarSelected} />
  */
-const AvatarComponent = ({ onAvatarSelected }: { onAvatarSelected: (uri: string) => void }) => {
+const AvatarComponent = ({
+  onAvatarSelected,
+}: {
+  onAvatarSelected: (uri: string) => void;
+}) => {
   const [selectedAvatar, setSelectedAvatar] = useState<number>(0);
   const flatListRef = React.useRef<FlatList>(null);
 
@@ -71,7 +121,7 @@ const AvatarComponent = ({ onAvatarSelected }: { onAvatarSelected: (uri: string)
       {/* Left Arrow */}
       {selectedAvatar > 0 && (
         <TouchableOpacity style={styles.arrowLeft} onPress={goPrev}>
-          <Text style={styles.arrowText}>{"<"}</Text>
+          <AvatarArrowLeft size={50} color={"#CFCFCF"} />
         </TouchableOpacity>
       )}
 
@@ -92,7 +142,7 @@ const AvatarComponent = ({ onAvatarSelected }: { onAvatarSelected: (uri: string)
       {/* Right Arrow */}
       {selectedAvatar < avatars.length - 1 && (
         <TouchableOpacity style={styles.arrowRight} onPress={goNext}>
-          <Text style={styles.arrowText}>{">"}</Text>
+          <AvatarArrowRight size={50} color={"#CFCFCF"} />
         </TouchableOpacity>
       )}
     </View>
@@ -102,13 +152,14 @@ const AvatarComponent = ({ onAvatarSelected }: { onAvatarSelected: (uri: string)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    marginTop: -230,
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatarContainer: {
     width: width,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   avatar: {
     width: 300,
@@ -116,28 +167,28 @@ const styles = StyleSheet.create({
     borderRadius: 75,
   },
   arrowLeft: {
-    position: 'absolute',
-    left: 10,
-    top: '50%',
+    position: "absolute",
+    left: -5,
+    top: "50%",
     transform: [{ translateY: -20 }],
     zIndex: 1,
     padding: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: "rgba(0, 0, 0, 0)",
     borderRadius: 20,
   },
   arrowRight: {
-    position: 'absolute',
-    right: 10,
-    top: '50%',
+    position: "absolute",
+    right: -5,
+    top: "50%",
     transform: [{ translateY: -20 }],
     zIndex: 1,
     padding: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: "rgba(0, 0, 0, 0)",
     borderRadius: 20,
   },
   arrowText: {
     fontSize: 40,
-    color: '#D3D3D3',
+    color: "#D3D3D3",
   },
 });
 
