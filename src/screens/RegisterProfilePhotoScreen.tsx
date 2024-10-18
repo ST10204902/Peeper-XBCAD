@@ -53,39 +53,34 @@ function RegisterProfilePhotoScreen() {
   const [avatarURI, setAvatarURI] = useState("");
   const { user } = useUser();
 
-  // Getting student from navigation
-  const route =
-    useRoute<RouteProp<RootStackParamsList, "RegisterProfilePhotoScreen">>();
-  const navigation =
-    useNavigation<NavigationProp<RootStackParamsList, "BottomNavigationBar">>();
-
   // Getting the handleSaveStudent used to save the avatar photo to the new student and save it to the firebase
-  const { handleSaveStudent } = route.params;
+  const {
+    params: { handleSaveStudent },
+  } = useRoute<RouteProp<RootStackParamsList, "RegisterProfilePhotoScreen">>();
 
+  // Error logging helper
+  const logError = (message: string, error?: any) =>
+    console.error(message, error);
+
+  // handle the user clicking the submit button
   const handleSubmit = async () => {
     try {
-      if (handleSaveStudent && typeof handleSaveStudent === "function") {
-        if (user) {
-          try {
-            await handleSaveStudent(avatarURI);
-            await user.update({
-              unsafeMetadata: {
-                ...(user.unsafeMetadata || {}),
-                onboardingComplete: true,
-              },
-            });
-          } catch (error) {
-            console.error("Failed to update user metadata:", error);
-            // Handle the error appropriately
-          }
-        } else {
-          console.error("User is null or undefined.");
-        }
+      if (typeof handleSaveStudent === "function" && user) {
+        // Saving the student to Firebase using the function from RegisterScreen
+        await handleSaveStudent(avatarURI);
+        // Updating the metadata to indicate the user has completed onboarding
+        // This RERENDERS the AppNavigator Component in App.tsx effectively navigating the user to the BottomNavigationBar
+        await user.update({
+          unsafeMetadata: {
+            ...user.unsafeMetadata,
+            onboardingComplete: true,
+          },
+        });
       } else {
-        console.error("handleSaveStudent is not a function");
+        logError("handleSaveStudent is not a function or user is undefined");
       }
     } catch (error) {
-      console.error("Error saving profile photo:", error);
+      logError("Error saving profile photo", error);
     }
   };
 
