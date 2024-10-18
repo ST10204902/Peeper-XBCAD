@@ -76,13 +76,6 @@ const LoginScreen: React.FC = () => {
       return;
     }
 
-    // Check if the user is already signed in TEMPORARY UNTIL I ASK DAVID
-    if (isSignedIn) {
-      console.warn("User is already signed in");
-      navigation.navigate("BottomNavigationBar");
-      return;
-    }
-
     try {
       const { supportedFirstFactors } = await signIn?.create({
         identifier: emailAddress,
@@ -123,7 +116,6 @@ const LoginScreen: React.FC = () => {
 
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        navigation.navigate("BottomNavigationBar");
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
