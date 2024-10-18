@@ -10,6 +10,7 @@ import {
 } from "@react-navigation/native";
 import { RootStackParamsList } from "./RootStackParamsList";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "@clerk/clerk-expo";
 
 /**
  * RegisterProfilePhotoScreen component handles the avatar selection process during registration.
@@ -50,6 +51,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 function RegisterProfilePhotoScreen() {
   const [avatarURI, setAvatarURI] = useState("");
+  const { user } = useUser();
 
   // Getting student from navigation
   const route =
@@ -63,11 +65,22 @@ function RegisterProfilePhotoScreen() {
   const handleSubmit = async () => {
     try {
       if (handleSaveStudent && typeof handleSaveStudent === "function") {
-        // Call the function passed via navigation
-        await handleSaveStudent(avatarURI);
-
-        // Navigate after saving
-        navigation.navigate("BottomNavigationBar");
+        if (user) {
+          try {
+            await handleSaveStudent(avatarURI);
+            await user.update({
+              unsafeMetadata: {
+                ...(user.unsafeMetadata || {}),
+                onboardingComplete: true,
+              },
+            });
+          } catch (error) {
+            console.error("Failed to update user metadata:", error);
+            // Handle the error appropriately
+          }
+        } else {
+          console.error("User is null or undefined.");
+        }
       } else {
         console.error("handleSaveStudent is not a function");
       }
