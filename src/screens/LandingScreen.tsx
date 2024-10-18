@@ -185,12 +185,30 @@ export default function LandingScreen() {
     });
   };
 
+  /**
+   * Handles the stop tracking action.
+   * 
+   * This function performs the following steps:
+   * 1. Stops the tracking process by calling `stopTracking()`.
+   * 2. Updates the state to indicate that tracking is no longer active by setting `setIsTracking(false)`.
+   * 3. Clears any tracking notifications by calling `clearTrackingNotification()`.
+   * 
+   * @async
+   * @function handleStopTracking
+   * @returns {Promise<void>} A promise that resolves when the tracking has been stopped and notifications cleared.
+   */
   const handleStopTracking = async () => {
     await stopTracking();
     setIsTracking(false);
     await clearTrackingNotification();
   };
 
+  /**
+   * Handles the notification response.
+   *
+   * @param response - The response object from the notification.
+   * @param response.actionIdentifier - The identifier for the action taken on the notification.
+   */
   const handleNotificationResponse = (response: any) => {
     if (response.actionIdentifier === 'stop') {
       handleStopTracking();
