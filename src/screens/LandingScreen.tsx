@@ -7,6 +7,14 @@ import {
   Pressable,
   Alert,
 } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Alert,
+} from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
