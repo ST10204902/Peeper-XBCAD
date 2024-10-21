@@ -55,7 +55,7 @@ export default function ManageOrgsScreen() {
   const fetchData = async () => {
     if (clerkUser.user?.id) {
       const student = await Student.fetchById(clerkUser.user?.id);
-      console.log("Student was fetched in the ManageOrgsScreen");
+      console.log("Student was fetched in the *NAME OF COMPONENT/SCREEN*");
       const allOrgs = await Organisation.getAllOrganisations();
       setCurrentStudent(student);
       setOrgList(allOrgs);
@@ -72,8 +72,6 @@ export default function ManageOrgsScreen() {
 
   React.useEffect(() => {
     if (currentStudent && orgList.length > 0) {
-     
-  
       itemList = orgList.filter((org) => currentStudent.activeOrgs.includes(org.org_id));
       console.log("filtered orgs:", itemList);
     }
