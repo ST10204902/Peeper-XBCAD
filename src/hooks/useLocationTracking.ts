@@ -7,7 +7,7 @@ import { Organisation } from '../databaseModels/databaseClasses/Organisation';
 import { LocationLogData } from '../databaseModels/LocationLogData';
 import { Viewport } from '../databaseModels/databaseClasses/Viewport';
 import { useRecoilState } from 'recoil';
-import { isTrackingState } from '../atoms/atoms';
+import { trackingState } from '../atoms/atoms';
 
 //-----------------------------------------------------------//
 //                          HOOKS                            //
@@ -24,7 +24,7 @@ export function useLocationTracking() {
     
     // Error message state
     const [errorMsg, setErrorMsg] = useState<string | null>(null); 
-    const [isTracking, setIsTracking] = useRecoilState(isTrackingState); // Recoil state for tracking status
+    const [tracking, setTracking] = useRecoilState(trackingState); // Recoil state for tracking status
     //-----------------------------------------------------------//
     //                          REFS                             //
     //-----------------------------------------------------------//
@@ -44,7 +44,7 @@ export function useLocationTracking() {
         console.log('Starting tracking called');
 
         // Prevent multiple tracking sessions from starting simultaneously
-        if (isTracking) {
+        if (tracking.isTracking) {
             setErrorMsg('Tracking already in progress');
             return;
         }
@@ -64,7 +64,7 @@ export function useLocationTracking() {
         }
 
         // Set tracking status to active
-        setIsTracking(true);
+        setTracking({ isTracking: true, organizationName: organisation.orgName });
          
 
         // Create and initialize a new session log
@@ -179,7 +179,7 @@ export function useLocationTracking() {
 
     // Cleanup logic when component unmounts or tracking stops
     useEffect(() => {
-        if (isTracking) {
+        if (tracking.isTracking) {
             console.log('Tracking in progress...');
         }
         else
@@ -193,10 +193,10 @@ export function useLocationTracking() {
                 locationSubscriptionRef.current.remove(); // Remove location subscription
             }
         };
-    }, [isTracking]);
+    }, [tracking]);
 
     // Return tracking state and methods
-    return { isTracking, startTracking, stopTracking, errorMsg };
+    return { tracking, startTracking, stopTracking, errorMsg };
 }
 
 //-----------------------------------------------------------//
