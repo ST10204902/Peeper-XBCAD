@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"; // Using only setState for elapsedTime
-import { elapsed_time, isTrackingState } from "../atoms/atoms";
+import { elapsed_time, trackingState } from "../atoms/atoms";
 import { useEffect } from "react";
 
 /**
@@ -20,14 +20,14 @@ import { useEffect } from "react";
  * @returns A created CurrentTrackingBanner Component
  */
 const CurrentTrackingBanner = () => {
-  const [isTracking, setIsTracking] = useRecoilState(isTrackingState);
+  const [tracking, setTracking] = useRecoilState(trackingState);
   const setElapsedTime = useSetRecoilState(elapsed_time); // Only setElapsedTime is needed here
 
   // Start or stop the timer when tracking starts or stops
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
 
-    if (isTracking) {
+    if (tracking.isTracking) {
       // Clear any existing timer before starting a new one
       clearInterval(timer);
 
@@ -47,9 +47,9 @@ const CurrentTrackingBanner = () => {
         clearInterval(timer);
       }
     };
-  }, [isTracking, setElapsedTime]);
+  }, [tracking.isTracking, setElapsedTime]);
 
-  if (!isTracking) {
+  if (!tracking.isTracking) {
     return null; // Don't render the component if tracking is not active
   }
 
@@ -59,13 +59,19 @@ const CurrentTrackingBanner = () => {
       <View style={styles.text_container}>
         <Text style={styles.header}> Tracking Your Location </Text>
         <View style={styles.details_container}>
-          <Text style={styles.org_name}>{"organisationName"}</Text>
+          <Text
+            style={styles.org_name}
+            numberOfLines={1} // Limit to one line
+            ellipsizeMode="tail"
+          >
+            {tracking.organizationName}
+          </Text>
           <ElapsedTimeDisplay />
         </View>
       </View>
       <Pressable
         style={styles.stop_button}
-        onPress={() => setIsTracking(false)}
+        onPress={() => setTracking({ isTracking: false, organizationName: "" })}
       >
         <ImageBackground
           style={styles.button_image}
@@ -104,14 +110,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     flexDirection: "row",
     borderBottomStartRadius: 35,
+    justifyContent: "space-between",
     borderBottomEndRadius: 35,
     backgroundColor: "white",
     marginBottom: -30,
     elevation: 100,
+    gap: 11,
   },
   text_container: {
     flexDirection: "column",
     gap: 6,
+    flexShrink: 1,
   },
   details_container: {
     paddingHorizontal: 5,
@@ -122,6 +131,7 @@ const styles = StyleSheet.create({
     fontFamily: "Rany-Bold",
     color: "#565656",
     fontSize: 17,
+    flexShrink: 1,
   },
   elapsed_time: {
     marginEnd: 5,
@@ -135,7 +145,6 @@ const styles = StyleSheet.create({
   },
   stop_button: {
     height: "100%",
-    flex: 1,
   },
   button_image: {
     objectFit: "contain",
