@@ -1,16 +1,23 @@
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
+import { Platform } from 'react-native';
 
-export const registerForPushNotifications = async () => {
-  const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-  if (status !== 'granted') {
-    const { status: newStatus } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    if (newStatus !== 'granted') {
-      alert('Permission to send notifications was denied!');
+export async function registerForPushNotificationsAsync() {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      console.log('Failed to get push token for push notification!');
       return;
     }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+  } else {
+    console.log('Must use physical device for Push Notifications');
   }
-
-  const token = await Notifications.getExpoPushTokenAsync();
-  console.log(token); // Send this token to your backend
-};
+  return token;
+}
