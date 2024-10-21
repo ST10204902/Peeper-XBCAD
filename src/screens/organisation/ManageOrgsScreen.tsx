@@ -6,6 +6,10 @@ import ExpandableOrgList from "../../components/ExpandableOrgList";
 import CustomButton from "../../components/CustomButton";
 import SearchBarComponent from "../../components/SearchBarComponent";
 import ComboBoxComponent from "../../components/ComboComponent";
+import { useUser } from "@clerk/clerk-expo";
+import { Student } from "../../databaseModels/databaseClasses/Student";
+import { useFocusEffect } from "@react-navigation/native";
+import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 
 /**
  * Component For the ManageOrgsScreen
@@ -41,44 +45,35 @@ import ComboBoxComponent from "../../components/ComboComponent";
  * @property {number} orgLongitude - The longitude coordinate of the organization.
  */
 export default function ManageOrgsScreen() {
-  // Dummy data
-  const address: OrgAddressData = {
-    streetAddress: "53 Main Rd",
-    suburb: "Claremont",
-    city: "Cape Town",
-    province: "Western Cape",
-    postalCode: "7700",
+  const clerkUser = useUser();
+  const [currentStudent, setCurrentStudent] = React.useState<Student | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [orgList, setOrgList] = React.useState<OrganisationData[]>([]);
+  let itemList: OrganisationData[] = [];
+
+  // Method to fetch the student data
+  const fetchData = async () => {
+    if (clerkUser.user?.id) {
+      const student = await Student.fetchById(clerkUser.user?.id);
+      console.log("Student was fetched in the ManageOrgsScreen");
+      const allOrgs = await Organisation.getAllOrganisations();
+      setCurrentStudent(student);
+      setOrgList(allOrgs);
+      setLoading(false);
+    }
   };
 
-  const itemList: OrganisationData[] = [
-    {
-      org_id: "1",
-      orgName: "Massage The Pandas",
-      orgAddress: address,
-      orgEmail: "MassageThePandas@gmail.com",
-      orgPhoneNo: "1999999999",
-      orgLatitude: 0,
-      orgLongitude: 0,
-    },
-    {
-      org_id: "2",
-      orgName: "Homeless People Shouldn't be Homeless",
-      orgAddress: address,
-      orgEmail: "HomelessPeopleBad@gmail.com",
-      orgPhoneNo: "1999999999",
-      orgLatitude: 0,
-      orgLongitude: 0,
-    },
-    {
-      org_id: "3",
-      orgName: "Starving Women Need Makeup (SWNM)",
-      orgAddress: address,
-      orgEmail: "StarvingWomenNeedMakeup@gmail.com",
-      orgPhoneNo: "1999999999",
-      orgLatitude: 0,
-      orgLongitude: 0,
-    },
-  ];
+  // Run the fetchStudent method when the screen is focused (navigated to)
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [clerkUser.user?.id])
+  );
+
+  if (currentStudent && orgList.length > 0) {
+  itemList = orgList.filter((org) => currentStudent.activeOrgs.includes(org.org_id));
+  console.log("filtered orgs:", itemList);
+  }
 
 // This constant is defined here to keep the render method clean and readable.
   // By defining it outside of the return statement, we can perform any necessary
@@ -90,18 +85,18 @@ export default function ManageOrgsScreen() {
     <View style={styles.page}>
       <Text style={styles.pageHeading}>Your Organisations</Text>
       <ExpandableOrgList
-        items={itemList}
-        onListButtonClicked={onOrgListButtonPressed}
-        listButtonComp={
-          <CustomButton
-            onPress={() => {}}
-            title="Start Tracking"
-            textSize={18}
-            buttonColor="#A4DB51"
-            textColor="#000000"
-            fontFamily="Rany-Bold"
-          />
-        }
+       items={itemList}
+       onListButtonClicked={onOrgListButtonPressed}
+       listButtonComp={
+         <CustomButton
+           onPress={() => {}}
+           title="Start Tracking"
+           textSize={18}
+           buttonColor="#A4DB51"
+           textColor="#000000"
+           fontFamily="Rany-Bold"
+         />
+       }
       />
       <Text style={styles.sectionHeading}>Organisation Management</Text>
       <View style={styles.buttonWrapper}>
@@ -181,7 +176,7 @@ export default function ManageOrgsScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
-        data={[]}
+        data={itemList}
         renderItem={null} // Use `renderItem` to handle FlatList rendering, but in this case we are rendering static content
         ListHeaderComponent={renderContent} // This ensures scrollable content
         keyExtractor={(item, index) => index.toString()}
