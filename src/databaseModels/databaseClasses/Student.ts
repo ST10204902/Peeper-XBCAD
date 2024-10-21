@@ -17,32 +17,28 @@ export class Student implements StudentData {
   };
 
   constructor(data: StudentData) {
-    this.student_id = data.student_id ?? "" ;
+    this.student_id = data.student_id ?? "";
     this.studentNumber = data.studentNumber ?? "";
     this.email = data.email ?? "";
-    this.profilePhotoURL = data.profilePhotoURL ?? ""; // Initialize with default value
+    this.profilePhotoURL = data.profilePhotoURL ?? "";
     this.activeOrgs = data.activeOrgs ?? [];
     this.locationData = {};
-    for (const key in data.locationData) {
-      if (data.locationData.hasOwnProperty(key)) {
-      //console.log("RAW DATA:", data.locationData[key]);
 
-      if (typeof data.locationData[key] === 'object') {
+    Object.entries(data.locationData).forEach(([key, value]) => {
+      if (typeof value === 'object') {
         this.locationData[key] = new SessionLog({
-        orgID: data.locationData[key].orgID ?? "",
-        sessionStartTime: data.locationData[key].sessionStartTime || "",
-        sessionEndTime: data.locationData[key].sessionEndTime || "",
-        sessionLog_id: data.locationData[key].sessionLog_id || key,
-        viewport: new Viewport(data.locationData[key].viewport),
-        locationLogs: data.locationData[key].locationLogs.map((log: any) => new LocationLog(log))
+          orgID: value.orgID ?? "",
+          sessionStartTime: value.sessionStartTime || "",
+          sessionEndTime: value.sessionEndTime || "",
+          sessionLog_id: value.sessionLog_id || key,
+          viewport: new Viewport(value.viewport),
+          locationLogs: value.locationLogs.map((log: any) => new LocationLog(log))
         });
       } else {
         console.error("Error: locationData is not an object");
       }
-      //console.log("TRANSFORMED DATA:", JSON.stringify(this.toJSON(), null, 2));
-      }
-    }
-}
+    });
+  }
 
 
   static async fetchById(student_id: string): Promise<Student | null> {
