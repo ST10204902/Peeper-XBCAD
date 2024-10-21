@@ -55,7 +55,7 @@ export default function ManageOrgsScreen() {
   const fetchData = async () => {
     if (clerkUser.user?.id) {
       const student = await Student.fetchById(clerkUser.user?.id);
-      console.log("Student was fetched in the *NAME OF COMPONENT/SCREEN*");
+      console.log("Student was fetched in the ManageOrgsScreen");
       const allOrgs = await Organisation.getAllOrganisations();
       setCurrentStudent(student);
       setOrgList(allOrgs);
