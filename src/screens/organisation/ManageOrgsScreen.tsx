@@ -70,24 +70,10 @@ export default function ManageOrgsScreen() {
     }, [clerkUser.user?.id])
   );
 
-  React.useEffect(() => {
-    if (currentStudent && orgList.length > 0) {
-      itemList = orgList.filter((org) => currentStudent.activeOrgs.includes(org.org_id));
-      console.log("filtered orgs:", itemList);
-    }
-  }, [currentStudent, orgList]);
-
-
-  // Dummy data
-  const address: OrgAddressData = {
-    streetAddress: "53 Main Rd",
-    suburb: "Claremont",
-    city: "Cape Town",
-    province: "Western Cape",
-    postalCode: "7700",
-  };
-
-
+  if (currentStudent && orgList.length > 0) {
+  itemList = orgList.filter((org) => currentStudent.activeOrgs.includes(org.org_id));
+  console.log("filtered orgs:", itemList);
+  }
 
 // This constant is defined here to keep the render method clean and readable.
   // By defining it outside of the return statement, we can perform any necessary
@@ -99,18 +85,18 @@ export default function ManageOrgsScreen() {
     <View style={styles.page}>
       <Text style={styles.pageHeading}>Your Organisations</Text>
       <ExpandableOrgList
-        items={itemList}
-        onListButtonClicked={onOrgListButtonPressed}
-        listButtonComp={
-          <CustomButton
-            onPress={() => {}}
-            title="Start Tracking"
-            textSize={18}
-            buttonColor="#A4DB51"
-            textColor="#000000"
-            fontFamily="Rany-Bold"
-          />
-        }
+       items={itemList}
+       onListButtonClicked={onOrgListButtonPressed}
+       listButtonComp={
+         <CustomButton
+           onPress={() => {}}
+           title="Start Tracking"
+           textSize={18}
+           buttonColor="#A4DB51"
+           textColor="#000000"
+           fontFamily="Rany-Bold"
+         />
+       }
       />
       <Text style={styles.sectionHeading}>Organisation Management</Text>
       <View style={styles.buttonWrapper}>
@@ -190,7 +176,7 @@ export default function ManageOrgsScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
-        data={[]}
+        data={itemList}
         renderItem={null} // Use `renderItem` to handle FlatList rendering, but in this case we are rendering static content
         ListHeaderComponent={renderContent} // This ensures scrollable content
         keyExtractor={(item, index) => index.toString()}
