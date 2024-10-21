@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginBottom: -30,
     elevation: 100,
-    gap: 11,
   },
   text_container: {
     flexDirection: "column",
