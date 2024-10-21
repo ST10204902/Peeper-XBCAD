@@ -25,18 +25,22 @@ import SafetyInfoScreen from "./SafetyInfoScreen";
 import React from "react";
 
 /**
- * Object for managing navigation for the BottomNavigationBar
+ * Bottom Tab Navigator for managing navigation between the main app screens.
+ * This object provides navigation for the bottom tab bar.
  */
 const Tab = createBottomTabNavigator();
 
 /**
- * Object for managing all the navigation
+ * Stack Navigator for managing navigation between screens.
  */
 const Stack = createStackNavigator<RootStackParamsList>();
 
 /**
- * Navigation component for navigation under the Organisations tab on the bottom navigation bar
- * @returns a new OrganisationsNavigator component
+ * Navigator for the Organisations tab.
+ * This component manages the navigation within the Organisations section of the app,
+ * including transitions between organisation details, management, removal, and request screens.
+ *
+ * @returns {JSX.Element} A stack navigator for the Organisations screens.
  */
 function OrganisationsNavigator() {
   return (
@@ -70,8 +74,12 @@ function OrganisationsNavigator() {
 }
 
 /**
- * Navigation component for navigation under the Settings tab on the bottom navigation bar
- * @returns a new SettingsNavigator component
+ * Navigator for the Settings tab.
+ * This component manages the navigation within the Settings section of the app,
+ * including transitions between screens such as settings, customization,
+ * reports, and legal documents.
+ *
+ * @returns {JSX.Element} A stack navigator for the Settings screens.
  */
 function SettingsNavigator() {
   return (
@@ -107,8 +115,12 @@ function SettingsNavigator() {
 }
 
 /**
- * Screen options for the bottom tab bar (BottomNavigationBar)
- * @returns a new screenOptions component
+ * Screen options for the Bottom Navigation Bar (Tab Navigator).
+ * Defines the styles and behaviors of the bottom navigation bar, including
+ * custom tab icons and color schemes for active/inactive states.
+ *
+ * @param {Object} route - The route object for determining the active screen.
+ * @returns {Object} A set of options for styling and behavior of the bottom navigation.
  */
 const screenOptions = ({ route }: { route: any }) => ({
   tabBarActiveTintColor: "#4F4F4F",
@@ -146,8 +158,12 @@ const screenOptions = ({ route }: { route: any }) => ({
 });
 
 /**
- * Navigation component for the navbar in the application
- * @returns a new BottomNavigationBar Component
+ * Bottom Navigation Bar component.
+ * This component provides a tab-based navigation bar at the bottom of the app
+ * with tabs for Landing, Organisations, and Settings. It includes custom styling
+ * for the active/inactive states of each tab and handles screen transitions.
+ *
+ * @returns {JSX.Element} A tab navigator for navigating between the main app sections.
  */
 function BottomNavigationBar() {
   return (
@@ -172,8 +188,12 @@ function BottomNavigationBar() {
 }
 
 /**
- * Navigation component for navigation under the Settings tab on the bottom navigation bar
- * @returns a new SettingsNavigator component
+ * Root Navigator component for the app.
+ * This component manages the app's navigation flow, handling both the login/onboarding process
+ * and the main navigation (BottomNavigationBar) once the user is signed in and has completed onboarding.
+ * It dynamically switches between the login screens and the main app based on the user's state.
+ *
+ * @returns {JSX.Element} A stack navigator that controls app navigation flow.
  */
 export default function AppNavigator() {
   const { isSignedIn, user } = useUser(); // Fetch Clerk user state
@@ -216,3 +236,4 @@ export default function AppNavigator() {
     </Stack.Navigator>
   );
 }
+// End of File
