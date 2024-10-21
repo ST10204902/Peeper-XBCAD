@@ -5,6 +5,12 @@ import { Text } from "react-native";
  * @returns a created SettingsScreen Component
  */
 export default function TermsAndConditionsScreen() {
-  return <Text> TermsAndConditionsScreen </Text>;
+  return (
+    <>
+      <Text> TermsAndConditionsScreen </Text>
+      <Text> Hi! </Text>
+    </>
+  );
+
 }
 // End of File
