@@ -5,10 +5,12 @@ import { Student } from "../databaseModels/databaseClasses/Student";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Viewport } from "../databaseModels/databaseClasses/Viewport";
 
+/*
+* Props for the MapSessionHistory component
+*/
 interface MapSessionHistoryComponentProps {
   currentStudent: Student;
 }
-
 
 /*
  * Map component for displaying the Students previous community service locations.
@@ -33,7 +35,6 @@ const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
 
   useEffect(() => {
     if (!currentStudent) return;
-
     // Fetch session start locations
     const fetchSessionLocations = () => {
       const tempSessionStartLocations: LocationLog[] = [];
@@ -77,6 +78,7 @@ const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
           pitchEnabled={false}   // Disables changing the viewing angle
           rotateEnabled={false}  // Disables rotating the map
         >
+          {/* Render markers for each session start location*/}
           {sessionStartLocations.map((location: LocationLog, index: number) => (
             <Marker
               key={index}
@@ -84,6 +86,7 @@ const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
                 latitude: location.latitude,
                 longitude: location.longitude,
               }}
+              icon={require("../assets/icons/ServiceMapMarker.png")}
             />
           ))}
         </MapView>

@@ -30,6 +30,8 @@ export default function ExpandableOrgList({
   listButtonComp,
   onListButtonClicked,
 }: Props) {
+  
+  console.log("ExpandableOrgList: ", items);
   return (
     <View style={styles.listContainer}>
       <FlatList
