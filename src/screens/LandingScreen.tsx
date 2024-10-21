@@ -15,7 +15,6 @@ import { OrganisationData } from "../databaseModels/OrganisationData";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import { useLocationTracking } from "../hooks/useLocationTracking"; // Custom hook for location tracking
 import { Student } from "../databaseModels/databaseClasses/Student";
-import { useUser } from "@clerk/clerk-expo"; // Authentication context from Clerk
 import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -28,6 +27,8 @@ import {
 } from "../services/trackingNotification";
 
 import * as Notifications from "expo-notifications";
+import { useStudent } from "../hooks/useStudent";
+import { useUser } from "@clerk/clerk-expo";
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -39,7 +40,7 @@ export default function LandingScreen() {
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking, stopTracking, errorMsg } =
     useLocationTracking(); // Import location tracking functions from hook
-  const [currentStudent, setCurrentStudent] = useState<Student>(); // State to hold current student's data
+  const {currentStudent, setCurrentStudent, error} = useStudent(); // State to hold current student's data
   const { user } = useUser(); // Get the current authenticated user from Clerk
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
@@ -94,28 +95,11 @@ export default function LandingScreen() {
 
   // Fetch current student data based on the logged-in user
   useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        if (!user) {
-          console.error("Landing Screen ln39: ", "clerk user not found");
-          // Add navigation to login screen here
-          return;
-        }
-        console.log(user.id);
-        const student = await Student.fetchById(user.id);
-
-        if (!student) {
-          console.error("Landing Screen ln44: ", "Student not found");
-          return;
-        }
-        setCurrentStudent(student);
-      } catch (error) {
-        console.error("Error fetching student:", error);
-      }
-    };
-
-    fetchStudent();
-  }, [user]);
+    if (error) {
+      console.error("Error fetching student:", error);
+      return;
+    }
+  }, [error]);
 
   // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
@@ -183,7 +167,7 @@ export default function LandingScreen() {
       console.error("Student or organisation not found");
       return;
     }
-    startTracking(currentStudent, selectedOrganisation).then(async () => {
+    startTracking(selectedOrganisation).then(async () => {
       if (errorMsg !== null) {
         setIsPopupVisible(false);
         await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
