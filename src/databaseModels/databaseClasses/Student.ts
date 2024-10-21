@@ -20,25 +20,17 @@ export class Student implements StudentData {
     this.student_id = data.student_id ?? "";
     this.studentNumber = data.studentNumber ?? "";
     this.email = data.email ?? "";
-    this.profilePhotoURL = data.profilePhotoURL ?? "";
+    this.profilePhotoURL = data.profilePhotoURL ?? ""; // Initialize with default value
     this.activeOrgs = data.activeOrgs ?? [];
     this.locationData = {};
 
-    Object.entries(data.locationData).forEach(([key, value]) => {
-      if (typeof value === 'object') {
-        this.locationData[key] = new SessionLog({
-          orgID: value.orgID ?? "",
-          sessionStartTime: value.sessionStartTime || "",
-          sessionEndTime: value.sessionEndTime || "",
-          sessionLog_id: value.sessionLog_id || key,
-          viewport: new Viewport(value.viewport),
-          locationLogs: value.locationLogs.map((log: any) => new LocationLog(log))
-        });
-      } else {
-        console.error("Error: locationData is not an object");
-      }
-    });
-  }
+    for (const key in data.locationData) {
+      if (data.locationData.hasOwnProperty(key)) {
+        const sessionLogData = data.locationData[key];
+        this.locationData[key] = new SessionLog(sessionLogData);
+      }
+    }
+  }
 
 
   static async fetchById(student_id: string): Promise<Student | null> {

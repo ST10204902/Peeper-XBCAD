@@ -101,6 +101,7 @@ export default function LandingScreen() {
           // Add navigation to login screen here
           return;
         }
+        console.log(user.id);
         const student = await Student.fetchById(user.id);
 
         if (!student) {
