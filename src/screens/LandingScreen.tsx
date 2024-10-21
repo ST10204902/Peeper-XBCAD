@@ -1,5 +1,12 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, View, Text, Pressable, Alert } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Alert,
+} from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -11,11 +18,16 @@ import { Student } from "../databaseModels/databaseClasses/Student";
 import { useUser } from "@clerk/clerk-expo"; // Authentication context from Clerk
 import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
-import { useRecoilState } from "recoil";
-import { isTrackingState, elapsed_time } from "../atoms/atoms";
-import { requestNotificationPermissions, showOrUpdateTrackingNotification,clearTrackingNotification, checkNotificationSettings } from '../services/trackingNotification';
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { trackingState, elapsed_time } from "../atoms/atoms";
+import {
+  requestNotificationPermissions,
+  showOrUpdateTrackingNotification,
+  clearTrackingNotification,
+  checkNotificationSettings,
+} from "../services/trackingNotification";
 
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -25,7 +37,7 @@ export default function LandingScreen() {
   //-----------------------------------------------------------//
   const [organisations, setOrganisations] = useState<OrganisationData[]>([]); // State to hold organisation data
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
-  const { isTracking, startTracking, stopTracking, errorMsg } =
+  const { tracking, startTracking, stopTracking, errorMsg } =
     useLocationTracking(); // Import location tracking functions from hook
   const [currentStudent, setCurrentStudent] = useState<Student>(); // State to hold current student's data
   const { user } = useUser(); // Get the current authenticated user from Clerk
@@ -35,7 +47,7 @@ export default function LandingScreen() {
   const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
-  const [isTrackingAtom, setIsTracking] = useRecoilState(isTrackingState);
+  const setTracking = useSetRecoilState(trackingState);
   const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
 
   //-----------------------------------------------------------//
@@ -47,33 +59,24 @@ export default function LandingScreen() {
   }, []);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isTracking && selectedOrganisation) {
-      interval = setInterval(async () => {
-        setElapsedTime((prev) => {
-          const newTime = prev + 1;
-          showOrUpdateTrackingNotification(selectedOrganisation.orgName, newTime)
-            .then((notificationId) => {
-              if (notificationId) {
-                console.log(`Notification updated with ID: ${notificationId}`);
-              } else {
-                console.log('Failed to update notification');
-              }
-            });
-          return newTime;
-        });
-      }, 1000);
-    } else {
-      setElapsedTime(0);
-      clearTrackingNotification();
+    if (selectedOrganisation != null) {
+      showOrUpdateTrackingNotification(
+        selectedOrganisation.orgName,
+        elapsedTime
+      ).then((notificationId) => {
+        if (notificationId) {
+          console.log(`Notification updated with ID: ${notificationId}`);
+        } else {
+          console.log("Failed to update notification");
+        }
+      });
     }
     return () => {
-      clearInterval(interval);
-      if (!isTracking) {
+      if (!tracking.isTracking) {
         clearTrackingNotification();
       }
     };
-  }, [isTracking, selectedOrganisation]);
+  }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
 
   // Fetch organisations from the database when component is mounted
   useEffect(() => {
@@ -98,6 +101,7 @@ export default function LandingScreen() {
           // Add navigation to login screen here
           return;
         }
+        console.log(user.id);
         const student = await Student.fetchById(user.id);
 
         if (!student) {
@@ -125,10 +129,10 @@ export default function LandingScreen() {
       const permissionGranted = await requestNotificationPermissions();
       if (permissionGranted) {
         // Set up notification categories with a button
-        await Notifications.setNotificationCategoryAsync('tracking', [
+        await Notifications.setNotificationCategoryAsync("tracking", [
           {
-            identifier: 'stop',
-            buttonTitle: 'Stop Tracking',
+            identifier: "stop",
+            buttonTitle: "Stop Tracking",
             options: {
               isDestructive: true,
               isAuthenticationRequired: false,
@@ -146,7 +150,10 @@ export default function LandingScreen() {
         });
 
         // Listen for notification responses (button presses)
-        const subscription = Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+        const subscription =
+          Notifications.addNotificationResponseReceivedListener(
+            handleNotificationResponse
+          );
 
         return () => subscription.remove();
       }
@@ -183,25 +190,24 @@ export default function LandingScreen() {
       } else {
         console.error("Error starting tracking:", errorMsg);
       }
-
     });
   };
 
   /**
    * Handles the stop tracking action.
-   * 
+   *
    * This function performs the following steps:
    * 1. Stops the tracking process by calling `stopTracking()`.
    * 2. Updates the state to indicate that tracking is no longer active by setting `setIsTracking(false)`.
    * 3. Clears any tracking notifications by calling `clearTrackingNotification()`.
-   * 
+   *
    * @async
    * @function handleStopTracking
    * @returns {Promise<void>} A promise that resolves when the tracking has been stopped and notifications cleared.
    */
   const handleStopTracking = async () => {
     await stopTracking();
-    setIsTracking(false);
+    setTracking({ isTracking: false, organizationName: "" });
     await clearTrackingNotification();
   };
 
@@ -212,7 +218,7 @@ export default function LandingScreen() {
    * @param response.actionIdentifier - The identifier for the action taken on the notification.
    */
   const handleNotificationResponse = (response: any) => {
-    if (response.actionIdentifier === 'stop') {
+    if (response.actionIdentifier === "stop") {
       handleStopTracking();
     }
   };
@@ -258,13 +264,13 @@ export default function LandingScreen() {
         onStartTracking={handleStartTracking}
         onCancel={handleCancel}
       />
-      {isTracking && (
-        <View >
+      {tracking.isTracking && (
+        <View>
           <Text>Tracking: {selectedOrganisation?.orgName}</Text>
           <Text>Time: {elapsedTime} seconds</Text>
           <Pressable onPress={handleStopTracking}>
             <Text>Stop Tracking</Text>
-            </Pressable>
+          </Pressable>
         </View>
       )}
       {/* Bottom Sheet containing the organisation list */}
