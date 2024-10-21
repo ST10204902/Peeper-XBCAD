@@ -1,8 +1,15 @@
-// screens/PrivacyPolicyScreen.tsx
+//...............ooooooooooo000000000000 TermsAndConditionsScreen.tsx 000000000000ooooooooooo...............//
 import { View, ScrollView, StyleSheet, Text, SafeAreaView } from 'react-native';
 import { PolicySectionComponent } from '../../components/PolicySectionComponent';
 import styles from '../../styles/PolicyStyle';
 
+/**
+ * PrivacyPolicyScreen component renders the privacy policy information.
+ * 
+ *THIS IS JUST DUMMY DATA TO CHECK IF THE UI LOOKS OKAY
+ * 
+ * @returns {JSX.Element} The rendered PrivacyPolicyScreen component.
+ */
 export default function TermsAndConditionsScreen() {
   const termsSection: PolicySection[] = [
     {
@@ -47,3 +54,4 @@ export default function TermsAndConditionsScreen() {
     </SafeAreaView>
   );
 }
+//...............ooooooooooo000000000000 End Of File 000000000000ooooooooooo...............//
