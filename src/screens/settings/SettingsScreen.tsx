@@ -4,6 +4,12 @@ import { SettingsSection } from '../../components/SettingsSection';
 import CustomButton from '../../components/CustomButton';
 import styles from '../../styles/SettingStyle';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import CustomizeAvatarScreen from './CustomizeAvatarScreen';
+import TermsAndConditionsScreen from './TermsAndConditionsScreen';
+import PrivacyPolicyScreen from './PrivacyPolicyScreen';
+import LessonsScreen from './LessonsScreen';
+import ExportReportScreen from './ExportReportScreen';
 
 
 
@@ -24,13 +30,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
  * @returns {JSX.Element} The rendered settings screen component.
  */
 export default function SettingsScreen() {
+
+  const navigation = useNavigation<any>();
+
   const settingsSections: SettingsSection[] = [
     {
       header: 'PROFILE SETTINGS',
       items: [
         {
           title: 'Customize Profile',
-          onPress: () => console.log('Navigate to customize profile'),
+          onPress: () => navigation.navigate('CustomizeAvatarScreen'),
         },
       ],
     },
@@ -39,15 +48,15 @@ export default function SettingsScreen() {
       items: [
         {
           title: 'Terms and Conditions',
-          onPress: () => console.log('Navigate to terms'),
+          onPress: () => navigation.navigate('TermsAndConditionsScreen'),
         },
         {
           title: 'Privacy Policy',
-          onPress: () => console.log('Navigate to privacy'),
+          onPress: () => navigation.navigate('PrivacyPolicyScreen'),
         },
         {
           title: 'Lessons',
-          onPress: () => console.log('Navigate to lessons'),
+          onPress: () => navigation.navigate('LessonScreen'),
         },
       ],
     },
@@ -56,7 +65,7 @@ export default function SettingsScreen() {
       items: [
         {
           title: 'Export Tracking Information',
-          onPress: () => console.log('Navigate to export'),
+          onPress: () => navigation.navigate('ExportReportScreen'),
         },
       ],
     },
