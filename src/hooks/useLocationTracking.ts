@@ -117,7 +117,7 @@ export function useLocationTracking() {
         currentSessionLog.sessionEndTime = new Date().toISOString();
 
         // Calculate the bounding box for the session
-        const boundingBox = calculateBoundingBox(currentSessionLog.locationLogs);
+        const boundingBox = Viewport.calculateBoundingBox(currentSessionLog.locationLogs);
 
         // Set the calculated viewport for the session
         currentSessionLog.viewport.high = boundingBox.high;
@@ -202,32 +202,6 @@ export function useLocationTracking() {
 //-----------------------------------------------------------//
 //                          HELPERS                          //
 //-----------------------------------------------------------//
-
-// Helper function to calculate bounding box
-//-----------------------------------------------------------//
-function calculateBoundingBox(locationLogs: LocationLogData[]) {
-    let minLatSoFar = 90;
-    let minlngSoFar = 180;
-    let maxLatSoFar = -90;
-    let maxLngSoFar = -180;
-
-    // Iterate through location logs to determine bounds
-    locationLogs.forEach((log) => {
-        if (log.latitude < minLatSoFar) minLatSoFar = log.latitude;
-        if (log.latitude > maxLatSoFar) maxLatSoFar = log.latitude;
-        if (log.longitude < minlngSoFar) minlngSoFar = log.longitude;
-        if (log.longitude > maxLngSoFar) maxLngSoFar = log.longitude;
-    });
-
-    // Define viewport boundaries
-    let viewport = new Viewport();
-    viewport.low.latitude = minLatSoFar;
-    viewport.low.longitude = minlngSoFar;
-    viewport.high.latitude = maxLatSoFar;
-    viewport.high.longitude = maxLngSoFar;
-
-    return viewport;
-}
 
 // Helper function to generate a unique ID
 //-----------------------------------------------------------//

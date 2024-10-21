@@ -99,6 +99,7 @@ export default function LandingScreen() {
           return;
         }
         const student = await Student.fetchById(user.id);
+
         if (!student) {
           console.error("Landing Screen ln44: ", "Student not found");
           return;

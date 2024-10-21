@@ -3,6 +3,8 @@ import { DatabaseUtility } from "./DatabaseUtility";
 import { StudentData } from "../StudentData";
 import { SessionLogData } from "../SessionLogData";
 import { SessionLog } from "./SessionLog";
+import { Viewport } from "./Viewport";
+import { LocationLog } from "./LocationLog";
 
 export class Student implements StudentData {
   student_id: string;
@@ -10,25 +12,34 @@ export class Student implements StudentData {
   email: string;
   profilePhotoURL?: string;
   activeOrgs: string[];
-  locationData: { [sessionLog_id: string]: SessionLog };
+  locationData: {
+    [sessionLog_id: string]: SessionLog;
+  };
 
   constructor(data: StudentData) {
-    this.student_id = data.student_id;
-    this.studentNumber = data.studentNumber || "";
-    this.email = data.email || "";
-    this.profilePhotoURL = data.profilePhotoURL || ""; // Initialize with default value
-    this.activeOrgs = data.activeOrgs || [];
+    this.student_id = data.student_id ?? "";
+    this.studentNumber = data.studentNumber ?? "";
+    this.email = data.email ?? "";
+    this.profilePhotoURL = data.profilePhotoURL ?? "";
+    this.activeOrgs = data.activeOrgs ?? [];
     this.locationData = {};
 
-
-    if (data.locationData) {
-      for (const key in data.locationData) {
-        if (data.locationData.hasOwnProperty(key)) {
-          this.locationData[key] = new SessionLog(data.locationData[key]);
-        }
+    Object.entries(data.locationData).forEach(([key, value]) => {
+      if (typeof value === 'object') {
+        this.locationData[key] = new SessionLog({
+          orgID: value.orgID ?? "",
+          sessionStartTime: value.sessionStartTime || "",
+          sessionEndTime: value.sessionEndTime || "",
+          sessionLog_id: value.sessionLog_id || key,
+          viewport: new Viewport(value.viewport),
+          locationLogs: value.locationLogs.map((log: any) => new LocationLog(log))
+        });
+      } else {
+        console.error("Error: locationData is not an object");
       }
-    }
+    });
   }
+
 
   static async fetchById(student_id: string): Promise<Student | null> {
     const data = await DatabaseUtility.getData<StudentData>(
