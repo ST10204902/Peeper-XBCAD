@@ -26,4 +26,9 @@ type SettingsSectionItem = {
     header: string;
     items: SettingsSectionItem[];
   };
+
+  type PolicySection = {
+    heading: string;
+    content: string;
+  };
   //...............ooooooooooo000000000000 End Of File 000000000000ooooooooooo...............//
