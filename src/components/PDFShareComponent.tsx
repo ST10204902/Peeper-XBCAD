@@ -13,7 +13,7 @@ import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 //Get current student object
-const user = useUser() ?? null;
+
 let currentStudent: Student | null = null;
 
 const haversineDistance = (
@@ -418,13 +418,18 @@ async function testHTML(
   return htmlContent;
 }
 
-const fetchCurrentStudent = async () => {
-  if (user.user?.id) {
-    currentStudent = await Student.fetchById(user.user.id);
-  }
-};
+
 
 export default function PDFShareComponent() {
+
+  const user = useUser() ?? null;
+
+  const fetchCurrentStudent = async () => {
+    if (user.user?.id) {
+      currentStudent = await Student.fetchById(user.user.id);
+    }
+  };
+
   const print = async () => {
     try {
       await fetchCurrentStudent();
