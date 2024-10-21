@@ -30,4 +30,5 @@ export type RootStackParamsList = {
   PrivacyPolicyScreen: undefined;
   TermsAndConditionsScreen: undefined;
   OrgDetailsScreen: undefined;
+  LessonScreen: undefined;
 };

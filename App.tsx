@@ -44,6 +44,7 @@ import * as Notifications from 'expo-notifications';
 
 import { Student } from "./src/databaseModels/databaseClasses/Student";
 import { StudentData } from "./src/databaseModels/StudentData";
+import ExportLessonScreen from "./src/screens/settings/LessonsScreen";
 
 /**
  * Object for managing navigation for the BottomNavigationBar
@@ -125,7 +126,12 @@ function SettingsNavigator() {
         component={TermsAndConditionsScreen}
         options={{ headerShown: false }}
       />
-    </Stack.Navigator>
+      <Stack.Screen
+        name="LessonScreen"
+        component={ExportLessonScreen}
+        options={{ headerShown: false }}
+      />    
+      </Stack.Navigator>
   );
 }
 
