@@ -7,21 +7,31 @@ import EmergencyContacts from "../../components/EmergencyContacts";
 import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../../databaseModels/databaseClasses/Student";
 import MapSessionHistory from "../../components/MapSessionHistory";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const OrgDetailsScreen = () => {
   const clerkUser = useUser();
   const [currentStudent, setCurrentStudent] = React.useState<Student | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
-  React.useEffect(() => {
-    const fetchStudent = async () => {
-      const student = await Student.fetchById(clerkUser.user?.id ?? "");
+  // Method to fetch the student data
+  const fetchStudent = async () => {
+    if (clerkUser.user?.id) {
+      const student = await Student.fetchById(clerkUser.user?.id);
+      console.log("Student was fetched in the OrgDetailsScreen");
       setCurrentStudent(student);
       setLoading(false);
-    };
+    }
+  };
 
-       fetchStudent();
-  }, [clerkUser.user?.id]);
+  // Run the fetchStudent method when the screen is focused (navigated to)
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchStudent();
+    }, [clerkUser.user?.id])
+  );
 
  
   return (
@@ -32,14 +42,14 @@ const OrgDetailsScreen = () => {
         currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
             )}
             <CustomButton
-        onPress={() => {}}
+        onPress={() => { navigation.navigate('ManageOrgsScreen');}}
         title="Organisation Management"
         textColor="black"
         buttonColor="#A4DB51"
         fontFamily="Quittance"
-        textSize={20}
+        textSize={25}
             />
-            {currentStudent && <MapSessionHistory {...currentStudent.toJSON()} />}
+            {currentStudent && <MapSessionHistory currentStudent={currentStudent} />}
       <Text style={styles.BeSafeText}>Be Safe!</Text>
       <EmergencyContacts />
     </SafeAreaView>

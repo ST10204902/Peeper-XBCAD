@@ -7,6 +7,8 @@ interface StudentHeaderComponentProps {
   currentStudent: Student;
 }
 
+
+
 const calculateTotalLoggedHours = (student: Student): number => {
   let totalHours = 0;
 
@@ -30,6 +32,7 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   const progress =  (completedHours / 4) * 100 ;
   const completedHoursRounded = Math.round(completedHours * 100) / 100;
   const code = currentStudent.studentNumber;
+  // load the file stored in the path in the currentUser
   const avatar = { uri: currentStudent.profilePhotoURL };
 
   return (

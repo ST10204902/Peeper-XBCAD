@@ -7,17 +7,33 @@ import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import { set } from "firebase/database";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { StudentData } from "../databaseModels/StudentData";
+import { Viewport } from "../databaseModels/databaseClasses/Viewport";
+
+interface MapSessionHistoryComponentProps {
+  currentStudent: Student;
+}
+
 
 /*
  * Map component for displaying the Students previous community service locations.
  */
-const MapSessionHistory: React.FC<StudentData> = (student: StudentData) => {
+const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
+  currentStudent,
+}) => {
   // Default location for Cape Town
   const defaultLatitude = -33.9249; // Cape Town latitude
   const defaultLongitude = 18.4241; // Cape Town longitude
 
-  const [currentStudent, setCurrentStudent] = React.useState<Student | null>(null);
   const [allOrganisations, setAllOrganisations] = React.useState<Organisation[] | null>(null);
+  const [userOrgs, setUserOrgs] = useState<Organisation | null>(null);
+
+   // State for the map region
+   const [region, setRegion] = useState({
+    latitude: defaultLatitude,
+    longitude: defaultLongitude,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
   const [sessionStartLocations, setSessionStartLocations] = React.useState<LocationLog[]>([]);
   // State for loading status so that error handling can be implemented
   // note even for errors that should be impossible to occur, feed error messages to the user!!!
@@ -28,30 +44,38 @@ const MapSessionHistory: React.FC<StudentData> = (student: StudentData) => {
   //get all organisations and set current student
   useEffect(() => {
     const fetchData = async () => {
+      console.log("MapSessionHistory useEffect() was called");
       
-      setCurrentStudent(new Student(student));
-      console.log("Student: ", student);
-      const organisations = await Organisation.getAllOrganisations();
-      setAllOrganisations(organisations);
       setLoading(false);
+      if (sessionStartLocations && sessionStartLocations.length > 0) {
+        const boundingBox = Viewport.calculateBoundingBox(sessionStartLocations);
+        console.log("Bounding box: ", boundingBox);
+        setRegion({
+          latitude: (boundingBox.low.latitude + boundingBox.high.latitude) / 2,
+          longitude: (boundingBox.low.longitude + boundingBox.high.longitude) / 2,
+          latitudeDelta: boundingBox.high.latitude - boundingBox.low.latitude,
+          longitudeDelta: boundingBox.high.longitude - boundingBox.low.longitude,
+        });
+      }
     };
 
     fetchData();
-  }, [student]);
+  }, [currentStudent]);
 
 
 
   function sessionMapMarkers() {
+    if (!currentStudent) return null;
 
-    Object.values(student.locationData).forEach((sessionLog) => {
-      const seenOrgs = new Set<string>();
-      for (const locationLog of sessionLog.locationLogs) {
+    const seenOrgs = new Set<string>();
+    Object.values(currentStudent.locationData).forEach((sessionLog) => {
+
         if (!seenOrgs.has(sessionLog.orgID)) {
           seenOrgs.add(sessionLog.orgID);
-          sessionStartLocations.push(new LocationLog(locationLog));
+          sessionStartLocations.push(new LocationLog(sessionLog.locationLogs[0]));
         }
-      }
-    });
+      });
+    
 
     return sessionStartLocations.map((location, index) => {
         return (
@@ -65,18 +89,9 @@ const MapSessionHistory: React.FC<StudentData> = (student: StudentData) => {
         );
       });
   }
- 
 
-  // State for the map region
-  const [region, setRegion] = useState({
-    latitude: defaultLatitude,
-    longitude: defaultLongitude,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
 
-  const [userOrgs, setUserOrgs] = useState<Organisation | null>(null);
-
+  
   // Update the map region when the selected organisation changes
 
   // Render the map with a marker for the selected organisation
