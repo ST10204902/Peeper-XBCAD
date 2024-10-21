@@ -6,6 +6,10 @@ import ExpandableOrgList from "../../components/ExpandableOrgList";
 import CustomButton from "../../components/CustomButton";
 import SearchBarComponent from "../../components/SearchBarComponent";
 import ComboBoxComponent from "../../components/ComboComponent";
+import { useUser } from "@clerk/clerk-expo";
+import { Student } from "../../databaseModels/databaseClasses/Student";
+import { useFocusEffect } from "@react-navigation/native";
+import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 
 /**
  * Component For the ManageOrgsScreen
@@ -41,6 +45,41 @@ import ComboBoxComponent from "../../components/ComboComponent";
  * @property {number} orgLongitude - The longitude coordinate of the organization.
  */
 export default function ManageOrgsScreen() {
+  const clerkUser = useUser();
+  const [currentStudent, setCurrentStudent] = React.useState<Student | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [orgList, setOrgList] = React.useState<OrganisationData[]>([]);
+  let itemList: OrganisationData[] = [];
+
+  // Method to fetch the student data
+  const fetchData = async () => {
+    if (clerkUser.user?.id) {
+      const student = await Student.fetchById(clerkUser.user?.id);
+      console.log("Student was fetched in the ManageOrgsScreen");
+      const allOrgs = await Organisation.getAllOrganisations();
+      setCurrentStudent(student);
+      setOrgList(allOrgs);
+      setLoading(false);
+    }
+  };
+
+  // Run the fetchStudent method when the screen is focused (navigated to)
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [clerkUser.user?.id])
+  );
+
+  React.useEffect(() => {
+    if (currentStudent && orgList.length > 0) {
+     
+  
+      itemList = orgList.filter((org) => currentStudent.activeOrgs.includes(org.org_id));
+      console.log("filtered orgs:", itemList);
+    }
+  }, [currentStudent, orgList]);
+
+
   // Dummy data
   const address: OrgAddressData = {
     streetAddress: "53 Main Rd",
@@ -50,35 +89,7 @@ export default function ManageOrgsScreen() {
     postalCode: "7700",
   };
 
-  const itemList: OrganisationData[] = [
-    {
-      org_id: "1",
-      orgName: "Massage The Pandas",
-      orgAddress: address,
-      orgEmail: "MassageThePandas@gmail.com",
-      orgPhoneNo: "1999999999",
-      orgLatitude: 0,
-      orgLongitude: 0,
-    },
-    {
-      org_id: "2",
-      orgName: "Homeless People Shouldn't be Homeless",
-      orgAddress: address,
-      orgEmail: "HomelessPeopleBad@gmail.com",
-      orgPhoneNo: "1999999999",
-      orgLatitude: 0,
-      orgLongitude: 0,
-    },
-    {
-      org_id: "3",
-      orgName: "Starving Women Need Makeup (SWNM)",
-      orgAddress: address,
-      orgEmail: "StarvingWomenNeedMakeup@gmail.com",
-      orgPhoneNo: "1999999999",
-      orgLatitude: 0,
-      orgLongitude: 0,
-    },
-  ];
+
 
 // This constant is defined here to keep the render method clean and readable.
   // By defining it outside of the return statement, we can perform any necessary

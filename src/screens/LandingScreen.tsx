@@ -170,6 +170,9 @@ export default function LandingScreen() {
     startTracking(selectedOrganisation).then(async () => {
       if (errorMsg !== null) {
         setIsPopupVisible(false);
+        currentStudent.activeOrgs.push(selectedOrganisation.org_id);
+        setCurrentStudent(currentStudent);
+        await currentStudent.save();
         await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
       } else {
         console.error("Error starting tracking:", errorMsg);
