@@ -18,8 +18,8 @@ import { Student } from "../databaseModels/databaseClasses/Student";
 import { useUser } from "@clerk/clerk-expo"; // Authentication context from Clerk
 import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
-import { useRecoilState } from "recoil";
-import { isTrackingState, elapsed_time } from "../atoms/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { trackingState, elapsed_time } from "../atoms/atoms";
 import {
   requestNotificationPermissions,
   showOrUpdateTrackingNotification,
@@ -37,7 +37,7 @@ export default function LandingScreen() {
   //-----------------------------------------------------------//
   const [organisations, setOrganisations] = useState<OrganisationData[]>([]); // State to hold organisation data
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
-  const { isTracking, startTracking, stopTracking, errorMsg } =
+  const { tracking, startTracking, stopTracking, errorMsg } =
     useLocationTracking(); // Import location tracking functions from hook
   const [currentStudent, setCurrentStudent] = useState<Student>(); // State to hold current student's data
   const { user } = useUser(); // Get the current authenticated user from Clerk
@@ -47,7 +47,7 @@ export default function LandingScreen() {
   const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
-  const [isTrackingAtom, setIsTracking] = useRecoilState(isTrackingState);
+  const setTracking = useSetRecoilState(trackingState);
   const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
 
   //-----------------------------------------------------------//
@@ -72,11 +72,11 @@ export default function LandingScreen() {
       });
     }
     return () => {
-      if (!isTracking) {
+      if (!tracking.isTracking) {
         clearTrackingNotification();
       }
     };
-  }, [elapsedTime, selectedOrganisation, isTracking]);
+  }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
 
   // Fetch organisations from the database when component is mounted
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function LandingScreen() {
    */
   const handleStopTracking = async () => {
     await stopTracking();
-    setIsTracking(false);
+    setTracking({ isTracking: false, organizationName: "" });
     await clearTrackingNotification();
   };
 
@@ -263,7 +263,7 @@ export default function LandingScreen() {
         onStartTracking={handleStartTracking}
         onCancel={handleCancel}
       />
-      {isTracking && (
+      {tracking.isTracking && (
         <View>
           <Text>Tracking: {selectedOrganisation?.orgName}</Text>
           <Text>Time: {elapsedTime} seconds</Text>
