@@ -1,5 +1,12 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, View, Text, Pressable, Alert } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Alert,
+} from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -13,9 +20,14 @@ import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
 import { useRecoilState } from "recoil";
 import { isTrackingState, elapsed_time } from "../atoms/atoms";
-import { requestNotificationPermissions, showOrUpdateTrackingNotification,clearTrackingNotification, checkNotificationSettings } from '../services/trackingNotification';
+import {
+  requestNotificationPermissions,
+  showOrUpdateTrackingNotification,
+  clearTrackingNotification,
+  checkNotificationSettings,
+} from "../services/trackingNotification";
 
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -47,33 +59,24 @@ export default function LandingScreen() {
   }, []);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isTracking && selectedOrganisation) {
-      interval = setInterval(async () => {
-        setElapsedTime((prev) => {
-          const newTime = prev + 1;
-          showOrUpdateTrackingNotification(selectedOrganisation.orgName, newTime)
-            .then((notificationId) => {
-              if (notificationId) {
-                console.log(`Notification updated with ID: ${notificationId}`);
-              } else {
-                console.log('Failed to update notification');
-              }
-            });
-          return newTime;
-        });
-      }, 1000);
-    } else {
-      setElapsedTime(0);
-      clearTrackingNotification();
+    if (selectedOrganisation != null) {
+      showOrUpdateTrackingNotification(
+        selectedOrganisation.orgName,
+        elapsedTime
+      ).then((notificationId) => {
+        if (notificationId) {
+          console.log(`Notification updated with ID: ${notificationId}`);
+        } else {
+          console.log("Failed to update notification");
+        }
+      });
     }
     return () => {
-      clearInterval(interval);
       if (!isTracking) {
         clearTrackingNotification();
       }
     };
-  }, [isTracking, selectedOrganisation]);
+  }, [elapsedTime, selectedOrganisation, isTracking]);
 
   // Fetch organisations from the database when component is mounted
   useEffect(() => {
@@ -125,10 +128,10 @@ export default function LandingScreen() {
       const permissionGranted = await requestNotificationPermissions();
       if (permissionGranted) {
         // Set up notification categories with a button
-        await Notifications.setNotificationCategoryAsync('tracking', [
+        await Notifications.setNotificationCategoryAsync("tracking", [
           {
-            identifier: 'stop',
-            buttonTitle: 'Stop Tracking',
+            identifier: "stop",
+            buttonTitle: "Stop Tracking",
             options: {
               isDestructive: true,
               isAuthenticationRequired: false,
@@ -146,7 +149,10 @@ export default function LandingScreen() {
         });
 
         // Listen for notification responses (button presses)
-        const subscription = Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+        const subscription =
+          Notifications.addNotificationResponseReceivedListener(
+            handleNotificationResponse
+          );
 
         return () => subscription.remove();
       }
@@ -183,18 +189,17 @@ export default function LandingScreen() {
       } else {
         console.error("Error starting tracking:", errorMsg);
       }
-
     });
   };
 
   /**
    * Handles the stop tracking action.
-   * 
+   *
    * This function performs the following steps:
    * 1. Stops the tracking process by calling `stopTracking()`.
    * 2. Updates the state to indicate that tracking is no longer active by setting `setIsTracking(false)`.
    * 3. Clears any tracking notifications by calling `clearTrackingNotification()`.
-   * 
+   *
    * @async
    * @function handleStopTracking
    * @returns {Promise<void>} A promise that resolves when the tracking has been stopped and notifications cleared.
@@ -212,7 +217,7 @@ export default function LandingScreen() {
    * @param response.actionIdentifier - The identifier for the action taken on the notification.
    */
   const handleNotificationResponse = (response: any) => {
-    if (response.actionIdentifier === 'stop') {
+    if (response.actionIdentifier === "stop") {
       handleStopTracking();
     }
   };
@@ -259,12 +264,12 @@ export default function LandingScreen() {
         onCancel={handleCancel}
       />
       {isTracking && (
-        <View >
+        <View>
           <Text>Tracking: {selectedOrganisation?.orgName}</Text>
           <Text>Time: {elapsedTime} seconds</Text>
           <Pressable onPress={handleStopTracking}>
             <Text>Stop Tracking</Text>
-            </Pressable>
+          </Pressable>
         </View>
       )}
       {/* Bottom Sheet containing the organisation list */}
