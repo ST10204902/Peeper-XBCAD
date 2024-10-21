@@ -128,7 +128,9 @@ const RegisterScreen: React.FC = () => {
             // Create a new student instance
             const newStudentData: StudentData = {
               student_id: uid,
-              studentNumber: "", // Set default or prompt user for input
+              studentNumber: signUp.emailAddress
+                ? signUp.emailAddress.split("@")[0]
+                : "", // Extract part before @
               email: signUp.emailAddress || "",
               activeOrgs: [],
               locationData: {},
