@@ -1,10 +1,101 @@
-import { Text } from "react-native";
+//...............ooooooooooo000000000000 SettingsScreen.tsx 000000000000ooooooooooo...............//
+import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import { SettingsSection } from '../../components/SettingsSection';
+import CustomButton from '../../components/CustomButton';
+import styles from '../../styles/SettingStyle';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+
 
 /**
- * Screen Component where the user can change their settings
- * @returns a created SettingsScreen Component
+ * The `SettingsScreen` component renders a settings screen with various sections and items.
+ * Each section contains a header and a list of items, each with a title and an onPress handler.
+ * The screen also includes buttons for requesting data deletion and logging out.
+ *
+ * @returns {JSX.Element} The rendered settings screen component.
+ */
+
+/**
+ * SettingsScreen component renders the settings screen of the application.
+ * It displays various sections of settings including profile settings, help centre, and export options.
+ * Each section contains items that can be pressed to navigate to different parts of the application.
+ * Additionally, it provides buttons for requesting data deletion and logging out.
+ *
+ * @returns {JSX.Element} The rendered settings screen component.
  */
 export default function SettingsScreen() {
-  return <Text> SettingsScreen </Text>;
+  const settingsSections: SettingsSection[] = [
+    {
+      header: 'PROFILE SETTINGS',
+      items: [
+        {
+          title: 'Customize Profile',
+          onPress: () => console.log('Navigate to customize profile'),
+        },
+      ],
+    },
+    {
+      header: 'HELP CENTRE',
+      items: [
+        {
+          title: 'Terms and Conditions',
+          onPress: () => console.log('Navigate to terms'),
+        },
+        {
+          title: 'Privacy Policy',
+          onPress: () => console.log('Navigate to privacy'),
+        },
+        {
+          title: 'Lessons',
+          onPress: () => console.log('Navigate to lessons'),
+        },
+      ],
+    },
+    {
+      header: 'EXPORT',
+      items: [
+        {
+          title: 'Export Tracking Information',
+          onPress: () => console.log('Navigate to export'),
+        },
+      ],
+    },
+  ];
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+      <Text style={styles.title}>Settings</Text>
+      <View style={styles.content}>
+        {settingsSections.map((section) => (
+        <SettingsSection
+          key={section.header}
+          header={section.header}
+          items={section.items}
+        />
+        ))}
+        
+        <View style={styles.buttonContainer}>
+        <CustomButton
+          title="REQUEST DATA DELETION"
+          fontFamily='Quittance'
+          textColor='#161616'
+          textSize={20}
+          buttonColor='#D9E7FF'
+          onPress={() => console.log('Request data deletion')}
+        />
+        <CustomButton
+          title="LOG OUT"
+          fontFamily='Quittance'
+          textColor='#161616'
+          textSize={20}
+          buttonColor='#FE7143'
+          onPress={() => console.log('Log out')}
+        />
+        </View>
+      </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
-// End of File
+//...............ooooooooooo000000000000 End Of File 000000000000ooooooooooo...............//
