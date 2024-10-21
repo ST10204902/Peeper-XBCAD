@@ -33,11 +33,11 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   const completedHoursRounded = Math.round(completedHours * 100) / 100;
   const code = currentStudent.studentNumber;
   // load the file stored in the path in the currentUser
-  const avatar = { uri: currentStudent.profilePhotoURL };
+  const avatar =  currentStudent.profilePhotoURL ?? "../assets/Avatars/A9.png";
 
   return (
     <View style={styles.container1}>
-      <Image source={avatar} style={styles.emoji} />
+      <Image source={require("../assets/Avatars/A9.png")} style={styles.emoji} />
       <View style={styles.container2}>
         <Text style={styles.code}>{code}</Text>
         <Text
