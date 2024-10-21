@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     searchBarContainer: {
         backgroundColor: '#EBEBEB', // Set background to transparent
         borderRadius: 20,
-        padding: 5,
+        padding: 0,
         paddingLeft: 15,
         borderWidth: 3,
         display: "flex",
