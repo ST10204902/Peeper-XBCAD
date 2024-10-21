@@ -9,4 +9,5 @@ export interface StudentData {
   locationData: {
     [sessionLog_id: string]: SessionLogData;
   };
+  pushToken?: string;
 }
