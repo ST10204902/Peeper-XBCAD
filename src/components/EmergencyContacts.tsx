@@ -11,8 +11,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 const EmergencyContacts = () => {
   return (
     <LinearGradient colors={['#ea4b4b', '#fe7143']} style={styles.container}>
-      <Text style={styles.header}>
-      safety First 🚨
+      <Text
+       style={styles.header}>
+      Safety First 🚨
       </Text>
       
       <View style={styles.subContainer}>

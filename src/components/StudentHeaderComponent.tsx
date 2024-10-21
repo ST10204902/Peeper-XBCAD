@@ -32,12 +32,46 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   const progress =  (completedHours / 4) * 100 ;
   const completedHoursRounded = Math.round(completedHours * 100) / 100;
   const code = currentStudent.studentNumber;
-  // load the file stored in the path in the currentUser
-  const avatar =  currentStudent.profilePhotoURL ?? "../assets/Avatars/A9.png";
+
+  // yes, this looks disgusting, but it works and that's what matters
+  const possibleAvatars = [
+    require("../assets/Avatars/A9.png"), 
+     require("../assets/Avatars/A8.png"),
+     require("../assets/Avatars/A7.png"),
+     require("../assets/Avatars/A6.png"),
+     require("../assets/Avatars/A5.png"),
+     require("../assets/Avatars/A4.png"),
+     require("../assets/Avatars/A3.png"),
+     require("../assets/Avatars/A2.png"),
+     require("../assets/Avatars/A1.png"),
+  ];
+  const valuePairs = {
+    "../assets/Avatars/A9.png": 0,
+    "../assets/Avatars/A8.png": 1,
+    "../assets/Avatars/A7.png": 2,
+    "../assets/Avatars/A6.png": 3,
+    "../assets/Avatars/A5.png": 4,
+    "../assets/Avatars/A4.png": 5,
+    "../assets/Avatars/A3.png": 6,
+    "../assets/Avatars/A2.png": 7,
+    "../assets/Avatars/A1.png": 8,
+  };
+
+  // set default avatar
+  let userAvatar = require("../assets/Avatars/A1.png");
+  
+  // check if student has a profile
+  if (currentStudent.profilePhotoURL != "" && currentStudent.profilePhotoURL != null) {
+    // get the index of the avatar
+    let pfpURL = (currentStudent.profilePhotoURL) as keyof typeof valuePairs;
+    let index = valuePairs[pfpURL];
+    // set the avatar
+    userAvatar = possibleAvatars[index];
+  }
 
   return (
     <View style={styles.container1}>
-      <Image source={require("../assets/Avatars/A9.png")} style={styles.emoji} />
+      <Image source={userAvatar} style={styles.emoji} />
       <View style={styles.container2}>
         <Text style={styles.code}>{code}</Text>
         <Text
