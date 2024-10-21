@@ -32,12 +32,27 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   const progress =  (completedHours / 4) * 100 ;
   const completedHoursRounded = Math.round(completedHours * 100) / 100;
   const code = currentStudent.studentNumber;
-  // load the file stored in the path in the currentUser
-  const avatar =  currentStudent.profilePhotoURL ?? "../assets/Avatars/A9.png";
+
+  const possibleAvatars = [
+    "../assets/Avatars/A9.png", 
+    "../assets/Avatars/A8.png",
+    "../assets/Avatars/A7.png",
+    "../assets/Avatars/A6.png",
+    "../assets/Avatars/A5.png",
+    "../assets/Avatars/A4.png",
+    "../assets/Avatars/A3.png",
+    "../assets/Avatars/A2.png",
+    "../assets/Avatars/A1.png",
+  ];
+
+  const avatarPath = possibleAvatars.find((avatar) => avatar === currentStudent.profilePhotoURL) || "../assets/Avatars/A9.png";
+  let avatarSource = require(avatarPath); // If it's a remote URL, use 'uri'
+  
+  
 
   return (
     <View style={styles.container1}>
-      <Image source={require("../assets/Avatars/A9.png")} style={styles.emoji} />
+      <Image source={require(avatarPath)} style={styles.emoji} />
       <View style={styles.container2}>
         <Text style={styles.code}>{code}</Text>
         <Text
