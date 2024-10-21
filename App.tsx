@@ -35,9 +35,8 @@ import LandingIcon from "./src/assets/icons/LandingIcon";
 import OrgDetailsIcon from "./src/assets/icons/OrgDetailsIcon";
 import SettingsIcon from "./src/assets/icons/SettingsIcon";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
-import { isTrackingState } from "./src/atoms/atoms";
 
-import { registerForPushNotifications } from './src/services/RequestNotificationPermissions';
+import { registerForPushNotificationsAsync } from './src/services/RequestNotificationPermissions';
 
 import * as Notifications from 'expo-notifications';
 
@@ -254,8 +253,16 @@ export default function App() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
   useEffect(() => {
-    registerForPushNotifications();
+    registerForPushNotificationsAsync();
   }, []);
+
+  Notifications.addNotificationReceivedListener(notification => {
+    console.log('Notification received:', notification);
+  });
+  
+  Notifications.addNotificationResponseReceivedListener(response => {
+    console.log('Notification response received:', response);
+  });
 
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
