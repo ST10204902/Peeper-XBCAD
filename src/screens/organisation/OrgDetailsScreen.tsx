@@ -7,7 +7,8 @@ import EmergencyContacts from "../../components/EmergencyContacts";
 import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../../databaseModels/databaseClasses/Student";
 import MapSessionHistory from "../../components/MapSessionHistory";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { RootStackParamsList } from "../RootStackParamsList";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useStudent } from "../../hooks/useStudent";
 
@@ -15,7 +16,8 @@ const OrgDetailsScreen = () => {
   const clerkUser = useUser();
   const {currentStudent, setCurrentStudent, error} = useStudent();
   const [loading, setLoading] = React.useState(true);
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation =
+  useNavigation<NavigationProp<RootStackParamsList, "OrgDetails">>();
 
   // Method to fetch the student data
   const fetchStudent = async () => {
@@ -42,7 +44,7 @@ const OrgDetailsScreen = () => {
         currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
             )}
             <CustomButton
-        onPress={() => { navigation.navigate('ManageOrgsScreen');}}
+        onPress={() => { navigation.navigate("ManageOrgsScreen");}}
         title="Organisation Management"
         textColor="black"
         buttonColor="#A4DB51"
