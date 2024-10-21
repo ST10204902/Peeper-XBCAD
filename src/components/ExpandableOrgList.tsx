@@ -14,6 +14,7 @@ interface Props {
   items: OrganisationData[];
   listButtonComp: React.ReactNode;
   onListButtonClicked: (selectedOrg: OrganisationData) => void;
+  style?: object;
 }
 
 /**
@@ -52,7 +53,6 @@ export default function ExpandableOrgList({
 const styles = StyleSheet.create({
   // Add styles here
   listContainer: {
-    marginTop: 100,
     backgroundColor: "#F3F3F3",
     borderRadius: 30,
   },
