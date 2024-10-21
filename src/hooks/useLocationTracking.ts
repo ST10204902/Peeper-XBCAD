@@ -8,6 +8,7 @@ import { LocationLogData } from '../databaseModels/LocationLogData';
 import { Viewport } from '../databaseModels/databaseClasses/Viewport';
 import { useRecoilState } from 'recoil';
 import { trackingState } from '../atoms/atoms';
+import { useStudent } from './useStudent';
 
 //-----------------------------------------------------------//
 //                          HOOKS                            //
@@ -25,6 +26,7 @@ export function useLocationTracking() {
     // Error message state
     const [errorMsg, setErrorMsg] = useState<string | null>(null); 
     const [tracking, setTracking] = useRecoilState(trackingState); // Recoil state for tracking status
+    const {currentStudent, setCurrentStudent, error} = useStudent(); // Custom hook to fetch student data
     //-----------------------------------------------------------//
     //                          REFS                             //
     //-----------------------------------------------------------//
@@ -40,12 +42,18 @@ export function useLocationTracking() {
     //-----------------------------------------------------------//
     //                          METHODS                          //
     //-----------------------------------------------------------//
-    const startTracking = async (student: Student, organisation: Organisation) => {
+    const startTracking = async ( organisation: Organisation) => {
         console.log('Starting tracking called');
 
         // Prevent multiple tracking sessions from starting simultaneously
         if (tracking.isTracking) {
             setErrorMsg('Tracking already in progress');
+            return;
+        }
+
+        // Ensure student data is available
+        if (!currentStudent) {
+            setErrorMsg('No student data found while starting tracking');
             return;
         }
 
@@ -81,14 +89,14 @@ export function useLocationTracking() {
         
 
         // Save the session log to the student object
-        student.locationData[newSessionID] = newSessionLog;
+        currentStudent.locationData[newSessionID] = newSessionLog;
 
         // Save session and student references
         sessionLogRef.current = newSessionLog;
-        studentRef.current = student;
+        studentRef.current = currentStudent;
 
         // Persist session log to the database
-        await student.save().then(() => {
+        setCurrentStudent(currentStudent).then(() => {
             console.log('Session log saved to student');
         });
 

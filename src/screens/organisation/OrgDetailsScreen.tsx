@@ -9,31 +9,31 @@ import { Student } from "../../databaseModels/databaseClasses/Student";
 import MapSessionHistory from "../../components/MapSessionHistory";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useStudent } from "../../hooks/useStudent";
 
 const OrgDetailsScreen = () => {
   const clerkUser = useUser();
-  const [currentStudent, setCurrentStudent] = React.useState<Student | null>(null);
+  const {currentStudent, setCurrentStudent, error} = useStudent();
   const [loading, setLoading] = React.useState(true);
   const navigation = useNavigation<StackNavigationProp<any>>();
 
   // Method to fetch the student data
   const fetchStudent = async () => {
-    if (clerkUser.user?.id) {
-      const student = await Student.fetchById(clerkUser.user?.id);
-      console.log("Student was fetched in the OrgDetailsScreen");
-      setCurrentStudent(student);
-      setLoading(false);
+    if (error) {
+      console.log("Error fetching student in OrgDetailsScreen:", error);
+      return;
     }
   };
 
   // Run the fetchStudent method when the screen is focused (navigated to)
+  // this is in case they have just recorded a session and the the location needs to be updated on the map
   useFocusEffect(
     React.useCallback(() => {
       fetchStudent();
     }, [clerkUser.user?.id])
   );
 
- 
+
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
