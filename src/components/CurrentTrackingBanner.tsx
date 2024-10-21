@@ -1,6 +1,7 @@
 import {
   Button,
   ImageBackground,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -8,62 +9,48 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"; // Using only setState for elapsedTime
 import { elapsed_time, isTrackingState } from "../atoms/atoms";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 /**
  * Component responsible for displaying the current tracking session to the user.
  * Displays the time elapsed and organisation name for which the user is tracking.
- * Also allows the user to stop tracking, causing the component to refresh,
- * and not render because isTracking is false;
+ * Also allows the user to stop tracking.
  * @returns A created CurrentTrackingBanner Component
  */
-export default function CurrentTrackingBanner() {
-  // Don't render the component if not tracking
+const CurrentTrackingBanner = () => {
   const [isTracking, setIsTracking] = useRecoilState(isTrackingState);
-  const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time); // Manage elapsed time using Recoil
+  const setElapsedTime = useSetRecoilState(elapsed_time); // Only setElapsedTime is needed here
 
-  // useEffect to start the timer when tracking starts
+  // Start or stop the timer when tracking starts or stops
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
 
     if (isTracking) {
+      // Clear any existing timer before starting a new one
+      clearInterval(timer);
+
       // Start the timer
       timer = setInterval(() => {
         setElapsedTime((prevTime) => prevTime + 1);
       }, 1000);
     } else {
-      // Stop the timer when tracking stops
-      setElapsedTime(0); // Reset the timer when tracking is stopped
+      // Clear the timer and reset elapsed time when tracking stops
+      clearInterval(timer);
+      setElapsedTime(0); // Reset timer when tracking stops
+    }
+
+    // Cleanup interval when the component unmounts or isTracking changes
+    return () => {
       if (timer) {
         clearInterval(timer);
       }
-    }
-
-    const formatTime = (seconds: number) => {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      return `${String(minutes).padStart(2, "0")}:${String(
-        remainingSeconds
-      ).padStart(2, "0")}`;
     };
-
-    // Cleanup: Clear the timer when the component unmounts or tracking stops
-    return () => clearInterval(timer);
-  }, [isTracking]);
-
-  // Helper function to format time as MM:SS
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(
-      remainingSeconds
-    ).padStart(2, "0")}`;
-  };
+  }, [isTracking, setElapsedTime]);
 
   if (!isTracking) {
-    return null;
+    return null; // Don't render the component if tracking is not active
   }
 
   return (
@@ -73,7 +60,7 @@ export default function CurrentTrackingBanner() {
         <Text style={styles.header}> Tracking Your Location </Text>
         <View style={styles.details_container}>
           <Text style={styles.org_name}>{"organisationName"}</Text>
-          <Text style={styles.elapsed_time}> {formatTime(elapsedTime)} </Text>
+          <ElapsedTimeDisplay />
         </View>
       </View>
       <Pressable
@@ -87,10 +74,31 @@ export default function CurrentTrackingBanner() {
       </Pressable>
     </SafeAreaView>
   );
-}
+};
+
+/**
+ * A separate component that only displays the elapsed time.
+ * This component will only re-render when `elapsedTime` changes.
+ */
+const ElapsedTimeDisplay = () => {
+  const elapsedTime = useRecoilValue(elapsed_time); // Use Recoil to subscribe to elapsedTime
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return (
+      <Text>{`${String(minutes).padStart(2, "0")}:${String(
+        remainingSeconds
+      ).padStart(2, "0")}`}</Text>
+    );
+  };
+
+  return <Text style={styles.elapsed_time}> {formatTime(elapsedTime)} </Text>;
+};
 
 const styles = StyleSheet.create({
   root_container: {
+    paddingTop: Platform.OS === "ios" ? 50 : 0,
     display: "flex",
     paddingBottom: 20,
     paddingHorizontal: 30,
@@ -146,3 +154,5 @@ const styles = StyleSheet.create({
     right: 0,
   },
 });
+
+export default CurrentTrackingBanner;
