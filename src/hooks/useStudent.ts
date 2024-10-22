@@ -44,7 +44,7 @@ const setCurrentStudent = useCallback(async (student: Student | null) => {
           return;
         }
 
-        setCurrentStudent(student);
+        setCurrentStudentState(student);
       } catch (fetchError) {
         const errorMessage = "Error fetching student data";
         console.error("useStudent hook:", fetchError);
