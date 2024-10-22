@@ -16,27 +16,62 @@ import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirma
 import { useStudent } from "../../hooks/useStudent";
 
 /**
- * The `SettingsScreen` component renders a settings screen with various sections and items.
- * Each section contains a header and a list of items, each with a title and an onPress handler.
- * The screen also includes buttons for requesting data deletion and logging out.
- *
- * @returns {JSX.Element} The rendered settings screen component.
- */
-
-/**
  * SettingsScreen component renders the settings screen of the application.
- * It displays various sections of settings including profile settings, help centre, and export options.
- * Each section contains items that can be pressed to navigate to different parts of the application.
- * Additionally, it provides buttons for requesting data deletion and logging out.
  *
+ * This component displays various settings sections including profile settings, help center, and export options.
+ * Users can request data deletion, customize their profile, and log out from this screen.
+ * A data deletion confirmation popup is shown when users request to delete their data.
+ *
+ * @component
  * @returns {JSX.Element} The rendered settings screen component.
+ *
+ * @example
+ * // Usage example:
+ * <SettingsScreen />
+ *
+ * @remarks
+ * - Displays a confirmation popup for data deletion.
+ * - Provides a log out button for signing the user out.
+ * - Retrieves and uses the current student and Clerk user to manage actions like data deletion and sign out.
+ *
+ * @function
+ * @name SettingsScreen
+ *
+ * @hook
+ * @name useState
+ * @description Used to Manage the state for visibility of the `DataDeletionConfirmationPopup`
+ *
+ * @hook
+ * @name useAuth
+ * @description Provides authentication-related functions like sign-out.
+ *
+ * @hook
+ * @name useUser
+ * @description Retrieves the currently authenticated Clerk user for account management.
+ *
+ * @hook
+ * @name useNavigation
+ * @description Provides navigation methods to move to other screens such as "CustomizeAvatarScreen" and "ExportReportScreen."
+ *
+ * @callback handleSignOut
+ * @description Signs the user out using Clerk's `signOut()` method.
+ *
+ * @callback handleDataDeletion
+ * @description Deletes the current student and Clerk user accounts from the app and database.
+ *
+ * @callback handleCancel
+ * @description Cancels the data deletion request and closes the confirmation popup.
+ *
+ * @state {boolean} isDeletionPopupShown - State to control the visibility of the data deletion confirmation popup.
+ * @state {Student | undefined} currentStudent - Holds the current student data fetched using the `useStudent` hook.
+ *
+ * @throws Will log errors to the console if any actions such as logging out or deleting the user fail.
  */
 export default function SettingsScreen() {
   const { signOut } = useAuth(); // used to sign the Clerk user out
   const { user } = useUser(); // Clerk user for deleting the user's account
   const navigation = useNavigation<any>();
-  // Hook used to set the visibility of the confirmation popup shown when a user requests to delete their data
-  const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
+  const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
   const { currentStudent } = useStudent(); // Getting student in the database
 
   // Error if the student number can't be obtained.
