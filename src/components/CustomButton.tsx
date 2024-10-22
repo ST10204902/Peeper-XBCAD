@@ -11,7 +11,7 @@ import {
 
 /**
  * Props for the CustomButton component.
- * 
+ *
  * @interface CustomButtonProps
  * @property {function} onPress - Function to handle the button press event.
  * @property {string} title - The title text to display on the button.
@@ -21,16 +21,18 @@ import {
  * @property {number} [textSize] - Optional size for the button text.
  * @property {string} [label] - Optional label for accessibility purposes.
  * @property {boolean} [addFlex] - Optional flag to add flex styling to the button.
+ * @property {boolean} [disabled] - Optional flag to disable the button.
  */
 interface CustomButtonProps {
   onPress: (event: GestureResponderEvent) => void;
   title: string;
-  textColor?: string; 
-  buttonColor?: string; 
-  fontFamily?: string; 
-  textSize?: number; 
-  label?: string; 
+  textColor?: string;
+  buttonColor?: string;
+  fontFamily?: string;
+  textSize?: number;
+  label?: string;
   addFlex?: boolean;
+  disabled?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -41,7 +43,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   fontFamily,
   textSize,
   label,
-  addFlex = false
+  addFlex = false,
+  disabled = false,
 }) => {
   const [buttonHeight, setButtonHeight] = useState<number>(0);
 
@@ -67,7 +70,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     fontFamily: fontFamily || "Rany-Medium",
   };
 
-  const containerStyle = addFlex ? localStyles.flexContainer : localStyles.container;
+  const containerStyle = addFlex
+    ? localStyles.flexContainer
+    : localStyles.container;
 
   return (
     <View style={containerStyle}>
@@ -75,7 +80,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       <TouchableOpacity
         style={[localStyles.button, dynamicButtonStyle]}
         onLayout={handleLayout}
-        onPress={onPress}
+        onPress={disabled ? undefined : onPress}
+        disabled={disabled}
       >
         <Text style={[dynamicTextStyle]}>{title}</Text>
       </TouchableOpacity>
@@ -84,7 +90,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 };
 
 /**
- * Styles for the custom button. 
+ * Styles for the custom button.
  */
 const localStyles = StyleSheet.create({
   container: {
