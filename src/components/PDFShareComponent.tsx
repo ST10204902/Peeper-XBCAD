@@ -10,7 +10,7 @@ import { Student } from "../databaseModels/databaseClasses/Student";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
 //Get current student object
 
@@ -253,10 +253,7 @@ const calculateAverageSpeed = (locationLogs: Array<LocationLog>): number => {
   return Math.round(averageSpeed * 100) / 100; // Return speed rounded to 2 decimal places
 };
 
-async function testHTML(
-  student: StudentData,
-  logoBase64: string
-): Promise<string> {
+async function testHTML(student: Student, logoBase64: string): Promise<string> {
   let htmlContent = `
     <html>
       <head>
@@ -369,64 +366,86 @@ async function testHTML(
     `;
 
   // Iterate over the sessions and create a new page for each one (up to 4)
-  Array.isArray(student.locationData) &&
-    student.locationData.slice(0, 4).forEach(async (session, index) => {
+  if (student.locationData && typeof student.locationData === "object") {
+    const sessions = Object.values(student.locationData);
+    console.log("sessions: ", sessions);
+    for (let index = 0; index < Math.min(4, sessions.length); index++) {
+      const session = sessions[index];
+      console.log("session: ", session);
       const numPins = session.locationLogs.length;
+      console.log("numPins: ", numPins);
       const avgSpeed = calculateAverageSpeed(session.locationLogs);
-      const orgObj =
-        (await Organisation.fetchById(student.locationData[index].orgID)) ||
-        null;
+      console.log("avgSpeed: ", avgSpeed);
 
+      // Fetch organisation data asynchronously
+      let orgObj = null;
+      try {
+        orgObj = await Organisation.fetchById(session.orgID);
+      } catch (error) {
+        console.error(
+          `Failed to fetch organisation for session ${index}:`,
+          error
+        );
+      }
+
+      const mapURL = generateStaticMapURL(
+        session.locationLogs,
+        GOOGLE_MAPS_API_KEY
+      );
+      console.log("mapURL", mapURL);
+      // Concatenate HTML content
       htmlContent += `
-        <div class="details-container">
-          <div class="descriptor">Organisation:</div>
-          <div class="data">${orgObj?.orgName}</div>
-          <div class="address">${orgObj?.orgAddress.streetAddress}</div>
-  
-          <div class="descriptor">Start Time:</div>
-          <div class="data">${session.sessionStartTime}</div>
-          <div class="address">${orgObj?.orgAddress.suburb}</div>
-  
-          <div class="descriptor">End Time:</div>
-          <div class="data">${session.sessionEndTime}</div>
-          <div class="address">${orgObj?.orgAddress.city}</div>
-  
-          <div class="descriptor">Duration:</div>
-          <div class="data">Duration Placeholder</div>
-          <div class="address">${orgObj?.orgAddress.postalCode}</div>
-        </div>
-  
-        <div class="maps-container">
-          <img src="${
-            GOOGLE_MAPS_API_KEY
-              ? generateStaticMapURL(session.locationLogs, GOOGLE_MAPS_API_KEY)
-              : ""
-          }" class="google-maps-image" />
-        </div>
-  
-        <div class="map-details-container">
-          <div>Number of Pins: ${numPins}</div>
-          <div>Average Speed: ${avgSpeed} km/h</div>
-        </div>
-  
-        <div class="page-break"></div>
-      `;
-    });
+      <div class="details-container">
+        <div class="descriptor">Organisation:</div>
+        <div class="data">${orgObj?.orgName ?? "N/A"}</div>
+        <div class="address">${orgObj?.orgAddress?.streetAddress ?? "N/A"}</div>
+
+        <div class="descriptor">Start Time:</div>
+        <div class="data">${session.sessionStartTime ?? "N/A"}</div>
+        <div class="address">${orgObj?.orgAddress?.suburb ?? "N/A"}</div>
+
+        <div class="descriptor">End Time:</div>
+        <div class="data">${session.sessionEndTime ?? "N/A"}</div>
+        <div class="address">${orgObj?.orgAddress?.city ?? "N/A"}</div>
+
+        <div class="descriptor">Duration:</div>
+        <div class="data">Duration Placeholder</div>
+        <div class="address">${orgObj?.orgAddress?.postalCode ?? "N/A"}</div>
+      </div>
+
+      <div class="maps-container">
+        <img src="${
+          mapURL
+          // ? generateStaticMapURL(session.locationLogs, GOOGLE_MAPS_API_KEY)
+          // : ""
+        }" class="google-maps-image" />
+      </div>
+
+      <div class="map-details-container">
+        <div>Number of Pins: ${numPins}</div>
+        <div>Average Speed: ${avgSpeed} km/h</div>
+      </div>
+
+      <div class="page-break"></div>
+    `;
+    }
+  } else {
+    console.error("Failed to generate HTML");
+  }
 
   htmlContent += `</body></html>`;
-
   return htmlContent;
 }
 
-
-
 export default function PDFShareComponent() {
-
   const user = useUser() ?? null;
 
   const fetchCurrentStudent = async () => {
     if (user.user?.id) {
       currentStudent = await Student.fetchById(user.user.id);
+      //console.log("current student: ", JSON.stringify(currentStudent, null, 2));
+    } else {
+      console.log("clerk error");
     }
   };
 
@@ -435,7 +454,7 @@ export default function PDFShareComponent() {
       await fetchCurrentStudent();
       if (currentStudent) {
         const htmlContent = await testHTML(currentStudent, logoBase64);
-
+        console.log("html content: ", htmlContent);
         await Print.printAsync({
           html: htmlContent,
         });
@@ -454,12 +473,14 @@ export default function PDFShareComponent() {
 
   const printToFile = async () => {
     try {
+      await fetchCurrentStudent();
       if (!currentStudent) {
         Alert.alert("Error", "Current student data is not available.");
       } else if (!currentStudent?.locationData) {
         Alert.alert("Error", "No location data available.");
       } else {
         const htmlContent = await testHTML(currentStudent, logoBase64);
+        
 
         const { uri } = await Print.printToFileAsync({ html: htmlContent });
         console.log("File saved to: ", uri);
@@ -471,8 +492,10 @@ export default function PDFShareComponent() {
     }
   };
 
-  <View>
-    <Button title="Print" onPress={print} />
-    <Button title="Export Data" onPress={printToFile} />
-  </View>;
+  return (
+    <View>
+      <Button title="Print" onPress={print} />
+      <Button title="Export Data" onPress={printToFile} />
+    </View>
+  );
 }
