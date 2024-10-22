@@ -7,7 +7,7 @@ import { ClerkProvider } from "@clerk/clerk-expo";
 import FontLoader from "./src/components/FontLoader";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import AppNavigator from "./src/screens/Navigation";
-import { registerForPushNotifications } from "./src/services/RequestNotificationPermissions";
+import { registerForPushNotificationsAsync } from "./src/services/RequestNotificationPermissions";
 import * as Notifications from "expo-notifications";
 
 /**
@@ -44,8 +44,17 @@ export default function App() {
   // Registering the push notifications for the application.
   // The '[]' empty dependency array ensures this only happens once, and not every time the component is rendered.
   useEffect(() => {
-    registerForPushNotifications();
+    registerForPushNotificationsAsync();
   }, []);
+
+
+  Notifications.addNotificationReceivedListener(notification => {
+    console.log('Notification received:', notification);
+  });
+  
+  Notifications.addNotificationResponseReceivedListener(response => {
+    console.log('Notification response received:', response);
+  });
 
   // Setting the notification handler using expo-notifications
   // Determines how notifications will appear for the application

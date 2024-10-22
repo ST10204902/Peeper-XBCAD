@@ -19,6 +19,7 @@ import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import StudentLocationMap from "../components/StudentLocationMap";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { trackingState, elapsed_time } from "../atoms/atoms";
+import { registerForPushNotificationsAsync } from '../services/RequestNotificationPermissions';
 import {
   requestNotificationPermissions,
   showOrUpdateTrackingNotification,
@@ -56,7 +57,13 @@ export default function LandingScreen() {
   //-----------------------------------------------------------//
 
   useEffect(() => {
-    requestNotificationPermissions();
+    const setPushToken = async () => {
+      const token = await registerForPushNotificationsAsync();
+      console.log(token);
+      if (currentStudent && token) {
+        currentStudent.pushToken = token;
+      }
+    }
   }, []);
 
   useEffect(() => {
