@@ -10,15 +10,50 @@ interface Props {
   onCancel: () => void;
 }
 
+/**
+ * DataDeletionConfirmationPopup component handles the confirmation process for data deletion.
+ *
+ * This component prompts the user to confirm their request for data deletion by entering their
+ * student number. If the entered student number matches the one provided via props, the deletion
+ * is confirmed. Otherwise, an error message is displayed to the console.
+ *
+ * @component
+ * @returns {JSX.Element} A functional component that renders a popup for confirming data deletion.
+ *
+ * @example
+ * <DataDeletionConfirmationPopup studentNumber="ST10020300" onConfirmation={handleConfirm} onCancel={handleCancel} />
+ *
+ * @remarks
+ * - Takes the student's number as a prop and compares it with the input entered by the user.
+ * - Displays an error if the input doesn't match the student's number.
+ * - Executes `onConfirmation` when the student number matches, and `onCancel` when the cancellation is chosen.
+ *
+ * @function
+ * @name DataDeletionConfirmationPopup
+ *
+ * @hook
+ * @name useState
+ * @description Manages local state for the confirmation input and error message visibility.
+ *
+ * @param {string} studentNumber - The student's number that must be confirmed by the user.
+ * @param {function} onConfirmation - Callback executed when the student number is confirmed.
+ * @param {function} onCancel - Callback executed when the user cancels the confirmation.
+ *
+ * @state {string} confirmationInput - Stores the user’s input for confirming the student number.
+ * @state {boolean} hasError - Determines if the error message indicating a mismatch in student numbers should be displayed.
+ *
+ * @throws Will log an error to the console if the student number is null or empty.
+ *
+ * @callback handleConfirm
+ * @description Checks if the input matches the student number and either calls `onConfirmation` or displays an error.
+ */
 export default function DataDeletionConfirmationPopup({
   studentNumber,
   onConfirmation,
   onCancel,
 }: Props) {
-  // Hook for managing the state of the confirmation input entered by the user
-  const [confirmationInput, setConfirmationInput] = useState("");
-  // Hook for managing the visibility of the error message indicating that the student numbers don't match
-  const [hasError, setHasError] = useState(false);
+  const [confirmationInput, setConfirmationInput] = useState(""); // State of the confirmation input entered by the user
+  const [hasError, setHasError] = useState(false); // Visibility of the error message indicating that the student numbers don't match
 
   // Don't render if student number is null or empty
   if (!studentNumber) {
@@ -30,9 +65,9 @@ export default function DataDeletionConfirmationPopup({
 
   const handleConfirm = () => {
     if (confirmationInput.toUpperCase() === studentNumber.toUpperCase()) {
-      onConfirmation();
+      onConfirmation(); // run onConfirmation code
     } else {
-      setHasError(true);
+      setHasError(true); // show error if failed validation
     }
   };
 
@@ -131,3 +166,4 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
 });
+// End of File
