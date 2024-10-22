@@ -1,5 +1,13 @@
 import * as React from "react";
-import { View, StyleSheet, Button, Platform, Text, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Button,
+  Platform,
+  Text,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import * as Print from "expo-print";
 import { shareAsync } from "expo-sharing";
 
@@ -9,12 +17,9 @@ import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../databaseModels/databaseClasses/Student";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
+import { UserResource } from "@clerk/types";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
-
-//Get current student object
-
-let currentStudent: Student | null = null;
 
 const haversineDistance = (
   lat1: number,
@@ -66,33 +71,24 @@ const calculateZoomLevel = (PinData: Array<LocationLog>) => {
 };
 
 const getMinAndMaxDistance = (PinData: Array<LocationLog>) => {
-  let minDistance = 0;
-  let maxDistance = 0;
+  let minDistance = Number.MAX_VALUE;
+  let maxDistance = Number.MIN_VALUE;
   for (let i = 0; i < PinData.length - 1; i++) {
-    let pin1 = PinData[i];
-    if (i === PinData.length - 1) {
-      break;
-    }
+    const pin1 = PinData[i];
     const pin2 = PinData[i + 1];
 
-    const pin1Latitude =
-      typeof pin1.latitude === "number" ? pin1.latitude : Number(pin1.latitude);
-    const pin1Longitude =
-      typeof pin1.longitude === "number"
-        ? pin1.longitude
-        : Number(pin1.longitude);
-    const pin2Latitude =
-      typeof pin2.latitude === "number" ? pin2.latitude : Number(pin2.latitude);
-    const pin2Longitude =
-      typeof pin2.longitude === "number"
-        ? pin2.longitude
-        : Number(pin2.longitude);
+    const pin1Latitude = pin1.latitude;
+    const pin1Longitude = pin1.longitude;
+    const pin2Latitude = pin2.latitude;
+    const pin2Longitude = pin2.longitude;
+
     let currentDistance = haversineDistance(
       pin1Latitude,
       pin1Longitude,
       pin2Latitude,
       pin2Longitude
     );
+
     if (currentDistance < minDistance) {
       minDistance = currentDistance;
     }
@@ -100,7 +96,7 @@ const getMinAndMaxDistance = (PinData: Array<LocationLog>) => {
       maxDistance = currentDistance;
     }
   }
-  //convert km to meters
+  // Convert km to meters
   minDistance = minDistance * 1000;
   maxDistance = maxDistance * 1000;
   return { minDistance, maxDistance };
@@ -172,26 +168,16 @@ const generateStaticMapURL = (
   const mapType = "maptype=roadmap";
 
   const { minDistance, maxDistance } = getMinAndMaxDistance(PinData);
-  console.log("minDistance", minDistance);
-  console.log("maxDistance", maxDistance);
 
   // Generate polyline path to connect the pins with varying colors
   const pathSegments = [];
   for (let i = 0; i < PinData.length - 1; i++) {
     const pin1 = PinData[i];
     const pin2 = PinData[i + 1];
-    const pin1Latitude =
-      typeof pin1.latitude === "number" ? pin1.latitude : Number(pin1.latitude);
-    const pin1Longitude =
-      typeof pin1.longitude === "number"
-        ? pin1.longitude
-        : Number(pin1.longitude);
-    const pin2Latitude =
-      typeof pin2.latitude === "number" ? pin2.latitude : Number(pin2.latitude);
-    const pin2Longitude =
-      typeof pin2.longitude === "number"
-        ? pin2.longitude
-        : Number(pin2.longitude);
+    const pin1Latitude = Number(pin1.latitude);
+    const pin1Longitude = Number(pin1.longitude);
+    const pin2Latitude = Number(pin2.latitude);
+    const pin2Longitude = Number(pin2.longitude);
 
     const distance = haversineDistance(
       pin1Latitude,
@@ -201,7 +187,6 @@ const generateStaticMapURL = (
     );
 
     const color = getColorBasedOnDistance(distance, minDistance, maxDistance);
-    console.log("color", color);
     pathSegments.push(
       `path=color:${color}|weight:2|${pin1.latitude},${pin1.longitude}|${pin2.latitude},${pin2.longitude}`
     );
@@ -216,7 +201,6 @@ const generateStaticMapURL = (
       }`
   ).join("&");
   const fullURL = `${baseUrl}${center}&${zoom}&${size}&${mapType}&${path}&${markers}&key=${apiKey}`;
-  console.log(fullURL);
   return `${baseUrl}${center}&${zoom}&${size}&${mapType}&${path}&${markers}&key=${apiKey}`;
 };
 
@@ -367,32 +351,39 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
 
   // Iterate over the sessions and create a new page for each one (up to 4)
   if (student.locationData && typeof student.locationData === "object") {
-    const sessions = Object.values(student.locationData);
-    console.log("sessions: ", sessions);
+    const sessions = Object.values(student.locationData).slice(0, 4);
+
+    // Fetch all organization data in parallel
+    const orgPromises = sessions.map((session) =>
+      Organisation.fetchById(session.orgID)
+    );
+    const orgObjects = await Promise.all(
+      orgPromises.map((p) => p.catch((e) => null))
+    );
+
     for (let index = 0; index < Math.min(4, sessions.length); index++) {
       const session = sessions[index];
-      console.log("session: ", session);
-      const numPins = session.locationLogs.length;
-      console.log("numPins: ", numPins);
-      const avgSpeed = calculateAverageSpeed(session.locationLogs);
-      console.log("avgSpeed: ", avgSpeed);
+      const orgObj = orgObjects[index];
 
-      // Fetch organisation data asynchronously
-      let orgObj = null;
-      try {
-        orgObj = await Organisation.fetchById(session.orgID);
-      } catch (error) {
-        console.error(
-          `Failed to fetch organisation for session ${index}:`,
-          error
-        );
-      }
+      //Parse start and end times
+      const startTime = new Date(session.sessionStartTime);
+      const endTime = new Date(session.sessionEndTime);
+
+      const durationMs = endTime.getTime() - startTime.getTime();
+      const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+      const durationMinutes = Math.floor(
+        (durationMs % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      const durationString = `${durationHours} hours, ${durationMinutes} minutes`;
+
+      const numPins = session.locationLogs.length;
+      const avgSpeed = calculateAverageSpeed(session.locationLogs);
 
       const mapURL = generateStaticMapURL(
         session.locationLogs,
         GOOGLE_MAPS_API_KEY
       );
-      console.log("mapURL", mapURL);
+
       // Concatenate HTML content
       htmlContent += `
       <div class="details-container">
@@ -409,16 +400,12 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
         <div class="address">${orgObj?.orgAddress?.city ?? "N/A"}</div>
 
         <div class="descriptor">Duration:</div>
-        <div class="data">Duration Placeholder</div>
+        <div class="data">${durationString ?? "N/A"}</div>
         <div class="address">${orgObj?.orgAddress?.postalCode ?? "N/A"}</div>
       </div>
 
       <div class="maps-container">
-        <img src="${
-          mapURL
-          // ? generateStaticMapURL(session.locationLogs, GOOGLE_MAPS_API_KEY)
-          // : ""
-        }" class="google-maps-image" />
+        <img src="${mapURL}" class="google-maps-image" />
       </div>
 
       <div class="map-details-container">
@@ -438,23 +425,40 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
 }
 
 export default function PDFShareComponent() {
+  const [currentStudent, setCurrentStudent] = React.useState<Student | null>(
+    null
+  );
   const user = useUser() ?? null;
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const fetchCurrentStudent = async () => {
-    if (user.user?.id) {
-      currentStudent = await Student.fetchById(user.user.id);
-      //console.log("current student: ", JSON.stringify(currentStudent, null, 2));
+  const fetchCurrentStudent = async (): Promise<Student | null> => {
+    if (user?.user?.id) {
+      try {
+        setLoading(true);
+        const student = await Student.fetchById(user.user.id);
+        setCurrentStudent(student);
+        return student;
+      } catch (error) {
+        console.error("Error fetching student:", error);
+        Alert.alert("Error", "Failed to fetch student data.");
+        return null;
+      } finally {
+        setLoading(false);
+      }
     } else {
-      console.log("clerk error");
+      Alert.alert("Error", "User not authenticated.");
+      return null;
     }
   };
 
   const print = async () => {
     try {
-      await fetchCurrentStudent();
-      if (currentStudent) {
-        const htmlContent = await testHTML(currentStudent, logoBase64);
-        console.log("html content: ", htmlContent);
+      const student = await fetchCurrentStudent();
+      if (student) {
+        setError(null);
+        setLoading(true);
+        const htmlContent = await testHTML(student, logoBase64);
         await Print.printAsync({
           html: htmlContent,
         });
@@ -468,34 +472,43 @@ export default function PDFShareComponent() {
       } else {
         Alert.alert("Error", "An unknown error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   const printToFile = async () => {
     try {
-      await fetchCurrentStudent();
-      if (!currentStudent) {
+      const student = await fetchCurrentStudent();
+      if (!student) {
+        setError("Current student data is not available.");
         Alert.alert("Error", "Current student data is not available.");
-      } else if (!currentStudent?.locationData) {
+      } else if (!student.locationData) {
+        setError("No location data available.");
         Alert.alert("Error", "No location data available.");
       } else {
-        const htmlContent = await testHTML(currentStudent, logoBase64);
-        
+        setError(null);
+        setLoading(true);
+        const htmlContent = await testHTML(student, logoBase64);
 
         const { uri } = await Print.printToFileAsync({ html: htmlContent });
-        console.log("File saved to: ", uri);
         await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
       }
     } catch (error) {
       console.error("Failed to print to file", error);
+      setError("Failed to print to file.");
       Alert.alert("Error", "Failed to print to file.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View>
-      <Button title="Print" onPress={print} />
-      <Button title="Export Data" onPress={printToFile} />
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+      {error && <Text>{error}</Text>}
+      <Button title="Print" onPress={print} disabled={loading} />
+      <Button title="Export Data" onPress={printToFile} disabled={loading} />
     </View>
   );
 }
