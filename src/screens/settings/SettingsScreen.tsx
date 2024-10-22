@@ -12,6 +12,7 @@ import LessonsScreen from './LessonsScreen';
 import ExportReportScreen from './ExportReportScreen';
 
 
+import PDFShareComponent from "../../components/PDFShareComponent";
 
 /**
  * The `SettingsScreen` component renders a settings screen with various sections and items.
