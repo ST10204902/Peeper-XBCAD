@@ -377,6 +377,7 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
       const durationString = `${durationHours} hours, ${durationMinutes} minutes`;
 
       const numPins = session.locationLogs.length;
+      console.log("numPins: ", numPins);
       const avgSpeed = calculateAverageSpeed(session.locationLogs);
 
       const mapURL = generateStaticMapURL(
