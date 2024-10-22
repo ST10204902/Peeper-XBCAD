@@ -1,28 +1,30 @@
-//PDFShareComponent
 import * as React from "react";
 import {
   View,
-  StyleSheet,
-  Button,
-  Platform,
   Text,
   Alert,
   ActivityIndicator,
 } from "react-native";
 import * as Print from "expo-print";
 import { shareAsync } from "expo-sharing";
-
 import { logoBase64 } from "../assets/logoBase64";
-import { StudentData } from "../databaseModels/StudentData";
 import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../databaseModels/databaseClasses/Student";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
-import { UserResource } from "@clerk/types";
 import CustomButton from "./CustomButton";
+import memoizeOne from "memoize-one";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
+/**
+ * Calculate the distance between two latitude and longitude coordinates using the Haversine formula.
+ * @param lat1 - The latitude of the first point.
+ * @param lon1 - The longitude of the first point.
+ * @param lat2 - The latitude of the second point.
+ * @param lon2 - The longitude of the second point.
+ * @returns Distance in kilometers between the two points.
+ */
 const haversineDistance = (
   lat1: number,
   lon1: number,
@@ -46,9 +48,14 @@ const haversineDistance = (
   return distance;
 };
 
-const calculateZoomLevel = (PinData: Array<LocationLog>) => {
-  const latitudes = PinData.map((pin) => parseFloat(pin.latitude.toString()));
-  const longitudes = PinData.map((pin) => parseFloat(pin.longitude.toString()));
+/**
+ * Calculate the zoom level for a Google Maps static image based on the spread of location data.
+ * @param locationLogs - An array of location logs containing latitude and longitude coordinates.
+ * @returns Calculated zoom level for the static map image. Between 10 and 16.
+ */
+const calculateZoomLevel = (locationLogs: Array<LocationLog>) => {
+  const latitudes = locationLogs.map((pin) => parseFloat(pin.latitude.toString()));
+  const longitudes = locationLogs.map((pin) => parseFloat(pin.longitude.toString()));
 
   const maxLat = Math.max(...latitudes);
   const minLat = Math.min(...latitudes);
@@ -72,12 +79,17 @@ const calculateZoomLevel = (PinData: Array<LocationLog>) => {
   }
 };
 
-const getMinAndMaxDistance = (PinData: Array<LocationLog>) => {
+/**
+ * Calculate the minimum and maximum distance between two location logs in a given array.
+ * @param locationLogs - An array of location logs containing latitude and longitude coordinates.
+ * @returns Object containing the minimum and maximum distances in meters.
+ */
+const getMinAndMaxDistance = (locationLogs: Array<LocationLog>) => {
   let minDistance = Number.MAX_VALUE;
   let maxDistance = Number.MIN_VALUE;
-  for (let i = 0; i < PinData.length - 1; i++) {
-    const pin1 = PinData[i];
-    const pin2 = PinData[i + 1];
+  for (let i = 0; i < locationLogs.length - 1; i++) {
+    const pin1 = locationLogs[i];
+    const pin2 = locationLogs[i + 1];
 
     const pin1Latitude = pin1.latitude;
     const pin1Longitude = pin1.longitude;
@@ -104,6 +116,13 @@ const getMinAndMaxDistance = (PinData: Array<LocationLog>) => {
   return { minDistance, maxDistance };
 };
 
+/**
+ * Convert HSL color to RGB color.
+ * @param h - Hue value (0-360).
+ * @param s - Saturation value (0-1).
+ * @param l - Lightness value (0-1).
+ * @returns Array of RGB values.
+ */
 function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   h /= 360; // Convert hue to a fraction between 0 and 1
   let r: number, g: number, b: number;
@@ -132,6 +151,13 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
+/**
+ * Generate a colour based on the distance between two location logs.
+ * @param distance - Distance between two location logs in kilometers.
+ * @param minDistance - Minimum distance between two location logs in kilometers.
+ * @param maxDistance - Maximum distance between two location logs in kilometers.
+ * @returns Hexadecimal colour string.
+ */
 const getColorBasedOnDistance = (
   distance: number,
   minDistance: number,
@@ -147,35 +173,41 @@ const getColorBasedOnDistance = (
     .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 };
 
+/**
+ * Generate a static Google Maps image URL based on location data.
+ * @param locationLogs - An array of location logs containing latitude and longitude coordinates.
+ * @param apiKey - Google Maps API key.
+ * @returns URL for the static Google Maps image.
+ */
 const generateStaticMapURL = (
-  PinData: Array<LocationLog>,
+  locationLogs: Array<LocationLog>,
   apiKey: string
 ): string => {
   const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
 
   // Calculate the center of the map based on the average latitude and longitude
   const avgLat =
-    PinData.reduce((sum, pin) => sum + parseFloat(pin.latitude.toString()), 0) /
-    PinData.length;
+    locationLogs.reduce((sum, pin) => sum + parseFloat(pin.latitude.toString()), 0) /
+    locationLogs.length;
   const avgLng =
-    PinData.reduce(
+    locationLogs.reduce(
       (sum, pin) => sum + parseFloat(pin.longitude.toString()),
       0
-    ) / PinData.length;
+    ) / locationLogs.length;
   const center = `center=${avgLat},${avgLng}`;
 
   // Dynamically calculate zoom level based on location data spread
-  const zoom = `zoom=${calculateZoomLevel(PinData)}`;
+  const zoom = `zoom=${calculateZoomLevel(locationLogs)}`;
   const size = "size=600x400";
   const mapType = "maptype=roadmap";
 
-  const { minDistance, maxDistance } = getMinAndMaxDistance(PinData);
+  const { minDistance, maxDistance } = getMinAndMaxDistance(locationLogs);
 
   // Generate polyline path to connect the pins with varying colors
   const pathSegments = [];
-  for (let i = 0; i < PinData.length - 1; i++) {
-    const pin1 = PinData[i];
-    const pin2 = PinData[i + 1];
+  for (let i = 0; i < locationLogs.length - 1; i++) {
+    const pin1 = locationLogs[i];
+    const pin2 = locationLogs[i + 1];
     const pin1Latitude = Number(pin1.latitude);
     const pin1Longitude = Number(pin1.longitude);
     const pin2Latitude = Number(pin2.latitude);
@@ -196,7 +228,7 @@ const generateStaticMapURL = (
   const path = pathSegments.join("&");
 
   // Generate the markers parameter for each pin with labels showing the count
-  const markers = PinData.map(
+  const markers = locationLogs.map(
     (pin, index) =>
       `markers=color:red%7Clabel:${index + 1}%7C${pin.latitude},${
         pin.longitude
@@ -206,8 +238,12 @@ const generateStaticMapURL = (
   return `${baseUrl}${center}&${zoom}&${size}&${mapType}&${path}&${markers}&key=${apiKey}`;
 };
 
-// Calculate the average speed between location logs in kilometers per hour
-const calculateAverageSpeed = (locationLogs: Array<LocationLog>): number => {
+/**
+ * Calculate the average speed between location logs in kilometers per hour.
+ * @param locationLogs - Array of location logs.
+ * @returns Average speed in km/h.
+ */
+const calculateAverageSpeed = memoizeOne((locationLogs: Array<LocationLog>): number => {
   if (locationLogs.length < 2) return 0;
 
   let totalDistance = 0; // in kilometers
@@ -237,8 +273,14 @@ const calculateAverageSpeed = (locationLogs: Array<LocationLog>): number => {
   // Calculate average speed (distance/time)
   const averageSpeed = totalTime > 0 ? totalDistance / totalTime : 0;
   return Math.round(averageSpeed * 100) / 100; // Return speed rounded to 2 decimal places
-};
+});
 
+/**
+ * Generate an HTML report for a student's location data.
+ * @param student - The student object containing location data.
+ * @param logoBase64 - Base64 encoded logo image.
+ * @returns HTML content for the report.
+ */
 async function testHTML(student: Student, logoBase64: string): Promise<string> {
   let htmlContent = `
     <html>
@@ -426,6 +468,10 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
   return htmlContent;
 }
 
+/**
+ * Component to share a PDF report of a student's location data.
+ * @returns React component
+ */
 export default function PDFShareComponent() {
   const [currentStudent, setCurrentStudent] = React.useState<Student | null>(
     null
@@ -454,31 +500,13 @@ export default function PDFShareComponent() {
     }
   };
 
-  const print = async () => {
-    try {
-      const student = await fetchCurrentStudent();
-      if (student) {
-        setError(null);
-        setLoading(true);
-        const htmlContent = await testHTML(student, logoBase64);
-        await Print.printAsync({
-          html: htmlContent,
-        });
-      } else {
-        throw new Error("Current student data is not available.");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert("Error", error.message);
-        console.error("Failed to print", error);
-      } else {
-        Alert.alert("Error", "An unknown error occurred.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  /**
+   * Print the student's location data to a PDF file and share it.
+   * If the student or location data is not available, an error message is displayed.
+   * If the sharing process fails, an error message is displayed.
+   * If the process is successful, the loading state is set to false.
+   * @returns {Promise<void>}
+   */
   const printToFile = async () => {
     try {
       const student = await fetchCurrentStudent();
