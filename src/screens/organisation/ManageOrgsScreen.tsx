@@ -10,6 +10,7 @@ import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../../databaseModels/databaseClasses/Student";
 import { useFocusEffect } from "@react-navigation/native";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
+import { useNavigation } from "@react-navigation/native";
 
 /**
  * Component For the ManageOrgsScreen
@@ -45,6 +46,7 @@ import { Organisation } from "../../databaseModels/databaseClasses/Organisation"
  * @property {number} orgLongitude - The longitude coordinate of the organization.
  */
 export default function ManageOrgsScreen() {
+  const navigation = useNavigation();
   const clerkUser = useUser();
   const [currentStudent, setCurrentStudent] = React.useState<Student | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -75,6 +77,18 @@ export default function ManageOrgsScreen() {
   console.log("filtered orgs:", itemList);
   }
 
+  const handleRequestNewOrganisation = () => {
+      navigation.navigate("RequestOrgScreen" as never);
+    };
+  
+    const handleRequestProgress = () => {
+      navigation.navigate("RequestProgressScreen" as never);
+    };
+  
+    const handleRemoveOrganisation = () => {
+      navigation.navigate("RemoveOrgScreen" as never);
+    };
+
 // This constant is defined here to keep the render method clean and readable.
   // By defining it outside of the return statement, we can perform any necessary
   // calculations or logic before rendering the JSX. This approach helps in:
@@ -101,7 +115,7 @@ export default function ManageOrgsScreen() {
       <Text style={styles.sectionHeading}>Organisation Management</Text>
       <View style={styles.buttonWrapper}>
         <CustomButton
-          onPress={() => alert("Add Organisation")}
+          onPress={handleRequestNewOrganisation}
           title="Request a New Organisation"
           textSize={18}
           buttonColor="#FE7143"
@@ -111,7 +125,7 @@ export default function ManageOrgsScreen() {
       </View>
       <View style={styles.buttonWrapper}>
         <CustomButton
-          onPress={() => alert("Edit Organisation")}
+          onPress={handleRequestProgress}
           title="Request Progress"
           textSize={18}
           buttonColor="#C8B0FF"
@@ -121,7 +135,7 @@ export default function ManageOrgsScreen() {
       </View>
       <View style={styles.buttonWrapper}>
         <CustomButton
-          onPress={() => alert("Delete Organisation")}
+          onPress={handleRemoveOrganisation}
           title="Remove Organisation"
           textSize={18}
           buttonColor="#FCDE39"
