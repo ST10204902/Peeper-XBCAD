@@ -42,6 +42,19 @@ const OrgDetailsScreen = () => {
     }, [currentStudent, error, loading, saving])
   );
 
+  
+if (loading) {
+  return <Text>Loading student data...</Text>;
+}
+
+if (error) {
+  return <Text>Error loading student data: {error.message}</Text>;
+}
+
+if (!currentStudent) {
+  return <Text>No student data available.</Text>;
+}
+
 
   return (
     <SafeAreaView style={styles.container}>

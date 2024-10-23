@@ -19,6 +19,11 @@ import CustomButton from "../../components/CustomButton";
  * @returns {JSX.Element} The rendered component.
  */
 export default function RequestOrgScreen() {
+
+
+
+
+  
   return (
     <ScrollView style={styles.screenLayout}>
       <Text style={styles.headerText}>Request an Organisation</Text>
