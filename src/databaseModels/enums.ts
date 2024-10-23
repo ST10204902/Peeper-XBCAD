@@ -6,5 +6,5 @@ export enum AdminType{
 export enum ApprovalStatus{
     Pending = 0,
     Denied = 1,
-    Aproved = 2,
+    Approved = 2,
 }
