@@ -1,5 +1,5 @@
 //...............ooooooooooo000000000000 SettingsScreen.tsx 000000000000ooooooooooo...............//
-import { View, ScrollView, StyleSheet, Text } from "react-native";
+import { View, ScrollView, StyleSheet, Text, Switch } from "react-native";
 import { SettingsSection } from "../../components/SettingsSection";
 import CustomButton from "../../components/CustomButton";
 import styles from "../../styles/SettingStyle";
@@ -14,6 +14,17 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useState } from "react";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
 import { useStudent } from "../../hooks/useStudent";
+import { useTheme, darkTheme, lightTheme } from '../../styles/ThemeContext';
+
+
+
+/**
+ * The `SettingsScreen` component renders a settings screen with various sections and items.
+ * Each section contains a header and a list of items, each with a title and an onPress handler.
+ * The screen also includes buttons for requesting data deletion and logging out.
+ *
+ * @returns {JSX.Element} The rendered settings screen component.
+ */
 
 /**
  * SettingsScreen component renders the settings screen of the application.
@@ -71,6 +82,8 @@ export default function SettingsScreen() {
   const { signOut } = useAuth(); // used to sign the Clerk user out
   const { user } = useUser(); // Clerk user for deleting the user's account
   const navigation = useNavigation<any>();
+  const { theme, toggleTheme } = useTheme();
+
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
   const { currentStudent } = useStudent(); // Getting student in the database
 
@@ -137,35 +150,39 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>Settings</Text>
-        <View style={styles.content}>
-          {settingsSections.map((section) => (
-            <SettingsSection
-              key={section.header}
-              header={section.header}
-              items={section.items}
-            />
-          ))}
-
-          <View style={styles.buttonContainer}>
-            <CustomButton
-              title="REQUEST DATA DELETION"
-              fontFamily="Quittance"
-              textColor="#161616"
-              textSize={20}
-              buttonColor="#D9E7FF"
-              onPress={() => setIsDeletionPopupShown(true)}
-            />
-            <CustomButton
-              title="LOG OUT"
-              fontFamily="Quittance"
-              textColor="#161616"
-              textSize={20}
-              buttonColor="#FE7143"
-              onPress={handleSignOut}
-            />
-          </View>
+      <Text style={styles.title}>Settings</Text>
+      <Switch
+        value={theme === darkTheme}
+        onValueChange={toggleTheme}
+      />
+      <View style={styles.content}>
+        {settingsSections.map((section) => (
+        <SettingsSection
+          key={section.header}
+          header={section.header}
+          items={section.items}
+        />
+        ))}
+        
+        <View style={styles.buttonContainer}>
+        <CustomButton
+          title="REQUEST DATA DELETION"
+          fontFamily='Quittance'
+          textColor={theme.text}
+          textSize={20}
+          buttonColor={theme.lightBlue}
+          onPress={() => console.log('Request data deletion')}
+        />
+        <CustomButton
+          title="LOG OUT"
+          fontFamily='Quittance'
+          textColor='#161616'
+          textSize={20}
+          buttonColor={theme.orange}
+          onPress={() => console.log('Log out')}
+        />
         </View>
+      </View>
       </ScrollView>
       {isDeletionPopupShown ? (
         <DataDeletionConfirmationPopup

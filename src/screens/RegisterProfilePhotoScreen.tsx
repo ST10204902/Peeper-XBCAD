@@ -88,7 +88,10 @@ function RegisterProfilePhotoScreen() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.label_almost_done}>Almost Done!</Text>
       <Text style={styles.label_choose_avatar}>Choose Avatar:</Text>
-      <AvatarComponent onAvatarSelected={(uri: string) => setAvatarURI(uri)} />
+      <AvatarComponent
+        onAvatarSelected={(uri: string) => setAvatarURI(uri)}
+        selectedAvatarURI={avatarURI} // Pass the selected avatar URI
+      />
       <View style={styles.submit_button_container}>
         <CustomButton
           onPress={() => {
