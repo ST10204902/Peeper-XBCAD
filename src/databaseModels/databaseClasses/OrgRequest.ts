@@ -3,6 +3,7 @@ import { DatabaseUtility } from './DatabaseUtility';
 import { OrgRequestData } from '../OrgRequestData';
 import { OrgAddress } from './OrgAddress';
 import { ApprovalStatus } from '../enums';
+import { equalTo, onValue, orderByChild, query } from 'firebase/database';
 
 export class OrgRequest implements OrgRequestData {
   request_id: string;
@@ -53,5 +54,26 @@ export class OrgRequest implements OrgRequestData {
       phoneNo: this.phoneNo,
       approvalStatus: this.approvalStatus,
     };
+  }
+
+  static listenToRequestsByStudentId(
+    studentID: string,
+    callback: (requests: OrgRequest[]) => void
+  ): () => void {
+    const dbRef = DatabaseUtility.getRef('orgRequests');
+    const queryRef = query(dbRef, orderByChild('studentID'), equalTo(studentID));
+
+    // Set up the listener
+    const unsubscribe = onValue(queryRef, (snapshot) => {
+      const requests: OrgRequest[] = [];
+      snapshot.forEach((childSnapshot) => {
+        const data = childSnapshot.val() as OrgRequestData;
+        requests.push(new OrgRequest(data));
+      });
+      callback(requests);
+    });
+
+    // Return the unsubscribe function
+    return unsubscribe;
   }
 }
