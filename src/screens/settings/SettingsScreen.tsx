@@ -1,5 +1,5 @@
 //...............ooooooooooo000000000000 SettingsScreen.tsx 000000000000ooooooooooo...............//
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, Switch } from 'react-native';
 import { SettingsSection } from '../../components/SettingsSection';
 import CustomButton from '../../components/CustomButton';
 import styles from '../../styles/SettingStyle';
@@ -10,6 +10,8 @@ import TermsAndConditionsScreen from './TermsAndConditionsScreen';
 import PrivacyPolicyScreen from './PrivacyPolicyScreen';
 import LessonsScreen from './LessonsScreen';
 import ExportReportScreen from './ExportReportScreen';
+import { useTheme, darkTheme, lightTheme } from '../../styles/ThemeContext';
+
 
 
 
@@ -32,6 +34,8 @@ import ExportReportScreen from './ExportReportScreen';
 export default function SettingsScreen() {
 
   const navigation = useNavigation<any>();
+  const { theme, toggleTheme } = useTheme();
+
 
   const settingsSections: SettingsSection[] = [
     {
@@ -75,6 +79,10 @@ export default function SettingsScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
       <Text style={styles.title}>Settings</Text>
+      <Switch
+        value={theme === darkTheme}
+        onValueChange={toggleTheme}
+      />
       <View style={styles.content}>
         {settingsSections.map((section) => (
         <SettingsSection
@@ -88,9 +96,9 @@ export default function SettingsScreen() {
         <CustomButton
           title="REQUEST DATA DELETION"
           fontFamily='Quittance'
-          textColor='#161616'
+          textColor={theme.text}
           textSize={20}
-          buttonColor='#D9E7FF'
+          buttonColor={theme.lightBlue}
           onPress={() => console.log('Request data deletion')}
         />
         <CustomButton
@@ -98,7 +106,7 @@ export default function SettingsScreen() {
           fontFamily='Quittance'
           textColor='#161616'
           textSize={20}
-          buttonColor='#FE7143'
+          buttonColor={theme.orange}
           onPress={() => console.log('Log out')}
         />
         </View>
