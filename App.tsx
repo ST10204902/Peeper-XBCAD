@@ -9,6 +9,7 @@ import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import AppNavigator from "./src/screens/Navigation";
 import { registerForPushNotificationsAsync } from "./src/services/RequestNotificationPermissions";
 import * as Notifications from "expo-notifications";
+import { ThemeProvider } from "./src/styles/ThemeContext";
 
 /**
  * App component
@@ -112,6 +113,7 @@ export default function App() {
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={localTokenCache}>
       <FontLoader>
+        <ThemeProvider>
         <RecoilRoot>
             <CurrentTrackingBanner />
             <NavigationContainer>
@@ -119,6 +121,7 @@ export default function App() {
               <AppNavigator />
             </NavigationContainer>
         </RecoilRoot>
+        </ThemeProvider>
       </FontLoader>
     </ClerkProvider>
   );
