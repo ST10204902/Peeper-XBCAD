@@ -19,7 +19,7 @@ export type RootStackParamsList = {
   BottomNavigationBar: undefined;
   // Organisations
   OrgDetails: undefined;
-  ManageOrgsScreen: undefined;
+  ManageOrgsScreen: Student;
   RemoveOrgScreen: undefined;
   RequestOrgScreen: undefined;
   RequestProgressScreen: undefined;

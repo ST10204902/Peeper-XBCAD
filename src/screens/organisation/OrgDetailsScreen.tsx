@@ -11,6 +11,7 @@ import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation
 import { RootStackParamsList } from "../RootStackParamsList";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useStudent } from "../../hooks/useStudent";
+import { set } from "firebase/database";
 
 const OrgDetailsScreen = () => {
   const clerkUser = useUser();
@@ -32,6 +33,7 @@ const OrgDetailsScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchStudent();
+      setLoading(false);
     }, [clerkUser.user?.id])
   );
 
@@ -44,7 +46,7 @@ const OrgDetailsScreen = () => {
         currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
             )}
             <CustomButton
-        onPress={() => { navigation.navigate("ManageOrgsScreen");}}
+        onPress={() => { navigation.navigate("ManageOrgsScreen", currentStudent!);}}
         title="Organisation Management"
         textColor="black"
         buttonColor="#A4DB51"
