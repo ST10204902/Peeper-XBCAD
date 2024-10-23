@@ -10,27 +10,76 @@ import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
 import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
 import LessonsScreen from "./LessonsScreen";
 import ExportReportScreen from "./ExportReportScreen";
-
-import PDFShareComponent from "../../components/PDFShareComponent";
-
-/**
- * The `SettingsScreen` component renders a settings screen with various sections and items.
- * Each section contains a header and a list of items, each with a title and an onPress handler.
- * The screen also includes buttons for requesting data deletion and logging out.
- *
- * @returns {JSX.Element} The rendered settings screen component.
- */
+import { useAuth, useUser } from "@clerk/clerk-expo";
+import { useState } from "react";
+import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
+import { useStudent } from "../../hooks/useStudent";
 
 /**
  * SettingsScreen component renders the settings screen of the application.
- * It displays various sections of settings including profile settings, help centre, and export options.
- * Each section contains items that can be pressed to navigate to different parts of the application.
- * Additionally, it provides buttons for requesting data deletion and logging out.
  *
+ * This component displays various settings sections including profile settings, help center, and export options.
+ * Users can request data deletion, customize their profile, and log out from this screen.
+ * A data deletion confirmation popup is shown when users request to delete their data.
+ *
+ * @component
  * @returns {JSX.Element} The rendered settings screen component.
+ *
+ * @example
+ * // Usage example:
+ * <SettingsScreen />
+ *
+ * @remarks
+ * - Displays a confirmation popup for data deletion.
+ * - Provides a log out button for signing the user out.
+ * - Retrieves and uses the current student and Clerk user to manage actions like data deletion and sign out.
+ *
+ * @function
+ * @name SettingsScreen
+ *
+ * @hook
+ * @name useState
+ * @description Used to Manage the state for visibility of the `DataDeletionConfirmationPopup`
+ *
+ * @hook
+ * @name useAuth
+ * @description Provides authentication-related functions like sign-out.
+ *
+ * @hook
+ * @name useUser
+ * @description Retrieves the currently authenticated Clerk user for account management.
+ *
+ * @hook
+ * @name useNavigation
+ * @description Provides navigation methods to move to other screens such as "CustomizeAvatarScreen" and "ExportReportScreen."
+ *
+ * @callback handleSignOut
+ * @description Signs the user out using Clerk's `signOut()` method.
+ *
+ * @callback handleDataDeletion
+ * @description Deletes the current student and Clerk user accounts from the app and database.
+ *
+ * @callback handleCancel
+ * @description Cancels the data deletion request and closes the confirmation popup.
+ *
+ * @state {boolean} isDeletionPopupShown - State to control the visibility of the data deletion confirmation popup.
+ * @state {Student | undefined} currentStudent - Holds the current student data fetched using the `useStudent` hook.
+ *
+ * @throws Will log errors to the console if any actions such as logging out or deleting the user fail.
  */
 export default function SettingsScreen() {
+  const { signOut } = useAuth(); // used to sign the Clerk user out
+  const { user } = useUser(); // Clerk user for deleting the user's account
   const navigation = useNavigation<any>();
+  const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
+  const { currentStudent } = useStudent(); // Getting student in the database
+
+  // Error if the student number can't be obtained.
+  if (currentStudent && !currentStudent.studentNumber) {
+    console.error(
+      "Settings Screen: Failed to get student's student number. Was null or empty"
+    );
+  }
 
   const settingsSections: SettingsSection[] = [
     {
@@ -61,9 +110,29 @@ export default function SettingsScreen() {
     },
     {
       header: "EXPORT",
-      items: [],
+      items: [
+        {
+          title: "Export Tracking Information",
+          onPress: () => navigation.navigate("ExportReportScreen"),
+        },
+      ],
     },
   ];
+
+  const handleDataDeletion = () => {
+    currentStudent?.delete();
+    user?.delete();
+    alert("User successfully deleted");
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -78,16 +147,14 @@ export default function SettingsScreen() {
             />
           ))}
 
-          
           <View style={styles.buttonContainer}>
-          <PDFShareComponent />
             <CustomButton
               title="REQUEST DATA DELETION"
               fontFamily="Quittance"
               textColor="#161616"
               textSize={20}
               buttonColor="#D9E7FF"
-              onPress={() => console.log("Request data deletion")}
+              onPress={() => setIsDeletionPopupShown(true)}
             />
             <CustomButton
               title="LOG OUT"
@@ -95,11 +162,18 @@ export default function SettingsScreen() {
               textColor="#161616"
               textSize={20}
               buttonColor="#FE7143"
-              onPress={() => console.log("Log out")}
+              onPress={handleSignOut}
             />
           </View>
         </View>
       </ScrollView>
+      {isDeletionPopupShown ? (
+        <DataDeletionConfirmationPopup
+          studentNumber={currentStudent?.studentNumber!}
+          onConfirmation={handleDataDeletion}
+          onCancel={() => setIsDeletionPopupShown(false)}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }
