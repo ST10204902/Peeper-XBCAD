@@ -23,6 +23,9 @@ import LoginScreen from "./LoginScreen";
 import RegisterProfilePhotoScreen from "./RegisterProfilePhotoScreen";
 import SafetyInfoScreen from "./SafetyInfoScreen";
 import React from "react";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes'; // Import themes
+
 
 /**
  * Bottom Tab Navigator for managing navigation between the main app screens.
@@ -122,40 +125,43 @@ function SettingsNavigator() {
  * @param {Object} route - The route object for determining the active screen.
  * @returns {Object} A set of options for styling and behavior of the bottom navigation.
  */
-const screenOptions = ({ route }: { route: any }) => ({
-  tabBarActiveTintColor: "#4F4F4F",
-  tabBarInactiveTintColor: "#969696",
-  tabBarStyle: {
-    backgroundColor: "#F6F6F6",
-    paddingBottom: 40,
-    paddingTop: 35,
-    height: 90,
-  },
-  tabBarShowLabel: false,
-  tabBarIcon: ({ focused }: { focused: boolean }) => {
-    let iconName;
+const screenOptions = ({ route }: { route: any }) => {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
-    if (route.name === "Landing") {
-      return focused ? (
-        <LandingIcon size={44} color={"#4F4F4F"} />
-      ) : (
-        <LandingIcon size={38} color={"#969696"} />
-      );
-    } else if (route.name === "Organisations") {
-      return focused ? (
-        <OrgDetailsIcon size={44} color={"#4F4F4F"} />
-      ) : (
-        <OrgDetailsIcon size={38} color={"#969696"} />
-      );
-    } else if (route.name === "Settings") {
-      return focused ? (
-        <SettingsIcon size={44} color={"#4F4F4F"} />
-      ) : (
-        <SettingsIcon size={38} color={"#969696"} />
-      );
-    }
-  },
-});
+  return {
+    tabBarActiveTintColor: theme.navIconSelected,
+    tabBarInactiveTintColor: theme.navIconDefault,
+    tabBarStyle: {
+      backgroundColor: theme.navBackground,
+      paddingBottom: 40,
+      paddingTop: 35,
+      height: 90,
+    },
+    tabBarShowLabel: false,
+    tabBarIcon: ({ focused }: { focused: boolean }) => {
+      if (route.name === "Landing") {
+        return focused ? (
+          <LandingIcon size={44} color={theme.navIconSelected} />
+        ) : (
+          <LandingIcon size={38} color={theme.navIconDefault} />
+        );
+      } else if (route.name === "Organisations") {
+        return focused ? (
+          <OrgDetailsIcon size={44} color={theme.navIconSelected} />
+        ) : (
+          <OrgDetailsIcon size={38} color={theme.navIconDefault} />
+        );
+      } else if (route.name === "Settings") {
+        return focused ? (
+          <SettingsIcon size={44} color={theme.navIconSelected} />
+        ) : (
+          <SettingsIcon size={38} color={theme.navIconDefault} />
+        );
+      }
+    },
+  };
+};
 
 /**
  * Bottom Navigation Bar component.

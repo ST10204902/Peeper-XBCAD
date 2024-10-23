@@ -1,7 +1,6 @@
-//...............ooooooooooo000000000000 SettingsListItem.tsx 000000000000ooooooooooo...............//
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import styles from '../styles/SettingStyle';
-
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes'; // Import themes
 
 interface SettingsListItemProps extends SettingsSectionItem {
   isLast?: boolean;
@@ -24,6 +23,9 @@ export const SettingsListItem = ({
   showChevron = true,
   isLast = false 
 }: SettingsListItemProps) => {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   return (
     <TouchableOpacity 
       onPress={onPress}
@@ -32,11 +34,30 @@ export const SettingsListItem = ({
         !isLast && styles.borderBottom
       ]}
     >
-      <Text style={styles.itemText}>{title}</Text>
+      <Text style={[styles.itemText, { color: theme.fontSecondary }]}>{title}</Text>
       {showChevron && (
-        <Text style={styles.chevron}>›</Text>
+        <Text style={[styles.chevron, { color: theme.fontSecondary }]}>›</Text>
       )}
     </TouchableOpacity>
   );
 };
-//...............ooooooooooo000000000000 End Of File 000000000000ooooooooooo...............//
+
+const styles = StyleSheet.create({
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 5,
+  },
+  itemText: {
+    fontFamily: 'Rany-Medium',
+    fontSize: 16,
+  },
+  chevron: {
+    fontSize: 20,
+  },
+  borderBottom: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'transparent',
+  },
+});
