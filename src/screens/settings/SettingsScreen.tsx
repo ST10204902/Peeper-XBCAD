@@ -2,7 +2,6 @@
 import { View, ScrollView, StyleSheet, Text, Switch } from "react-native";
 import { SettingsSection } from "../../components/SettingsSection";
 import CustomButton from "../../components/CustomButton";
-import styles from "../../styles/SettingStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import CustomizeAvatarScreen from "./CustomizeAvatarScreen";
@@ -14,7 +13,8 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useState } from "react";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
 import { useStudent } from "../../hooks/useStudent";
-import { useTheme, darkTheme, lightTheme } from '../../styles/ThemeContext';
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 
 
@@ -79,10 +79,11 @@ import { useTheme, darkTheme, lightTheme } from '../../styles/ThemeContext';
  * @throws Will log errors to the console if any actions such as logging out or deleting the user fail.
  */
 export default function SettingsScreen() {
+  const { isDarkMode, toggleTheme } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;  
   const { signOut } = useAuth(); // used to sign the Clerk user out
   const { user } = useUser(); // Clerk user for deleting the user's account
   const navigation = useNavigation<any>();
-  const { theme, toggleTheme } = useTheme();
 
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
   const { currentStudent } = useStudent(); // Getting student in the database
@@ -148,38 +149,54 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
-      <Text style={styles.title}>Settings</Text>
-    
-      <View style={styles.content}>
-        {settingsSections.map((section) => (
-        <SettingsSection
-          key={section.header}
-          header={section.header}
-          items={section.items}
-        />
-        ))}
-        
-        <View style={styles.buttonContainer}>
-        <CustomButton
-          title="REQUEST DATA DELETION"
-          fontFamily='Quittance'
-          textColor='#161616'
-          textSize={20}
-          buttonColor='#D9E7FF'
-          onPress={() => console.log('Request data deletion')}
-        />
-        <CustomButton
-          title="LOG OUT"
-          fontFamily='Quittance'
-          textColor='#161616'
-          textSize={20}
-          buttonColor='#FE7143'
-          onPress={() => console.log('Log out')}
-        />
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+        {/* Header Section with Dark Mode Toggle */}
+        <View style={styles.headerContainer}>
+          <Text style={[styles.title, { color: theme.fontRegular }]}>SETTINGS</Text>
+          <View style={styles.darkModeContainer}>
+            <Text style={[styles.darkModeText, { color: theme.fontRegular }]}>
+              Dark Mode
+            </Text>
+            <Switch
+              value={isDarkMode}
+              onValueChange={toggleTheme}
+              trackColor={{ false: '#767577', true: '#4CD964' }}
+              thumbColor={isDarkMode ? '#ffffff' : '#f4f3f4'}
+              ios_backgroundColor="#767577"
+              style={styles.switch}
+            />
+          </View>
         </View>
-      </View>
+
+        <View style={[styles.content, { backgroundColor: theme.background }]}>
+          {settingsSections.map((section) => (
+            <SettingsSection
+              key={section.header}
+              header={section.header}
+              items={section.items}
+            />
+          ))}
+        
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              title="REQUEST DATA DELETION"
+              fontFamily='Quittance'
+              textColor={theme.fontRegular}
+              textSize={20}
+              buttonColor={theme.settingsBlueButton}
+              onPress={() => console.log('Request data deletion')}
+            />
+            <CustomButton
+              title="LOG OUT"
+              fontFamily='Quittance'
+              textColor={theme.fontRegular}
+              textSize={20}
+              buttonColor='#FE7143'
+              onPress={() => console.log('Log out')}
+            />
+          </View>
+        </View>
       </ScrollView>
       {isDeletionPopupShown ? (
         <DataDeletionConfirmationPopup
@@ -191,4 +208,41 @@ export default function SettingsScreen() {
     </SafeAreaView>
   );
 }
-//...............ooooooooooo000000000000 End Of File 000000000000ooooooooooo...............//
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 32,
+  },
+  content: {
+    padding: 16,
+  },
+  sectionContainer: {
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 30,
+    fontFamily: "Quittance",
+  },
+  buttonContainer: {
+    gap: 12,
+  },
+  darkModeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  darkModeText: {
+    fontSize: 16,
+    fontFamily: 'Rany-Regular',
+  },
+  switch: {
+    transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }],
+  },
+});
