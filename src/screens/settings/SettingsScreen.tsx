@@ -13,7 +13,7 @@ import ExportReportScreen from "./ExportReportScreen";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useState } from "react";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
-import { useStudent } from "../../hooks/useStudent";
+import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 
 /**
  * SettingsScreen component renders the settings screen of the application.
@@ -72,7 +72,7 @@ export default function SettingsScreen() {
   const { user } = useUser(); // Clerk user for deleting the user's account
   const navigation = useNavigation<any>();
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
-  const { currentStudent } = useStudent(); // Getting student in the database
+  const { currentStudent } = useCurrentStudent(); // Getting student in the database
 
   // Error if the student number can't be obtained.
   if (currentStudent && !currentStudent.studentNumber) {
