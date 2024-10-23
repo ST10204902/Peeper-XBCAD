@@ -27,7 +27,8 @@ const setCurrentStudent = useCallback(async (student: Student | null) => {
     const fetchStudent = async () => {
       try {
         if (!user) {
-          throw new Error("User not authenticated");
+          currentStudent && setCurrentStudentState(null);
+          return;
         }
 
         console.log("Fetching student with user ID:", user.id);
