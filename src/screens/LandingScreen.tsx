@@ -30,6 +30,7 @@ import {
 import * as Notifications from "expo-notifications";
 import { useStudent } from "../hooks/useStudent";
 import { useUser } from "@clerk/clerk-expo";
+import { useFocusEffect } from "@react-navigation/native";
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -90,15 +91,41 @@ export default function LandingScreen() {
   useEffect(() => {
     const fetchOrganisations = async () => {
       try {
-        const orgs = await Organisation.getAllOrganisations();
+        if (!currentStudent) {
+          console.error("Student not found");
+          return;
+        }
+        const studentsActiveOrgs = currentStudent.activeOrgs ?? [];
+        const orgs = await Organisation.getStudentsOrgs(studentsActiveOrgs);
         setOrganisations(orgs);
       } catch (error) {
         console.error("Error fetching organisations:", error);
       }
     };
-
+    console.log("fetching organisations");
     fetchOrganisations();
   }, []);
+
+
+  const updatedActiveOrgs = async () => {
+    if (currentStudent) {
+      console.log("updating active orgs");
+      const studentsActiveOrgs = currentStudent.activeOrgs;
+        const orgs = await Organisation.getStudentsOrgs(studentsActiveOrgs);
+        setOrganisations((prev) => {
+          return orgs;
+        });
+    }
+  }
+  
+  useFocusEffect(
+    React.useCallback(() => {
+     console.log("focus effect");
+     updatedActiveOrgs();
+    }, [user?.id])
+  );
+
+  
 
   // Fetch current student data based on the logged-in user
   useEffect(() => {
@@ -280,9 +307,8 @@ export default function LandingScreen() {
         <View style={styles.sheetHeader}>
           <Text style={styles.sheetHeading}>Organisation List</Text>
         </View>
-
         {/* Scrollable list of organisations */}
-        <BottomSheetFlatList
+        {(organisations.length > 0 && <BottomSheetFlatList
           data={organisations}
           // Use organisation ID as key
           keyExtractor={(item) => item.org_id}
@@ -290,6 +316,7 @@ export default function LandingScreen() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContentContainer}
         />
+        )}
       </BottomSheet>
     </SafeAreaView>
   );

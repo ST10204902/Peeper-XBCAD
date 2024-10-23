@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList } from "react-native";
 import { OrgAddressData } from "../../databaseModels/OrgAddressData";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
@@ -8,9 +8,12 @@ import SearchBarComponent from "../../components/SearchBarComponent";
 import ComboBoxComponent from "../../components/ComboComponent";
 import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../../databaseModels/databaseClasses/Student";
-import { useFocusEffect } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 import { useNavigation } from "@react-navigation/native";
+import { useStudent } from "../../hooks/useStudent";
+import { RootStackParamsList } from "../RootStackParamsList";
+import { set } from "firebase/database";
 
 /**
  * Component For the ManageOrgsScreen
@@ -48,34 +51,78 @@ import { useNavigation } from "@react-navigation/native";
 export default function ManageOrgsScreen() {
   const navigation = useNavigation();
   const clerkUser = useUser();
-  const [currentStudent, setCurrentStudent] = React.useState<Student | null>(null);
+  const {currentStudent, setCurrentStudent} = useStudent();
   const [loading, setLoading] = React.useState(true);
-  const [orgList, setOrgList] = React.useState<OrganisationData[]>([]);
+  const [allOrganisations, setAllOrganisations] = React.useState<OrganisationData[]>([]);
+  const [studentOrganisations, setStudentOrganisations] = React.useState<OrganisationData[]>([]);
+  //const [studentActiveOrgs, setStudentActiveOrgs] = React.useState<string[]>([]);
+  const route = useRoute<RouteProp<RootStackParamsList, "ManageOrgsScreen">>();
+  let studentOrgs: Organisation[] = [];
+  let allOrgs: Organisation[] = [];
   let itemList: OrganisationData[] = [];
-
-  // Method to fetch the student data
+   // Method to log error if there is an error fetching student data
   const fetchData = async () => {
-    if (clerkUser.user?.id) {
-      const student = await Student.fetchById(clerkUser.user?.id);
-      console.log("Student was fetched in the ManageOrgsScreen");
-      const allOrgs = await Organisation.getAllOrganisations();
-      setCurrentStudent(student);
-      setOrgList(allOrgs);
-      setLoading(false);
+    if (!clerkUser.user) {
+      console.error("Clerk user not found in ManageOrgsScreen");
+      return;
     }
+    // Fetch all organisations and student's organisations
+    allOrgs = await Organisation.getAllOrganisations();
+    studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
   };
 
   // Run the fetchStudent method when the screen is focused (navigated to)
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchData();
-    }, [clerkUser.user?.id])
-  );
+  // this is in case they have just recorded a session and the the location needs to be updated on the map
+  useEffect(() => {
+    if (currentStudent) {
+      fetchData().then(() => {
+      // Set the state variables with the fetched data
+      setAllOrganisations(allOrgs.map((org) => org.toJSON()));
+      setStudentOrganisations(studentOrgs.map((org) => org.toJSON())); 
+      setLoading(false);
+    });
+    }
+    }, [currentStudent]);
 
-  if (currentStudent && orgList.length > 0) {
-  itemList = orgList.filter((org) => currentStudent.activeOrgs.includes(org.org_id));
-  console.log("filtered orgs:", itemList);
+  useEffect(() => {
+    const newActiveOrgs = allOrganisations.filter((org) => currentStudent?.activeOrgs.includes(org.org_id));
+    setStudentOrganisations(newActiveOrgs);
+  }, [currentStudent?.activeOrgs]);
+
+  
+  /**
+   * This function activates when the user clicks on the button for a given
+   * expandable orgList
+   * @param org Corresponding organisation
+   */
+  function onStudentOrgsListButtonPressed(org: OrganisationData) {
+   // start tracking pop up
   }
+
+  /**
+   * This function activates when the user clicks on the button for a given
+   * expandable orgList this changes studentActiveOrgs which triggers a re-render
+   * @param org Corresponding organisation
+   */
+  function onAllOrgsListButtonPressed(org: OrganisationData) {
+    console.log("Adding org to active orgs: ", allOrganisations.filter((o) => o.org_id === org.org_id)[0].orgName);
+    currentStudent?.activeOrgs.push(org.org_id);
+    setCurrentStudent(currentStudent);
+
+    // Find and add the new organisation to studentOrganisations
+    setStudentOrganisations((prevStudentOrgs) => {
+      // Check if the organisation is already in the student's organisations list
+      if (prevStudentOrgs.some((o) => o.org_id === org.org_id)) {
+        return prevStudentOrgs; // Don't add duplicates
+      }
+      // Add the selected organisation to the student's organisation list
+      const updatedStudentOrgs = [...prevStudentOrgs, org];
+  
+      // Return the updated list
+      return updatedStudentOrgs;
+    });
+  }
+
 
   const handleRequestNewOrganisation = () => {
       navigation.navigate("RequestOrgScreen" as never);
@@ -99,8 +146,8 @@ export default function ManageOrgsScreen() {
     <View style={styles.page}>
       <Text style={styles.pageHeading}>Your Organisations</Text>
       <ExpandableOrgList
-       items={itemList}
-       onListButtonClicked={onOrgListButtonPressed}
+       items={studentOrganisations}
+       onListButtonClicked={onStudentOrgsListButtonPressed}
        listButtonComp={
          <CustomButton
            onPress={() => {}}
@@ -171,8 +218,8 @@ export default function ManageOrgsScreen() {
 </View>
 </View>
 <ExpandableOrgList
-        items={itemList}
-        onListButtonClicked={onOrgListButtonPressed}
+        items={allOrganisations}
+        onListButtonClicked={onAllOrgsListButtonPressed}
         listButtonComp={
           <CustomButton
             onPress={() => {}}
@@ -188,25 +235,23 @@ export default function ManageOrgsScreen() {
 );
   
   return (
+
     <SafeAreaView style={styles.safeArea}>
-      <FlatList
-        data={itemList}
-        renderItem={null} // Use `renderItem` to handle FlatList rendering, but in this case we are rendering static content
-        ListHeaderComponent={renderContent} // This ensures scrollable content
-        keyExtractor={(item, index) => index.toString()}
-      />
+    
+      {loading ? (
+        <Text>Loading...</Text>
+            ) : (
+              <FlatList
+              data={itemList}
+              renderItem={null} // Use `renderItem` to handle FlatList rendering, but in this case we are rendering static content
+              ListHeaderComponent={renderContent} // This ensures scrollable content
+              keyExtractor={(item, index) => index.toString()}
+            />
+            )}
     </SafeAreaView>
   );
   }
-  
-  /**
-   * This function activates when the user clicks on the button for a given
-   * expandable orgList
-   * @param org Corresponding organisation
-   */
-  function onOrgListButtonPressed(org: OrganisationData) {
-    alert(org.orgName);
-  }
+
   
   const styles = StyleSheet.create({
     safeArea: {
