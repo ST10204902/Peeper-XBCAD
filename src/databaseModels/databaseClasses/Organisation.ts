@@ -44,6 +44,11 @@ export class Organisation implements OrganisationData {
     return data.map((org) => new Organisation(org));
   }
 
+  static async getStudentsOrgs(orgIDs: string[]): Promise<Organisation[]> {
+    const orgs = await Promise.all(orgIDs.map((org_id) => Organisation.fetchById(org_id)));
+    return orgs.filter((org) => org !== null) as Organisation[];
+  }
+
   toJSON(): OrganisationData {
     return {
       org_id: this.org_id,

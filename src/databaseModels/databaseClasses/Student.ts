@@ -68,7 +68,7 @@ export class Student implements StudentData {
       studentNumber: this.studentNumber,
       email: this.email,
       profilePhotoURL: this.profilePhotoURL,
-      activeOrgs: this.activeOrgs,
+      activeOrgs: this.activeOrgs ?? [],
       locationData: locationDataJSON,
     };
   }
