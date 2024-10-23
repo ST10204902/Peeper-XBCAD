@@ -55,13 +55,13 @@ export default function ManageOrgsScreen() {
   const [loading, setLoading] = React.useState(true);
   const [allOrganisations, setAllOrganisations] = React.useState<OrganisationData[]>([]);
   const [studentOrganisations, setStudentOrganisations] = React.useState<OrganisationData[]>([]);
-  const [studentActiveOrgs, setStudentActiveOrgs] = React.useState<string[]>([]);
+  //const [studentActiveOrgs, setStudentActiveOrgs] = React.useState<string[]>([]);
   const route = useRoute<RouteProp<RootStackParamsList, "ManageOrgsScreen">>();
   let studentOrgs: Organisation[] = [];
   let allOrgs: Organisation[] = [];
   let itemList: OrganisationData[] = [];
    // Method to log error if there is an error fetching student data
-   const fetchData = async () => {
+  const fetchData = async () => {
     if (!clerkUser.user) {
       console.error("Clerk user not found in ManageOrgsScreen");
       return;
@@ -78,18 +78,16 @@ export default function ManageOrgsScreen() {
       fetchData().then(() => {
       // Set the state variables with the fetched data
       setAllOrganisations(allOrgs.map((org) => org.toJSON()));
-      console.log("All Orgs in useState: ", allOrganisations.length);
       setStudentOrganisations(studentOrgs.map((org) => org.toJSON())); 
-      console.log("Student Orgs in useState: ", studentOrganisations);
       setLoading(false);
     });
     }
     }, [currentStudent]);
 
   useEffect(() => {
-    const newActiveOrgs = allOrganisations.filter((org) => studentActiveOrgs.includes(org.org_id));
+    const newActiveOrgs = allOrganisations.filter((org) => currentStudent?.activeOrgs.includes(org.org_id));
     setStudentOrganisations(newActiveOrgs);
-  }, [studentActiveOrgs]);
+  }, [currentStudent?.activeOrgs]);
 
   
   /**
@@ -107,29 +105,10 @@ export default function ManageOrgsScreen() {
    * @param org Corresponding organisation
    */
   function onAllOrgsListButtonPressed(org: OrganisationData) {
-    console.log("Adding org to active orgs: ", org.org_id);
-  
-    // Use functional updates to get the latest state of studentActiveOrgs
-    setStudentActiveOrgs((prevActiveOrgs) => {
-      // If the org is already active, return the previous state
-      if (prevActiveOrgs.includes(org.org_id)) {
-        console.log(prevActiveOrgs)
-        return prevActiveOrgs;
-      }
-      console.log(prevActiveOrgs)
-      // Add the new org_id to the active orgs list
-      const updatedActiveOrgs = [...prevActiveOrgs, org.org_id];
-  
-      // Also update currentStudent's activeOrgs
-      if (currentStudent) {
-        const updatedStudent = currentStudent;
-        updatedStudent.activeOrgs = updatedActiveOrgs;
-        setCurrentStudent(updatedStudent);
-      }
-      // Return the updated array to setStudentActiveOrgs
-      return updatedActiveOrgs;
-    });
-  
+    console.log("Adding org to active orgs: ", allOrganisations.filter((o) => o.org_id === org.org_id)[0].orgName);
+    currentStudent?.activeOrgs.push(org.org_id);
+    setCurrentStudent(currentStudent);
+
     // Find and add the new organisation to studentOrganisations
     setStudentOrganisations((prevStudentOrgs) => {
       // Check if the organisation is already in the student's organisations list
