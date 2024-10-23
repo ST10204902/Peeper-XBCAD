@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList, Alert } from "react-native";
 import { OrgAddressData } from "../../databaseModels/OrgAddressData";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
 import CustomButton from "../../components/CustomButton";
 import SearchBarComponent from "../../components/SearchBarComponent";
+import * as Location from "expo-location";
 import ComboBoxComponent from "../../components/ComboComponent";
 import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../../databaseModels/databaseClasses/Student";
@@ -53,13 +54,14 @@ export default function ManageOrgsScreen() {
   const navigation = useNavigation();
   const clerkUser = useUser();
   const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
-  const [allOrganisations, setAllOrganisations] = React.useState<OrganisationData[]>([]);
-  const [displayedOrganisations, setDisplayedOrganisations] = React.useState<OrganisationData[]>(
+  const [allOrganisations, setAllOrganisations] = useState<OrganisationData[]>([]);
+  const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>(
     []
   );
-  const [studentOrganisations, setStudentOrganisations] = React.useState<OrganisationData[]>([]);
-  const [studentsOrgsLoaded, setStudentsOrgsLoaded] = React.useState<boolean>(false);
-  const [sortBy, setSortBy] = React.useState<string>("name_asc");
+  const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
+  const [studentsOrgsLoaded, setStudentsOrgsLoaded] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<string>("name_asc");
+  const [location, setLocation] = useState< Location.LocationObject>(); // State to hold location data
   const allOrgs = Organisation.getAllOrganisations();
   let itemList: OrganisationData[] = [];
 
@@ -78,7 +80,10 @@ export default function ManageOrgsScreen() {
       allOrgs.filter((org) => org && typeof org.toJSON === "function").map((org) => org.toJSON())
     );
     setDisplayedOrganisations(
-      allOrgs.filter((org) => org && typeof org.toJSON === "function").map((org) => org.toJSON()).sort((a, b) => a.orgName.localeCompare(b.orgName))
+      allOrgs
+        .filter((org) => org && typeof org.toJSON === "function")
+        .map((org) => org.toJSON())
+        .sort((a, b) => a.orgName.localeCompare(b.orgName))
     );
     setStudentOrganisations(
       studentOrgs
@@ -95,6 +100,42 @@ export default function ManageOrgsScreen() {
     }
   }, [currentStudent]);
 
+
+  // Fetch the location data when the component mounts
+  useEffect(() => {
+    let isMounted = true; // To prevent state updates if the component unmounts
+
+    (async () => {
+      try {
+        // Request permission to access location
+        let { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status !== 'granted') {
+          Alert.alert('Permission Denied', 'Permission to access location was denied.');
+          return;
+        }
+
+        // Get the user's current location
+        let currentLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Highest,
+        });
+
+        if (isMounted) {
+          setLocation(currentLocation);
+          console.log('Location:', currentLocation);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'An error occurred while fetching the location.');
+        console.error(error);
+      }
+    })();
+
+    // Cleanup function to set isMounted to false if the component unmounts
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   /**
    * This function activates when the user clicks on the button for a given
    * expandable orgList
@@ -110,42 +151,42 @@ export default function ManageOrgsScreen() {
    * @param org Corresponding organisation
    */
   function onAllOrgsListButtonPressed(org: OrganisationData) {
+    
+    if (!currentStudent) {
+      return;
+    }
+    if (currentStudent.activeOrgs.includes(org.org_id)) {
+      Alert.alert("Error", "You are already tracking this organisation.");
+      return;
+    }
+    if (currentStudent.activeOrgs.length >= 4) {
+      Alert.alert("Error", "You can only track up to 4 organisations at a time.");
+      return;
+    }
     console.log(
       "Adding org to active orgs: ",
       allOrganisations.filter((o) => o.org_id === org.org_id)[0].orgName
     );
-    if (!currentStudent) {
-      return;
-    }
     updateCurrentStudent({ activeOrgs: [...currentStudent.activeOrgs, org.org_id] });
   }
 
   function changeSortBy(value: string): void {
-      setSortBy(value);
-      let sortedOrgs = displayedOrganisations;
-      switch (value) {
-        case "name_asc": {
-          sortedOrgs.sort((a, b) => a.orgName.localeCompare(b.orgName));
-          break;
-        }
-  
-        case "name_desc": {
-          sortedOrgs.sort((a, b) => b.orgName.localeCompare(a.orgName));
-          break;
-        }
-  
-        case "distance_close": {
-          break;
-        }
-        case "distance_far": {
-          break;
-        }
-  
-        default:
-          break;
+    setSortBy(value);
+    let sortedOrgs = displayedOrganisations;
+    switch (value) {
+      case "name_asc": {
+        sortedOrgs.sort((a, b) => a.orgName.localeCompare(b.orgName));
+        break;
       }
-  }
 
+      case "name_desc": {
+        sortedOrgs.sort((a, b) => b.orgName.localeCompare(a.orgName));
+        break;
+      }
+      default:
+        break;
+    }
+  }
 
   const handleBlur = (searchInput: string) => {
     if (searchInput.trim() === "") {
@@ -161,19 +202,10 @@ export default function ManageOrgsScreen() {
         filteredOrgs.sort((a, b) => a.orgName.localeCompare(b.orgName));
         break;
       }
-
       case "name_desc": {
         filteredOrgs.sort((a, b) => b.orgName.localeCompare(a.orgName));
         break;
       }
-
-      case "distance_close": {
-        break;
-      }
-      case "distance_far": {
-        break;
-      }
-
       default:
         break;
     }
@@ -209,6 +241,7 @@ export default function ManageOrgsScreen() {
 
       {studentOrganisations.length > 0 ? (
         <ExpandableOrgList
+          userLocation={location}
           items={studentOrganisations}
           onListButtonClicked={onStudentOrgsListButtonPressed}
           listButtonComp={
@@ -274,8 +307,6 @@ export default function ManageOrgsScreen() {
             options={[
               { label: "Name (A-Z)", value: "name_asc" },
               { label: "Name (Z-A)", value: "name_desc" },
-              { label: "Distance (Closest)", value: "distance_close" },
-              { label: "Distance (Farthest)", value: "distance_far" },
             ]}
             placeholder="Sort By"
             FGColor="#969696"
@@ -286,6 +317,7 @@ export default function ManageOrgsScreen() {
         </View>
       </View>
       <ExpandableOrgList
+        userLocation={location}
         items={displayedOrganisations}
         onListButtonClicked={onAllOrgsListButtonPressed}
         listButtonComp={
@@ -363,5 +395,3 @@ const styles = StyleSheet.create({
     marginBottom: 12, // Optional: Add some vertical margin for spacing
   },
 });
-
-

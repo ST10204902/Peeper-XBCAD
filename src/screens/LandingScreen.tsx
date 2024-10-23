@@ -105,6 +105,13 @@ useFocusEffect(
   }, [currentStudent])
 );
 
+  // Fetch organisation data on component mount
+  useEffect(() => {
+    if (currentStudent) {
+      fetchStudentsOrgs();
+    }
+  }, [currentStudent]);
+
 
 
 
