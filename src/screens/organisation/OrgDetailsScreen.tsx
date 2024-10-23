@@ -46,7 +46,7 @@ const OrgDetailsScreen = () => {
         currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
             )}
             <CustomButton
-        onPress={() => { navigation.navigate("ManageOrgsScreen");}}
+        onPress={() => { navigation.navigate("ManageOrgsScreen", currentStudent!);}}
         title="Organisation Management"
         textColor="black"
         buttonColor="#A4DB51"
