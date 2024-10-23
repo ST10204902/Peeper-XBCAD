@@ -2,6 +2,7 @@ import { View, FlatList, StyleSheet } from "react-native";
 import { OrganisationData } from "../databaseModels/OrganisationData";
 import ExpandableOrgListItem from "./ExpandableOrgListItem";
 import React from "react";
+import * as Location from "expo-location";
 
 /**
  * Defines the properties to be passed to the expandable Orgs List
@@ -14,6 +15,7 @@ interface Props {
   items: OrganisationData[];
   listButtonComp: React.ReactNode;
   onListButtonClicked: (selectedOrg: OrganisationData) => void;
+  userLocation?: Location.LocationObject;
   style?: object;
 }
 
@@ -28,6 +30,7 @@ interface Props {
 export default function ExpandableOrgList({
   items,
   listButtonComp,
+  userLocation,
   onListButtonClicked,
 }: Props) {
 
@@ -37,6 +40,7 @@ export default function ExpandableOrgList({
         data={items}
         renderItem={({ index, item }) => (
           <ExpandableOrgListItem
+            userLocation={userLocation}
             orgName={item.orgName}
             orgAddress={item.orgAddress}
             oddOrEven={index % 2 === 0 ? "even" : "odd"}
