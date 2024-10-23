@@ -1,8 +1,7 @@
-//...............ooooooooooo000000000000 SettingsSection.tsx 000000000000ooooooooooo...............//
 import { View, Text, StyleSheet } from 'react-native';
 import { SettingsListItem } from './SettingsListItem';
-import styles from '../styles/SettingStyle';
-
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes'; // Import themes
 
 interface SettingsSectionProps {
   header: string;
@@ -19,10 +18,13 @@ interface SettingsSectionProps {
  * @returns {JSX.Element} The rendered settings section component.
  */
 export const SettingsSection = ({ header, items }: SettingsSectionProps) => {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionHeader}>{header}</Text>
-      <View style={styles.sectionContent}>
+      <Text style={[styles.sectionHeader, { color: theme.fontRegular }]}>{header}</Text>
+      <View style={[styles.sectionContent, { backgroundColor: theme.background }]}>
         {items.map((item, index) => (
           <SettingsListItem
             key={item.title}
@@ -34,4 +36,18 @@ export const SettingsSection = ({ header, items }: SettingsSectionProps) => {
     </View>
   );
 };
-//...............ooooooooooo000000000000 End Of File 000000000000ooooooooooo...............//
+
+const styles = StyleSheet.create({
+  sectionContainer: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    fontSize: 26,
+    marginBottom: 8,
+    fontFamily: "Quittance"
+  },
+  sectionContent: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+});
