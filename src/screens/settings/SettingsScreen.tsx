@@ -10,7 +10,6 @@ import TermsAndConditionsScreen from './TermsAndConditionsScreen';
 import PrivacyPolicyScreen from './PrivacyPolicyScreen';
 import LessonsScreen from './LessonsScreen';
 import ExportReportScreen from './ExportReportScreen';
-import { useTheme, darkTheme, lightTheme } from '../../styles/ThemeContext';
 
 
 
@@ -34,7 +33,6 @@ import { useTheme, darkTheme, lightTheme } from '../../styles/ThemeContext';
 export default function SettingsScreen() {
 
   const navigation = useNavigation<any>();
-  const { theme, toggleTheme } = useTheme();
 
 
   const settingsSections: SettingsSection[] = [
@@ -79,10 +77,7 @@ export default function SettingsScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
       <Text style={styles.title}>Settings</Text>
-      <Switch
-        value={theme === darkTheme}
-        onValueChange={toggleTheme}
-      />
+    
       <View style={styles.content}>
         {settingsSections.map((section) => (
         <SettingsSection
@@ -96,9 +91,9 @@ export default function SettingsScreen() {
         <CustomButton
           title="REQUEST DATA DELETION"
           fontFamily='Quittance'
-          textColor={theme.text}
+          textColor='#161616'
           textSize={20}
-          buttonColor={theme.lightBlue}
+          buttonColor='#D9E7FF'
           onPress={() => console.log('Request data deletion')}
         />
         <CustomButton
@@ -106,7 +101,7 @@ export default function SettingsScreen() {
           fontFamily='Quittance'
           textColor='#161616'
           textSize={20}
-          buttonColor={theme.orange}
+          buttonColor='#FE7143'
           onPress={() => console.log('Log out')}
         />
         </View>
