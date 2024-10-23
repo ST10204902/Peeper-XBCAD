@@ -27,11 +27,7 @@ const setCurrentStudent = useCallback(async (student: Student | null) => {
     const fetchStudent = async () => {
       try {
         if (!user) {
-          const errorMessage = "Clerk user not found";
-          console.error("useStudent hook:", errorMessage);
-          setError(errorMessage);
-          // Optionally handle navigation to login screen here
-          return;
+          throw new Error("User not authenticated");
         }
 
         console.log("Fetching student with user ID:", user.id);

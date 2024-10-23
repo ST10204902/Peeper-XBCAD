@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useStudent } from "../../hooks/useStudent";
 import { RootStackParamsList } from "../RootStackParamsList";
 import { set } from "firebase/database";
+import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 
 /**
  * Component For the ManageOrgsScreen
@@ -51,43 +52,41 @@ import { set } from "firebase/database";
 export default function ManageOrgsScreen() {
   const navigation = useNavigation();
   const clerkUser = useUser();
-  const {currentStudent, setCurrentStudent} = useStudent();
-  const [loading, setLoading] = React.useState(true);
+  const {
+    currentStudent,
+    error,
+    loading,
+    saving,
+    updateCurrentStudent,
+  } = useCurrentStudent();
   const [allOrganisations, setAllOrganisations] = React.useState<OrganisationData[]>([]);
   const [studentOrganisations, setStudentOrganisations] = React.useState<OrganisationData[]>([]);
-  //const [studentActiveOrgs, setStudentActiveOrgs] = React.useState<string[]>([]);
-  const route = useRoute<RouteProp<RootStackParamsList, "ManageOrgsScreen">>();
-  let studentOrgs: Organisation[] = [];
-  let allOrgs: Organisation[] = [];
+  const [studentsOrgsLoaded, setStudentsOrgsLoaded] = React.useState<boolean>(false);
   let itemList: OrganisationData[] = [];
-   // Method to log error if there is an error fetching student data
-  const fetchData = async () => {
+
+   // Method to fetch data
+   const fetchData = async () => {
     if (!clerkUser.user) {
       console.error("Clerk user not found in ManageOrgsScreen");
       return;
     }
     // Fetch all organisations and student's organisations
-    allOrgs = await Organisation.getAllOrganisations();
-    studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+    const allOrgs = await Organisation.getAllOrganisations();
+    const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+    
+    // Set the state variables with the fetched data
+    setAllOrganisations(allOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
+    setStudentOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
+    setStudentsOrgsLoaded(true);
   };
 
-  // Run the fetchStudent method when the screen is focused (navigated to)
-  // this is in case they have just recorded a session and the the location needs to be updated on the map
+  // Run the fetchData method when the screen is focused (navigated to) or when currentStudent changes
   useEffect(() => {
     if (currentStudent) {
-      fetchData().then(() => {
-      // Set the state variables with the fetched data
-      setAllOrganisations(allOrgs.map((org) => org.toJSON()));
-      setStudentOrganisations(studentOrgs.map((org) => org.toJSON())); 
-      setLoading(false);
-    });
+      fetchData();
     }
-    }, [currentStudent]);
+  }, [currentStudent]);
 
-  useEffect(() => {
-    const newActiveOrgs = allOrganisations.filter((org) => currentStudent?.activeOrgs.includes(org.org_id));
-    setStudentOrganisations(newActiveOrgs);
-  }, [currentStudent?.activeOrgs]);
 
   
   /**
@@ -106,23 +105,11 @@ export default function ManageOrgsScreen() {
    */
   function onAllOrgsListButtonPressed(org: OrganisationData) {
     console.log("Adding org to active orgs: ", allOrganisations.filter((o) => o.org_id === org.org_id)[0].orgName);
-    currentStudent?.activeOrgs.push(org.org_id);
-    setCurrentStudent(currentStudent);
-
-    // Find and add the new organisation to studentOrganisations
-    setStudentOrganisations((prevStudentOrgs) => {
-      // Check if the organisation is already in the student's organisations list
-      if (prevStudentOrgs.some((o) => o.org_id === org.org_id)) {
-        return prevStudentOrgs; // Don't add duplicates
-      }
-      // Add the selected organisation to the student's organisation list
-      const updatedStudentOrgs = [...prevStudentOrgs, org];
-  
-      // Return the updated list
-      return updatedStudentOrgs;
-    });
+    if (!currentStudent) {
+      return;
+    }
+    updateCurrentStudent({activeOrgs: [...currentStudent.activeOrgs, org.org_id]});
   }
-
 
   const handleRequestNewOrganisation = () => {
       navigation.navigate("RequestOrgScreen" as never);
@@ -145,7 +132,8 @@ export default function ManageOrgsScreen() {
   const renderContent = () => (
     <View style={styles.page}>
       <Text style={styles.pageHeading}>Your Organisations</Text>
-      <ExpandableOrgList
+    
+      {studentOrganisations.length > 0 ? <ExpandableOrgList
        items={studentOrganisations}
        onListButtonClicked={onStudentOrgsListButtonPressed}
        listButtonComp={
@@ -157,8 +145,9 @@ export default function ManageOrgsScreen() {
            textColor="#000000"
            fontFamily="Rany-Bold"
          />
-       }
-      />
+       } 
+      />   : studentsOrgsLoaded ?  <Text> Select up to 4 organisations list below</Text> : <Text>Loading...</Text>
+      }
       <Text style={styles.sectionHeading}>Organisation Management</Text>
       <View style={styles.buttonWrapper}>
         <CustomButton
@@ -233,21 +222,27 @@ export default function ManageOrgsScreen() {
       />
 </View>
 );
-  
+
+if (loading) {
+  return <Text>Loading student data...</Text>;
+}
+
+if (error) {
+  return <Text>Error loading student data: {error.message}</Text>;
+}
+
+if (!currentStudent) {
+  return <Text>No student data available.</Text>;
+}
   return (
 
     <SafeAreaView style={styles.safeArea}>
-    
-      {loading ? (
-        <Text>Loading...</Text>
-            ) : (
               <FlatList
               data={itemList}
               renderItem={null} // Use `renderItem` to handle FlatList rendering, but in this case we are rendering static content
               ListHeaderComponent={renderContent} // This ensures scrollable content
               keyExtractor={(item, index) => index.toString()}
             />
-            )}
     </SafeAreaView>
   );
   }

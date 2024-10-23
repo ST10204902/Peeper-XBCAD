@@ -12,11 +12,17 @@ import { RootStackParamsList } from "../RootStackParamsList";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useStudent } from "../../hooks/useStudent";
 import { set } from "firebase/database";
+import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 
 const OrgDetailsScreen = () => {
   const clerkUser = useUser();
-  const {currentStudent, setCurrentStudent, error} = useStudent();
-  const [loading, setLoading] = React.useState(true);
+  const {
+    currentStudent,
+    error,
+    loading,
+    saving,
+    updateCurrentStudent,
+  } = useCurrentStudent();
   const navigation =
   useNavigation<NavigationProp<RootStackParamsList, "OrgDetails">>();
 
@@ -33,8 +39,7 @@ const OrgDetailsScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchStudent();
-      setLoading(false);
-    }, [clerkUser.user?.id])
+    }, [currentStudent, error, loading, saving])
   );
 
 
