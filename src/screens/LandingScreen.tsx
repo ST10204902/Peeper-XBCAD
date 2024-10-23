@@ -109,15 +109,19 @@ export default function LandingScreen() {
 
   const updatedActiveOrgs = async () => {
     if (currentStudent) {
-      const studentsActiveOrgs = currentStudent.activeOrgs ?? [];
+      console.log("updating active orgs");
+      const studentsActiveOrgs = currentStudent.activeOrgs;
         const orgs = await Organisation.getStudentsOrgs(studentsActiveOrgs);
-        setOrganisations(orgs);
+        setOrganisations((prev) => {
+          return orgs;
+        });
     }
   }
   
   useFocusEffect(
     React.useCallback(() => {
-      updatedActiveOrgs();
+     console.log("focus effect");
+     updatedActiveOrgs();
     }, [user?.id])
   );
 
