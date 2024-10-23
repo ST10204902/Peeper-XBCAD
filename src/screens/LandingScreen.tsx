@@ -28,9 +28,9 @@ import {
 } from "../services/trackingNotification";
 
 import * as Notifications from "expo-notifications";
-import { useStudent } from "../hooks/useStudent";
 import { useUser } from "@clerk/clerk-expo";
 import { useFocusEffect } from "@react-navigation/native";
+import { useCurrentStudent } from "../hooks/useCurrentStudent";
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -42,7 +42,7 @@ export default function LandingScreen() {
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking, stopTracking, errorMsg } =
     useLocationTracking(); // Import location tracking functions from hook
-  const {currentStudent, setCurrentStudent, error} = useStudent(); // State to hold current student's data
+    const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
   const { user } = useUser(); // Get the current authenticated user from Clerk
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
@@ -53,6 +53,19 @@ export default function LandingScreen() {
   const setTracking = useSetRecoilState(trackingState);
   const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
 
+
+  if (loading) {
+    return <Text> Loading... </Text> ;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
+  if (!currentStudent) {
+    return <Text>No student data available.</Text>;
+  }
+
   //-----------------------------------------------------------//
   //                          EFFECTS                          //
   //-----------------------------------------------------------//
@@ -61,8 +74,8 @@ export default function LandingScreen() {
     const setPushToken = async () => {
       const token = await registerForPushNotificationsAsync();
       console.log(token);
-      if (currentStudent && token) {
-        currentStudent.pushToken = token;
+      if (token) {
+        updateCurrentStudent({ profilePhotoURL: token });
       }
     }
   }, []);
@@ -87,53 +100,24 @@ export default function LandingScreen() {
     };
   }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
 
-  // Fetch organisations from the database when component is mounted
+  // THIS MIGHT BE REDUNDANT
   useEffect(() => {
-    const fetchOrganisations = async () => {
-      try {
-        if (!currentStudent) {
-          console.error("Student not found");
-          return;
-        }
-        const studentsActiveOrgs = currentStudent.activeOrgs ?? [];
-        const orgs = await Organisation.getStudentsOrgs(studentsActiveOrgs);
-        setOrganisations(orgs);
-      } catch (error) {
-        console.error("Error fetching organisations:", error);
-      }
-    };
-    console.log("fetching organisations");
-    fetchOrganisations();
+    updatedActiveOrgs();
   }, []);
 
 
   const updatedActiveOrgs = async () => {
-    if (currentStudent) {
       console.log("updating active orgs");
-      const studentsActiveOrgs = currentStudent.activeOrgs;
-        const orgs = await Organisation.getStudentsOrgs(studentsActiveOrgs);
-        setOrganisations((prev) => {
-          return orgs;
-        });
-    }
+        const orgs = await Organisation.getStudentsOrgs(currentStudent.activeOrgs);
+        setOrganisations(orgs);
   }
   
   useFocusEffect(
     React.useCallback(() => {
      console.log("focus effect");
      updatedActiveOrgs();
-    }, [user?.id])
+    }, [currentStudent.activeOrgs])
   );
-
-  
-
-  // Fetch current student data based on the logged-in user
-  useEffect(() => {
-    if (error) {
-      console.error("Error fetching student:", error);
-      return;
-    }
-  }, [error]);
 
   // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
@@ -196,22 +180,29 @@ export default function LandingScreen() {
   /*
    * Handle start tracking button click to start tracking the student's location
    */
-  const handleStartTracking = () => {
-    if (!currentStudent || !selectedOrganisation) {
-      console.error("Student or organisation not found");
+  const handleStartTracking = async () => {
+    if (!selectedOrganisation) {
+      console.error("organisation not found");
       return;
     }
-    startTracking(selectedOrganisation).then(async () => {
-      if (errorMsg !== null) {
-        setIsPopupVisible(false);
-        currentStudent.activeOrgs.push(selectedOrganisation.org_id);
-        setCurrentStudent(currentStudent);
-        await currentStudent.save();
-        await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
-      } else {
-        console.error("Error starting tracking:", errorMsg);
-      }
-    });
+    try {
+      // Start tracking the organisation
+      await startTracking(selectedOrganisation);
+  
+      // Update the student's active organisations
+      const newActiveOrgs = [
+        ...currentStudent.activeOrgs,
+        selectedOrganisation.org_id,
+      ];
+      // Update the student data using the hook
+      await updateCurrentStudent({ activeOrgs: newActiveOrgs });
+      // Hide the popup
+      setIsPopupVisible(false);
+      // Show or update the tracking notification
+      await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
+    } catch (error) {
+      console.error("Error starting tracking:", error);
+    }
   };
 
   /**
@@ -309,6 +300,7 @@ export default function LandingScreen() {
         </View>
         {/* Scrollable list of organisations */}
         {(organisations.length > 0 && <BottomSheetFlatList
+        
           data={organisations}
           // Use organisation ID as key
           keyExtractor={(item) => item.org_id}
@@ -316,7 +308,9 @@ export default function LandingScreen() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContentContainer}
         />
-        )}
+        )
+        }
+        
       </BottomSheet>
     </SafeAreaView>
   );
