@@ -53,19 +53,6 @@ export default function LandingScreen() {
   const setTracking = useSetRecoilState(trackingState);
   const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
 
-
-  if (loading) {
-    return <Text> Loading... </Text> ;
-  }
-
-  if (error) {
-    return <Text>Error: {error.message}</Text>;
-  }
-
-  if (!currentStudent) {
-    return <Text>No student data available.</Text>;
-  }
-
   //-----------------------------------------------------------//
   //                          EFFECTS                          //
   //-----------------------------------------------------------//
@@ -75,9 +62,10 @@ export default function LandingScreen() {
       const token = await registerForPushNotificationsAsync();
       console.log(token);
       if (token) {
-        updateCurrentStudent({ profilePhotoURL: token });
+        updateCurrentStudent({ pushToken: token });
       }
     }
+    setPushToken();
   }, []);
 
   useEffect(() => {
@@ -103,21 +91,16 @@ export default function LandingScreen() {
   // THIS MIGHT BE REDUNDANT
   useEffect(() => {
     updatedActiveOrgs();
-  }, []);
+  }, [currentStudent]);
 
 
   const updatedActiveOrgs = async () => {
+    if (currentStudent) {
       console.log("updating active orgs");
         const orgs = await Organisation.getStudentsOrgs(currentStudent.activeOrgs);
         setOrganisations(orgs);
+      }
   }
-  
-  useFocusEffect(
-    React.useCallback(() => {
-     console.log("focus effect");
-     updatedActiveOrgs();
-    }, [currentStudent.activeOrgs])
-  );
 
   // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
@@ -189,6 +172,7 @@ export default function LandingScreen() {
       // Start tracking the organisation
       await startTracking(selectedOrganisation);
   
+      if (currentStudent) {
       // Update the student's active organisations
       const newActiveOrgs = [
         ...currentStudent.activeOrgs,
@@ -196,6 +180,7 @@ export default function LandingScreen() {
       ];
       // Update the student data using the hook
       await updateCurrentStudent({ activeOrgs: newActiveOrgs });
+      }
       // Hide the popup
       setIsPopupVisible(false);
       // Show or update the tracking notification
@@ -241,6 +226,26 @@ export default function LandingScreen() {
   const handleCancel = async () => {
     setIsPopupVisible(false); // Close the popup
   };
+
+   //-----------------------------------------------------------//
+  //                      CONDITIONAL RENDERING                //
+  //-----------------------------------------------------------//
+
+  if (loading) {
+    return <Text> Loading... </Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
+  if (!currentStudent) {
+    return <Text>No student data available.</Text>;
+  }
+
+  //-----------------------------------------------------------//
+  //                          RENDER                           //
+  //-----------------------------------------------------------//
 
   /*
    * Render each organisation list item with alternating colors for styling
