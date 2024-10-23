@@ -1,6 +1,9 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { OrgAddressData } from "../databaseModels/OrgAddressData";
+import * as Location from "expo-location";
+
+const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
 /**
  * @orgName name of the organisation
@@ -13,6 +16,7 @@ interface Props {
   orgAddress: OrgAddressData;
   oddOrEven: "odd" | "even";
   listButton: ReactNode;
+  userLocation?: Location.LocationObject;
 }
 
 /**
@@ -28,6 +32,7 @@ export default function ExpandableOrgListItem({
   orgAddress,
   oddOrEven,
   listButton,
+  userLocation,
 }: Props) {
   // Odd even code
   const containerStyle =
@@ -39,17 +44,62 @@ export default function ExpandableOrgListItem({
 
   // Hook for setting the expanded state of the item
   const [expanded, setExpanded] = useState(false);
+  const [distanceInKm, setDistanceInKm] = useState<string>('0');
+  const [validDistance, setValidDistance] = useState<boolean>(false);
+
+   // Function to format the address for the API
+   function formatAddress(orgAddress: OrgAddressData): string {
+    const { streetAddress, suburb, city, province, postalCode } = orgAddress;
+    return `${streetAddress}, ${suburb}, ${city}, ${province}, ${postalCode}`;
+  }
+
+  useEffect(() => {
+    const getDistance = async () => {
+      if (userLocation && orgAddress) {
+        try {
+          const origin = `${userLocation.coords.latitude},${userLocation.coords.longitude}`;
+          const destination = encodeURIComponent(formatAddress(orgAddress));
+
+          const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${GOOGLE_MAPS_API_KEY}`;
+
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.status === 'OK') {
+            const element = data.rows[0].elements[0];
+            if (element.status === 'OK') {
+              const distance = element.distance.value; // in meters
+              const distanceInKm = (distance / 1000).toFixed(1); // Round to 1 decimal place
+              setDistanceInKm(distanceInKm);
+              setValidDistance(true);
+            } else {
+              console.error('Distance Matrix API error:', element.status);
+              setValidDistance(false);
+            }
+          } else {
+            console.error('Distance Matrix API error:', data.status);
+            setValidDistance(false);
+          }
+        } catch (error) {
+          console.error('Error fetching distance:', error);
+          setValidDistance(false);
+        }
+      }
+    };
+
+    getDistance();
+  }, [userLocation, orgAddress]);
 
   return !expanded ? (
     <View style={containerStyle} onTouchEnd={() => setExpanded(true)}>
       <Text style={styles.orgName}>{orgName}</Text>
-      <Text style={styles.distance}> xkm away </Text>
+      {validDistance && <Text style={styles.distance}>{distanceInKm}km</Text>}
     </View>
   ) : (
     <View style={expandedContainerStyle} onTouchEnd={() => setExpanded(false)}>
       <View style={expandedStyles.firstRow}>
         <Text style={expandedStyles.orgName}>{orgName}</Text>
-        <Text style={expandedStyles.distance}> xkm away </Text>
+        {validDistance && <Text style={styles.distance}>{distanceInKm}km</Text>}
       </View>
 
       <Text style={expandedStyles.addressRow}>
