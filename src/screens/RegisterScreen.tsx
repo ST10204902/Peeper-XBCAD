@@ -5,7 +5,6 @@ import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correc
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
 import { Student } from "../databaseModels/databaseClasses/Student";
-import { useTheme } from '../styles/ThemeContext';
 
 //----------Code---------//
 //Demonstrating where to implement pressing the button.
