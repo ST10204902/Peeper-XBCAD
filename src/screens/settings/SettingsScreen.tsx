@@ -177,7 +177,54 @@ export default function SettingsScreen() {
               items={section.items}
             />
           ))}
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+        {/* Header Section with Dark Mode Toggle */}
+        <View style={styles.headerContainer}>
+          <Text style={[styles.title, { color: theme.fontRegular }]}>SETTINGS</Text>
+          <View style={styles.darkModeContainer}>
+            <Text style={[styles.darkModeText, { color: theme.fontRegular }]}>
+              Dark Mode
+            </Text>
+            <Switch
+              value={isDarkMode}
+              onValueChange={toggleTheme}
+              trackColor={{ false: '#767577', true: '#4CD964' }}
+              thumbColor={isDarkMode ? '#ffffff' : '#f4f3f4'}
+              ios_backgroundColor="#767577"
+              style={styles.switch}
+            />
+          </View>
+        </View>
+
+        <View style={[styles.content, { backgroundColor: theme.background }]}>
+          {settingsSections.map((section) => (
+            <SettingsSection
+              key={section.header}
+              header={section.header}
+              items={section.items}
+            />
+          ))}
         
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              title="REQUEST DATA DELETION"
+              fontFamily='Quittance'
+              textColor={theme.fontRegular}
+              textSize={20}
+              buttonColor={theme.settingsBlueButton}
+              onPress={() => console.log('Request data deletion')}
+            />
+            <CustomButton
+              title="LOG OUT"
+              fontFamily='Quittance'
+              textColor={theme.fontRegular}
+              textSize={20}
+              buttonColor='#FE7143'
+              onPress={() => console.log('Log out')}
+            />
+          </View>
+        </View>
           <View style={styles.buttonContainer}>
             <CustomButton
               title="REQUEST DATA DELETION"
@@ -208,6 +255,44 @@ export default function SettingsScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 32,
+  },
+  content: {
+    padding: 16,
+  },
+  sectionContainer: {
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 30,
+    fontFamily: "Quittance",
+  },
+  buttonContainer: {
+    gap: 12,
+  },
+  darkModeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  darkModeText: {
+    fontSize: 16,
+    fontFamily: 'Rany-Regular',
+  },
+  switch: {
+    transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }],
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
