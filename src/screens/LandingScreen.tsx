@@ -46,8 +46,6 @@ export default function LandingScreen() {
   const { user } = useUser(); // Get the current authenticated user from Clerk
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
-  const [sessionData, setSessionData] = useState<SessionLog>(); // State to hold session data
-  const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
   const setTracking = useSetRecoilState(trackingState);
@@ -88,19 +86,28 @@ export default function LandingScreen() {
     };
   }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
 
-  // THIS MIGHT BE REDUNDANT
-  useEffect(() => {
-    updatedActiveOrgs();
-  }, [currentStudent]);
-
-
-  const updatedActiveOrgs = async () => {
-    if (currentStudent) {
-      console.log("updating active orgs");
-        const orgs = await Organisation.getStudentsOrgs(currentStudent.activeOrgs);
-        setOrganisations(orgs);
-      }
+// Method to fetch data
+const fetchStudentsOrgs = async () => {
+  if (!user) {
+    console.error("Clerk user not found in LandingScreen");
+    return;
   }
+  console.log("updating active orgs");
+  const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+  setOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
+};
+
+useFocusEffect(
+  React.useCallback(() => {
+    if (currentStudent) {
+      fetchStudentsOrgs();
+    }
+  }, [currentStudent])
+);
+
+
+
+
 
   // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
