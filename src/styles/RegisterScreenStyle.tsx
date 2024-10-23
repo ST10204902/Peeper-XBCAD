@@ -1,6 +1,4 @@
 import { StyleSheet } from "react-native";
-import { useTheme } from '../styles/ThemeContext';
-const { theme, toggleTheme } = useTheme();
 
 
 const styles = StyleSheet.create({
@@ -8,7 +6,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: theme.background, // Monster green background colour 
+    backgroundColor: '#A4DB51', // Monster green background colour 
     padding: 20,
   },
   headingContainer: {
