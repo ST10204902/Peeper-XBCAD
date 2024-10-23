@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, SafeAreaView, FlatList } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, FlatList, Alert } from "react-native";
 import { OrgAddressData } from "../../databaseModels/OrgAddressData";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
@@ -60,9 +60,12 @@ export default function ManageOrgsScreen() {
     updateCurrentStudent,
   } = useCurrentStudent();
   const [allOrganisations, setAllOrganisations] = React.useState<OrganisationData[]>([]);
+  const [displayedOrganisations, setDisplayedOrganisations] = React.useState<OrganisationData[]>([]);
   const [studentOrganisations, setStudentOrganisations] = React.useState<OrganisationData[]>([]);
   const [studentsOrgsLoaded, setStudentsOrgsLoaded] = React.useState<boolean>(false);
+  const allOrgs = Organisation.getAllOrganisations();
   let itemList: OrganisationData[] = [];
+  
 
    // Method to fetch data
    const fetchData = async () => {
@@ -76,6 +79,7 @@ export default function ManageOrgsScreen() {
     
     // Set the state variables with the fetched data
     setAllOrganisations(allOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
+    setDisplayedOrganisations(allOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
     setStudentOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
     setStudentsOrgsLoaded(true);
   };
@@ -110,6 +114,25 @@ export default function ManageOrgsScreen() {
     }
     updateCurrentStudent({activeOrgs: [...currentStudent.activeOrgs, org.org_id]});
   }
+
+  const handleFocus = () => {
+    
+  };
+
+const handleBlur = (searchInput: string) => {
+    if (searchInput.trim() === "") {
+      setDisplayedOrganisations(allOrganisations);
+      return;
+    }
+    const filteredOrgs = allOrganisations.filter((org) => org.orgName.toLowerCase().includes(searchInput.toLowerCase().trim()));
+    if (filteredOrgs.length === 0) {
+      Alert.alert("No organisations found", "Please try a different search term.");
+      return;
+    }
+    setDisplayedOrganisations(filteredOrgs);
+  };
+    
+  
 
   const handleRequestNewOrganisation = () => {
       navigation.navigate("RequestOrgScreen" as never);
@@ -182,12 +205,14 @@ export default function ManageOrgsScreen() {
       <Text style={styles.sectionHeading}>Add Organisation</Text>
   
       <View style={styles.inputRow}>
-  <View style={styles.inputWrapper}>
-    <SearchBarComponent
+      <View style={styles.inputWrapper}>
+      <SearchBarComponent
       FGColor="#000000"
       onSearchInputChange={(searchInput) => console.log(searchInput)}
       placeHolderColor="#A9A9A9"
-    />
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      />
   </View>
   <View style={styles.inputWrapper}>
       <ComboBoxComponent
@@ -207,7 +232,7 @@ export default function ManageOrgsScreen() {
 </View>
 </View>
 <ExpandableOrgList
-        items={allOrganisations}
+        items={displayedOrganisations}
         onListButtonClicked={onAllOrgsListButtonPressed}
         listButtonComp={
           <CustomButton
