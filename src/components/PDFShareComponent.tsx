@@ -15,6 +15,8 @@ import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import CustomButton from "./CustomButton";
 import memoizeOne from "memoize-one";
 import { useCurrentStudent } from "../hooks/useCurrentStudent";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
@@ -478,6 +480,9 @@ export default function PDFShareComponent() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const {currentStudent} = useCurrentStudent();
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
 
 
   /**
@@ -519,8 +524,8 @@ export default function PDFShareComponent() {
       {currentStudent && <CustomButton
         title="EXPORT TRACKING INFORMATION"
         fontFamily="Quittance"
-        textColor="#161616"
-        buttonColor="#D9E7FF"
+        textColor={theme.fontRegular}
+        buttonColor="#A4DB51"
         textSize={20}
         onPress={printToFile}
         disabled={loading}
