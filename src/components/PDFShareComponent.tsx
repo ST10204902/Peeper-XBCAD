@@ -14,6 +14,7 @@ import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import CustomButton from "./CustomButton";
 import memoizeOne from "memoize-one";
+import { useCurrentStudent } from "../hooks/useCurrentStudent";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
@@ -473,32 +474,11 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
  * @returns React component
  */
 export default function PDFShareComponent() {
-  const [currentStudent, setCurrentStudent] = React.useState<Student | null>(
-    null
-  );
   const user = useUser() ?? null;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const {currentStudent} = useCurrentStudent();
 
-  const fetchCurrentStudent = async (): Promise<Student | null> => {
-    if (user?.user?.id) {
-      try {
-        setLoading(true);
-        const student = await Student.fetchById(user.user.id);
-        setCurrentStudent(student);
-        return student;
-      } catch (error) {
-        console.error("Error fetching student:", error);
-        Alert.alert("Error", "Failed to fetch student data.");
-        return null;
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      Alert.alert("Error", "User not authenticated.");
-      return null;
-    }
-  };
 
   /**
    * Print the student's location data to a PDF file and share it.
@@ -509,17 +489,16 @@ export default function PDFShareComponent() {
    */
   const printToFile = async () => {
     try {
-      const student = await fetchCurrentStudent();
-      if (!student) {
+      if (!currentStudent) {
         setError("Current student data is not available.");
         Alert.alert("Error", "Current student data is not available.");
-      } else if (!student.locationData) {
+      } else if (!currentStudent.locationData) {
         setError("No location data available.");
         Alert.alert("Error", "No location data available.");
       } else {
         setError(null);
         setLoading(true);
-        const htmlContent = await testHTML(student, logoBase64);
+        const htmlContent = await testHTML(currentStudent, logoBase64);
 
         const { uri } = await Print.printToFileAsync({ html: htmlContent });
         await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
@@ -537,7 +516,7 @@ export default function PDFShareComponent() {
     <View>
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
       {error && <Text>{error}</Text>}
-      <CustomButton
+      {currentStudent && <CustomButton
         title="EXPORT TRACKING INFORMATION"
         fontFamily="Quittance"
         textColor="#161616"
@@ -545,7 +524,7 @@ export default function PDFShareComponent() {
         textSize={20}
         onPress={printToFile}
         disabled={loading}
-      />
+      />}
     </View>
   );
 }
