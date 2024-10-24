@@ -42,9 +42,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 export default function RequestProgressScreen() {
   const { currentStudent } = useCurrentStudent();
-  const orgRequests = useOrgRequests(
-    currentStudent?.student_id ? currentStudent.student_id : ""
-  );
+  const orgRequests = useOrgRequests(currentStudent?.student_id || "");
 
   // Render Loading component if still loading
   if (!currentStudent) {

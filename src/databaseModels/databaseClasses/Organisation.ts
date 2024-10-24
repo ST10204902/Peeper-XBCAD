@@ -49,6 +49,7 @@ export class Organisation implements OrganisationData {
     return orgs.filter((org) => org !== null) as Organisation[];
   }
 
+
   toJSON(): OrganisationData {
     return {
       org_id: this.org_id,
