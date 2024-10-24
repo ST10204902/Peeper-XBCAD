@@ -97,7 +97,6 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
 
 const styles = StyleSheet.create({
   container1: {
-    marginTop: 20,
     padding: 20,
     height: 150,
     flexDirection: "row",
