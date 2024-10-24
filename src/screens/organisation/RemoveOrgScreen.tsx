@@ -1,43 +1,79 @@
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, View, FlatList } from "react-native";
 import Input from "../../components/GeneralInputComponent";
-import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import CustomButton from "../../components/CustomButton";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
-
+import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
+import { useCurrentStudent } from "../../hooks/useCurrentStudent";
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/clerk-expo";
 
 /**
  * Screen Component where the user can Remove an Org
  * @returns a created RemoveOrgsScreen Component
  */
 export default function RemoveOrgScreen() {
-  let itemList: OrganisationData[] = [];
+  const clerkUser = useUser();
+  const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
+  const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
 
-  const handleListButtonClick = (selectedOrg: OrganisationData) => {
-    // Handle the button click event here
+  // Method to fetch data
+  const fetchData = async () => {
+    if (!clerkUser.user) {
+      console.error("Clerk user not found in ManageOrgsScreen");
+      return;
+    }
+    const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+
+    setStudentOrganisations(
+      studentOrgs
+        .filter((org) => org && typeof org.toJSON === "function")
+        .map((org) => org.toJSON())
+    );
   };
 
-  //I belive i set the list view correctly? if not, sorry! I tried my best :,) 
-  return (
-    <ScrollView style={styles.screenLayout}>
+  // Run the fetchData method when the screen is focused (navigated to) or when currentStudent changes
+  useEffect(() => {
+    if (currentStudent) {
+      fetchData();
+    }
+  }, [currentStudent]);
+
+  const handleListButtonClick = (selectedOrg: OrganisationData) => {
+   let newOrgs = currentStudent?.activeOrgs.filter((org) => org !== selectedOrg.org_id);
+    updateCurrentStudent({ activeOrgs: newOrgs });
+  };
+
+  const renderHeader = () => (
+    <>
       <Text style={styles.headerText}>Remove an Organisation</Text>
       <View style={styles.inputSpacing} />
-      <ExpandableOrgList
-        items={itemList}
-        listButtonComp={
-          <CustomButton
-            onPress={() => {}}
-            title="Remove Organisation"
-            textSize={18}
-            buttonColor="#A4DB51"
-            textColor="#000000"
-            fontFamily="Rany-Bold"
-          />
-        }
-        onListButtonClicked={handleListButtonClick}
-      />
-    </ScrollView>
+    </>
+  );
+
+  return (
+    <FlatList
+      style={styles.screenLayout}
+      data={studentOrganisations}
+      ListHeaderComponent={renderHeader}
+      renderItem={({ item }) => (
+        <ExpandableOrgList
+          items={[item]}
+          listButtonComp={
+            <CustomButton
+              onPress={() => handleListButtonClick(item)}
+              title="Remove Organisation"
+              textSize={18}
+              buttonColor="#A4DB51"
+              textColor="#000000"
+              fontFamily="Rany-Bold"
+            />
+          }
+          onListButtonClicked={handleListButtonClick}
+        />
+      )}
+      keyExtractor={(item) => item.org_id}
+    />
   );
 }
 
@@ -57,5 +93,3 @@ const styles = StyleSheet.create({
     height: 20,
   },
 });
-
-// End of File
