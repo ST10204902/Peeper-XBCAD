@@ -68,6 +68,7 @@ export class Student implements StudentData {
       profilePhotoURL: this.profilePhotoURL,
       activeOrgs: this.activeOrgs ?? [],
       locationData: locationDataJSON,
+      darkMode: this.darkMode,
     };
   }
 }
