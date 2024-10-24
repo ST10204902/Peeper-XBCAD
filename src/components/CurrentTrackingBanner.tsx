@@ -20,14 +20,15 @@ import { useEffect } from "react";
  * @returns A created CurrentTrackingBanner Component
  */
 const CurrentTrackingBanner = () => {
-  const [tracking, setTracking] = useRecoilState(trackingState);
+  const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
+
   const setElapsedTime = useSetRecoilState(elapsed_time); // Only setElapsedTime is needed here
 
   // Start or stop the timer when tracking starts or stops
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
 
-    if (tracking.isTracking) {
+    if (trackingAtom.isTracking) {
       // Clear any existing timer before starting a new one
       clearInterval(timer);
 
@@ -47,9 +48,9 @@ const CurrentTrackingBanner = () => {
         clearInterval(timer);
       }
     };
-  }, [tracking.isTracking, setElapsedTime]);
+  }, [trackingAtom.isTracking, setElapsedTime]);
 
-  if (!tracking.isTracking) {
+  if (!trackingAtom.isTracking) {
     return null; // Don't render the component if tracking is not active
   }
 
@@ -64,14 +65,14 @@ const CurrentTrackingBanner = () => {
             numberOfLines={1} // Limit to one line
             ellipsizeMode="tail"
           >
-            {tracking.organizationName}
+            {trackingAtom.organizationName}
           </Text>
           <ElapsedTimeDisplay />
         </View>
       </View>
       <Pressable
         style={styles.stop_button}
-        onPress={() => setTracking({ isTracking: false, organizationName: "" })}
+        onPress={() => setTrackingAtom({ isTracking: false, organizationName: "" })}
       >
         <ImageBackground
           style={styles.button_image}

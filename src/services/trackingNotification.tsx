@@ -1,6 +1,5 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-
 /**
  * Requests notification permissions from the user.
  *
@@ -78,6 +77,7 @@ const formatElapsedTime = (elapsedTime: number): string => {
  * ```
  */
 export const showOrUpdateTrackingNotification = async (orgName: string, elapsedTime: number) => {
+  console.log("OrgName: " , orgName,"elapsedTime:", elapsedTime);
   try {
     const formattedTime = formatElapsedTime(elapsedTime);
     const content: Notifications.NotificationContentInput = {
@@ -148,6 +148,6 @@ export const clearTrackingNotification = async () => {
  */
 export const checkNotificationSettings = async () => {
   const settings = await Notifications.getPermissionsAsync();
-  //console.log('Notification settings:', settings);
+  console.log('Notification settings:', settings);
 };
 //------------------------***EOF***-----------------------------//
