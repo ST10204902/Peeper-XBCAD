@@ -47,7 +47,7 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({ onAvatarSelected = ()
 
   useEffect(() => {
     if (currentStudent?.profilePhotoURL) {
-      const avatar = AVATARS.find(a => valuePairs[a.id] === currentStudent.profilePhotoURL);
+      const avatar = AVATARS.find(a => valuePairs[a.id as keyof typeof valuePairs] === currentStudent.profilePhotoURL);
       if (avatar) {
         setSelectedAvatar(avatar.id);
       }
