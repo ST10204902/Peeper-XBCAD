@@ -1,20 +1,20 @@
-//import { Text } from "react-native";
 import React from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
 import StudentHeaderComponent from "../../components/StudentheaderComponent";
 import CustomButton from "../../components/CustomButton";
 import EmergencyContacts from "../../components/EmergencyContacts";
 import { useUser } from "@clerk/clerk-expo";
-import { Student } from "../../databaseModels/databaseClasses/Student";
 import MapSessionHistory from "../../components/MapSessionHistory";
 import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { useStudent } from "../../hooks/useStudent";
-import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 const OrgDetailsScreen = () => {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   const clerkUser = useUser();
   const {
     currentStudent,
@@ -23,8 +23,7 @@ const OrgDetailsScreen = () => {
     saving,
     updateCurrentStudent,
   } = useCurrentStudent();
-  const navigation =
-  useNavigation<NavigationProp<RootStackParamsList, "OrgDetails">>();
+  const navigation = useNavigation<NavigationProp<RootStackParamsList, "OrgDetails">>();
 
   // Method to fetch the student data
   const fetchStudent = async () => {
@@ -42,54 +41,68 @@ const OrgDetailsScreen = () => {
     }, [currentStudent, error, loading, saving])
   );
 
-  
-if (loading) {
-  return <Text>Loading student data...</Text>;
-}
+  if (loading) {
+    return <Text>Loading student data...</Text>;
+  }
 
-if (error) {
-  return <Text>Error loading student data: {error.message}</Text>;
-}
+  if (error) {
+    return <Text>Error loading student data: {error.message}</Text>;
+  }
 
-if (!currentStudent) {
-  return <Text>No student data available.</Text>;
-}
-
+  if (!currentStudent) {
+    return <Text>No student data available.</Text>;
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {loading ? (
-        <Text>Loading...</Text>
-            ) : (
-        currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
-            )}
-            <CustomButton
-        onPress={() => { navigation.navigate("ManageOrgsScreen", currentStudent!);}}
-        title="Organisation Management"
-        textColor="black"
-        buttonColor="#A4DB51"
-        fontFamily="Quittance"
-        textSize={25}
-            />
-            {currentStudent && <MapSessionHistory currentStudent={currentStudent} />}
-      <Text style={styles.BeSafeText}>Be Safe!</Text>
-      <EmergencyContacts />
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.paddedContainer}>
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
+          )}
+          <CustomButton
+            onPress={() => { navigation.navigate("ManageOrgsScreen", currentStudent!); }}
+            title="Organisation Management"
+            textColor={theme.fontRegular}
+            buttonColor="#A4DB51"
+            fontFamily="Quittance"
+            textSize={28}
+            verticalPadding={25}
+            cornerRadius={20}
+            lineHeight={30}
+          />
+          <Text style={[styles.BeSafeText, { color: theme.fontRegular }]}>Session History</Text>
+        </View>
+        {currentStudent && <MapSessionHistory currentStudent={currentStudent} />}
+        <View style={styles.paddedContainer}>
+          <Text style={[styles.BeSafeText, { color: theme.fontRegular }]}>Be Safe!</Text>
+          <EmergencyContacts />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  paddedContainer: {
+    padding: 10,
+  },
   BeSafeText: {
     fontFamily: "Rany-Bold",
-    fontSize: 20,
+    fontSize: 18,
     textAlign: "left",
-    margin: 10,
+    marginLeft: 10,
+    marginTop: 12,
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   sheetHeader: {
-    padding: 16,
     alignItems: "center",
     backgroundColor: "#f8f8f8",
   },
@@ -104,8 +117,6 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
   },
   itemText: {
     fontSize: 16,

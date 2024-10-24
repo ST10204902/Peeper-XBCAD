@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import MapView, { Marker } from "react-native-maps";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import MapView, { Marker, MapStyleElement } from "react-native-maps";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { Student } from "../databaseModels/databaseClasses/Student";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Viewport } from "../databaseModels/databaseClasses/Viewport";
+import { useTheme } from '../styles/ThemeContext';
 
 /*
 * Props for the MapSessionHistory component
@@ -12,12 +13,16 @@ interface MapSessionHistoryComponentProps {
   currentStudent: Student;
 }
 
+
 /*
  * Map component for displaying the Students previous community service locations.
  */
 const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
   currentStudent,
 })  => {
+  const { isDarkMode } = useTheme();
+  const mapStyle = isDarkMode ? [] : [];
+
   // Default location for Cape Town
   const defaultRegion = {
     latitude: -33.9249,   // Cape Town latitude
@@ -68,44 +73,48 @@ const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
   }, [currentStudent]);
 
   return (
-    <View style={styles.container}>
-      {!loading && (
-        <MapView
-          style={styles.mapStyle}
-          region={region}
-          scrollEnabled={false}  // Disables scrolling
-          zoomEnabled={false}    // Disables zooming
-          pitchEnabled={false}   // Disables changing the viewing angle
-          rotateEnabled={false}  // Disables rotating the map
-        >
-          {/* Render markers for each session start location*/}
-          {sessionStartLocations.map((location: LocationLog, index: number) => (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-              }}
-              icon={require("../assets/icons/ServiceMapMarker.png")}
-            />
-          ))}
-        </MapView>
-      )}
+    <View style={[styles.mapContainer]}>
+      <View style={styles.mapWrapper}>
+        {!loading && (
+          <MapView
+            style={styles.mapStyle}
+            region={region}
+            userInterfaceStyle={isDarkMode ? 'dark' : 'light'}
+            scrollEnabled={false}  // Disables scrolling
+            zoomEnabled={false}    // Disables zooming
+            pitchEnabled={false}   // Disables changing the viewing angle
+            rotateEnabled={false}  // Disables rotating the map
+          >
+            {sessionStartLocations.map((location: LocationLog, index: number) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                }}
+                icon={require("../assets/icons/ServiceMapMarker.png")}
+              />
+            ))}
+          </MapView>
+        )}
+      </View>
     </View>
   );
 };
 
-// Styles for the MapSessionHistory component
 const styles = StyleSheet.create({
-  container: {
+  mapContainer: {
+    width: '100%',
+    height: Dimensions.get('window').height * 0.3, // Takes up 30% of screen height
+  },
+  mapWrapper: {
     flex: 1,
+    overflow: 'hidden',
   },
   mapStyle: {
-    marginTop: 10,
-    ...StyleSheet.absoluteFillObject,  // Correct usage of absoluteFillObject,
+    width: '100%',
+    height: '100%',
   },
 });
 
 export default MapSessionHistory;
-
-//------------------------***EOF***-----------------------------//
