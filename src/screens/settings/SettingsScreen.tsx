@@ -11,9 +11,9 @@ import ExportReportScreen from "./ExportReportScreen";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useState } from "react";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
-import { useStudent } from "../../hooks/useStudent";
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';
+import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 
 export default function SettingsScreen() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -23,7 +23,7 @@ export default function SettingsScreen() {
   const navigation = useNavigation<any>();
 
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
-  const { currentStudent } = useStudent(); // Getting student in the database
+  const { currentStudent } = useCurrentStudent(); // Getting student in the database
 
   // Error if the student number can't be obtained.
   if (currentStudent && !currentStudent.studentNumber) {
