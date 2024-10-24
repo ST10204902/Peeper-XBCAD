@@ -82,7 +82,7 @@ export function useLocationTracking() {
             sessionLog_id: newSessionID,
             orgID: organisation.org_id,
             sessionStartTime: new Date().toISOString(),
-            sessionEndTime: '',
+            sessionEndTime: new Date().toISOString(), // Will be updated when tracking stops, important for calculating session duration while tracking
             locationLogs: [],
             viewport: { low: { latitude: 0, longitude: 0 }, high: { latitude: 0, longitude: 0 } }
         });
