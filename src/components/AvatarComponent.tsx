@@ -78,10 +78,15 @@ const { width } = Dimensions.get("window");
  *
  * <AvatarComponent onAvatarSelected={handleAvatarSelected} />
  */
+
+
+
 const AvatarComponent = ({
   onAvatarSelected,
 }: {
   onAvatarSelected: (uri: string) => void;
+  selectedAvatarURI: string;
+
 }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<number>(0);
   const flatListRef = React.useRef<FlatList>(null);
