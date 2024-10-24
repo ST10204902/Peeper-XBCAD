@@ -7,12 +7,12 @@ export class LocationLog implements LocationLogData {
   accuracy: number;
   altitude: number;
 
-  constructor(data: LocationLogData) {
-    this.timestamp = data.timestamp;
-    this.latitude = data.latitude;
-    this.longitude = data.longitude;
-    this.accuracy = data.accuracy;
-    this.altitude = data.altitude;
+  constructor(data: Partial<LocationLogData>) {
+    this.timestamp = data.timestamp || new Date().toISOString();
+    this.latitude = data.latitude || 0;
+    this.longitude = data.longitude || 0;
+    this.accuracy = data.accuracy || 0;
+    this.altitude = data.altitude || 0;
   }
 
   toJSON(): LocationLogData {
