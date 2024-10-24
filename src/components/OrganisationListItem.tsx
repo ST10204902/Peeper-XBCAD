@@ -1,6 +1,8 @@
 // OrganisationListItem.tsx
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 // Props for the OrganisationListItem component
 interface OrganisationListItemProps {
@@ -18,12 +20,20 @@ const OrganisationListItem: React.FC<OrganisationListItemProps> = ({
   oddOrEven,
   onPress,
 }) => {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
   const containerStyle = oddOrEven === "odd" ? styles.itemContainerOdd : styles.itemContainerEven;
 
   // Render the organisation list item
   return (
-    <TouchableOpacity style={containerStyle} onPress={onPress}>
-      <Text style={styles.itemText}>{orgName}</Text>
+    <TouchableOpacity 
+      style={[
+      containerStyle, 
+      { backgroundColor: oddOrEven === "odd" ? theme.landingListBackgroundOverall : theme.landingListItemBackground }
+      ]} 
+      onPress={onPress}
+    >
+      <Text style={[styles.itemText, { color: theme.landingListFont }]}>{orgName}</Text>
     </TouchableOpacity>
   );
 };
@@ -32,18 +42,13 @@ const OrganisationListItem: React.FC<OrganisationListItemProps> = ({
 const styles = StyleSheet.create({
   itemContainerOdd: {
     padding: 15,
-    borderBottomColor: "#ccc",
-    backgroundColor: "#f9f9f9",
     width: screenWidth,
   },
   itemContainerEven: {
     padding: 15,
-    borderBottomColor: "#ccc",
-    backgroundColor: "#f0f0f0",
     width: screenWidth,
   },
   itemText: {
-    color: "#cecece",
     fontSize: 18,
   },
 });

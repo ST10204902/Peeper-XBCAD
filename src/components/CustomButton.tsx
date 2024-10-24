@@ -24,6 +24,7 @@ import {
  * @property {boolean} [disabled] - Optional flag to disable the button.
  * @property {number} [verticalPadding] - Optional vertical padding for the button.
  * @property {number} [cornerRadius] - Optional corner radius for the button.
+ * @property {number} [lineHeight] - Optional line height for the button text.
  */
 interface CustomButtonProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -37,6 +38,7 @@ interface CustomButtonProps {
   disabled?: boolean;
   verticalPadding?: number;
   cornerRadius?: number;
+  lineHeight?: number;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -51,6 +53,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   disabled = false,
   verticalPadding = 15, // Default vertical padding
   cornerRadius, // Optional corner radius
+  lineHeight, // Optional line height
 }) => {
   const [buttonHeight, setButtonHeight] = useState<number>(0);
 
@@ -71,6 +74,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     fontSize: textSize || 25,
     textAlign: 'center', // Center text horizontally
     textAlignVertical: 'center', // Center text vertically
+    lineHeight: lineHeight, // Apply line height if provided
   };
 
   const labelTextStyle: TextStyle = {

@@ -32,6 +32,9 @@ import * as Notifications from "expo-notifications";
 import { useUser } from "@clerk/clerk-expo";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCurrentStudent } from "../hooks/useCurrentStudent";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
+
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -43,7 +46,7 @@ export default function LandingScreen() {
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking, stopTracking, errorMsg } =
     useLocationTracking(); // Import location tracking functions from hook
-    const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
+  const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
   const { user } = useUser(); // Get the current authenticated user from Clerk
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
@@ -51,6 +54,8 @@ export default function LandingScreen() {
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
   const setTracking = useSetRecoilState(trackingState);
   const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   //-----------------------------------------------------------//
   //                          EFFECTS                          //
@@ -87,24 +92,24 @@ export default function LandingScreen() {
     };
   }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
 
-// Method to fetch data
-const fetchStudentsOrgs = async () => {
-  if (!user) {
-    console.error("Clerk user not found in LandingScreen");
-    return;
-  }
-  console.log("updating active orgs");
-  const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
-  setOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
-};
-
-useFocusEffect(
-  React.useCallback(() => {
-    if (currentStudent) {
-      fetchStudentsOrgs();
+  // Method to fetch data
+  const fetchStudentsOrgs = async () => {
+    if (!user) {
+      console.error("Clerk user not found in LandingScreen");
+      return;
     }
-  }, [currentStudent])
-);
+    console.log("updating active orgs");
+    const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+    setOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (currentStudent) {
+        fetchStudentsOrgs();
+      }
+    }, [currentStudent])
+  );
 
   // Fetch organisation data on component mount
   useEffect(() => {
@@ -112,10 +117,6 @@ useFocusEffect(
       fetchStudentsOrgs();
     }
   }, [currentStudent]);
-
-
-
-
 
   // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
@@ -286,7 +287,7 @@ useFocusEffect(
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Map Component displaying selected organisation */}
       <MapComponent selectedOrganisation={selectedOrganisation} />
 
@@ -298,10 +299,10 @@ useFocusEffect(
       />
       {tracking.isTracking && (
         <View>
-          <Text>Tracking: {selectedOrganisation?.orgName}</Text>
-          <Text>Time: {elapsedTime} seconds</Text>
+          <Text style={{ color: theme.fontRegular }}>Tracking: {selectedOrganisation?.orgName}</Text>
+          <Text style={{ color: theme.fontRegular }}>Time: {elapsedTime} seconds</Text>
           <Pressable onPress={handleStopTracking}>
-            <Text>Stop Tracking</Text>
+            <Text style={{ color: theme.fontRegular }}>Stop Tracking</Text>
           </Pressable>
         </View>
       )}
@@ -314,9 +315,10 @@ useFocusEffect(
         snapPoints={snapPoints}
         // Prevent closing the sheet by swiping down
         enablePanDownToClose={false}
+        backgroundStyle={{ backgroundColor: theme.background }}
       >
-        <View style={styles.sheetHeader}>
-          <Text style={styles.sheetHeading}>Organisation List</Text>
+        <View style={[styles.sheetHeader, { backgroundColor: theme.background }]}>
+          <Text style={[styles.sheetHeading, { color: theme.fontRegular }]}>Organisation List</Text>
         </View>
         {/* Scrollable list of organisations */}
         {(organisations.length > 0 && <BottomSheetFlatList
@@ -326,7 +328,7 @@ useFocusEffect(
           keyExtractor={(item) => item.org_id}
           // Render each item using renderItem function
           renderItem={renderItem}
-          contentContainerStyle={styles.listContentContainer}
+          contentContainerStyle={[styles.listContentContainer, { backgroundColor: theme.background }]}
         />
         )
         }
@@ -342,26 +344,21 @@ useFocusEffect(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   sheetHeader: {
     padding: 16,
     alignItems: "center",
-    backgroundColor: "#f8f8f8",
   },
   sheetHeading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#161616",
+    fontSize: 30,
     marginBottom: 10,
+    fontFamily: "Quittance",
   },
   listContentContainer: {
-    backgroundColor: "#fff",
   },
   itemContainer: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
   },
   itemText: {
     fontSize: 16,
