@@ -58,7 +58,7 @@ export default function ManageOrgsScreen() {
   const theme = isDarkMode ? darkTheme : lightTheme;
   const navigation = useNavigation();
   const clerkUser = useUser();
-  const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
+  const { currentStudent, error, loading, updateCurrentStudent } = useCurrentStudent();
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking } =
     useLocationTracking(); // Import location tracking functions from hook
