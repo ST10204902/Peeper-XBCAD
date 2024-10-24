@@ -22,6 +22,9 @@ import {
  * @property {string} [label] - Optional label for accessibility purposes.
  * @property {boolean} [addFlex] - Optional flag to add flex styling to the button.
  * @property {boolean} [disabled] - Optional flag to disable the button.
+ * @property {number} [verticalPadding] - Optional vertical padding for the button.
+ * @property {number} [cornerRadius] - Optional corner radius for the button.
+ * @property {number} [lineHeight] - Optional line height for the button text.
  */
 interface CustomButtonProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -33,6 +36,9 @@ interface CustomButtonProps {
   label?: string;
   addFlex?: boolean;
   disabled?: boolean;
+  verticalPadding?: number;
+  cornerRadius?: number;
+  lineHeight?: number;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -45,6 +51,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   label,
   addFlex = false,
   disabled = false,
+  verticalPadding = 15, // Default vertical padding
+  cornerRadius, // Optional corner radius
+  lineHeight, // Optional line height
 }) => {
   const [buttonHeight, setButtonHeight] = useState<number>(0);
 
@@ -55,13 +64,17 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
   const dynamicButtonStyle: ViewStyle = {
     backgroundColor: buttonColor || "#fff",
-    borderRadius: buttonHeight / 3,
+    borderRadius: cornerRadius !== undefined ? cornerRadius : buttonHeight / 3,
+    paddingVertical: verticalPadding,
   };
 
   const dynamicTextStyle: TextStyle = {
     color: textColor || "#334FD7",
     fontFamily: fontFamily || "Rany-Medium",
     fontSize: textSize || 25,
+    textAlign: 'center', // Center text horizontally
+    textAlignVertical: 'center', // Center text vertically
+    lineHeight: lineHeight, // Apply line height if provided
   };
 
   const labelTextStyle: TextStyle = {
@@ -102,7 +115,6 @@ const localStyles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    paddingVertical: 15,
     paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",

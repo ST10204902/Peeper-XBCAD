@@ -2,12 +2,12 @@ import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient"; // Import the expo gradient
 import { Student } from "../databaseModels/databaseClasses/Student";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes'; // Import themes
 
 interface StudentHeaderComponentProps {
   currentStudent: Student;
 }
-
-
 
 const calculateTotalLoggedHours = (student: Student): number => {
   let totalHours = 0;
@@ -28,6 +28,9 @@ const calculateTotalLoggedHours = (student: Student): number => {
 const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   currentStudent,
 }) => {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   const completedHours = calculateTotalLoggedHours(currentStudent);
   const progress =  (completedHours / 4) * 100 ;
   const completedHoursRounded = Math.round(completedHours * 100) / 100;
@@ -73,9 +76,9 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
     <View style={styles.container1}>
       <Image source={userAvatar} style={styles.emoji} />
       <View style={styles.container2}>
-        <Text style={styles.code}>{code}</Text>
+        <Text style={[styles.code, { color: theme.fontRegular }]}>{code}</Text>
         <Text
-          style={styles.progressText}
+          style={[styles.progressText, { color: theme.fontRegular, textAlign: 'left', alignSelf: 'flex-start' }]}
         >{`${completedHoursRounded} out of 4 hours completed`}</Text>
         <View style={styles.progressBar}>
           <View style={styles.progressBar}>
@@ -94,7 +97,6 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
 
 const styles = StyleSheet.create({
   container1: {
-    marginTop: 50,
     padding: 20,
     height: 150,
     flexDirection: "row",
@@ -121,6 +123,11 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 16,
+    textAlign: 'left', // Align text to the start
+    alignSelf: 'flex-start', // Align text container to the start
+    marginTop: 2,
+    fontFamily: "Rany-Regular",
+    marginBottom: 3,
   },
   progressBar: {
     width: "100%",
@@ -134,4 +141,5 @@ const styles = StyleSheet.create({
     backgroundColor: "orange",
   },
 });
+
 export default StudentHeaderComponent;

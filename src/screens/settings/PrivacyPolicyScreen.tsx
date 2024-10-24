@@ -1,7 +1,8 @@
 //...............ooooooooooo000000000000 PrivacyPolicyScreen.tsx 000000000000ooooooooooo...............//
 import { View, ScrollView, StyleSheet, Text, SafeAreaView } from 'react-native';
 import { PolicySectionComponent } from '../../components/PolicySectionComponent';
-import styles from '../../styles/PolicyStyle';
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 /**
  * PrivacyPolicyScreen component renders the privacy policy information.
@@ -11,6 +12,8 @@ import styles from '../../styles/PolicyStyle';
  * @returns {JSX.Element} The rendered PrivacyPolicyScreen component.
  */
 export default function PrivacyPolicyScreen() {
+   const { isDarkMode, toggleTheme } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;  
   const policySections: PolicySection[] = [
     {
       heading: "Information We Collect",
@@ -36,11 +39,10 @@ export default function PrivacyPolicyScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.content}>
-        <Text style={styles.title}>PRIVACY POLICY</Text>
-        
-        <Text style={styles.lastUpdated}>Last Updated: October 21, 2024</Text>
+        <Text style={[styles.title, { color: theme.fontRegular }]}>PRIVACY POLICY</Text>
+        <Text style={[styles.lastUpdated, { color: theme.sectionText }]}>Last Updated: October 21, 2024</Text>
         
         {policySections.map((section) => (
         <PolicySectionComponent
@@ -54,4 +56,23 @@ export default function PrivacyPolicyScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    padding: 16,
+  },
+  title: {
+    fontSize: 30,
+    marginBottom: 8,
+    marginTop: 30,
+    fontFamily: 'Quittance',
+  },
+  lastUpdated: {
+    fontSize: 14,
+    marginBottom: 24,
+  },
+});
 //...............ooooooooooo000000000000 End Of File 000000000000ooooooooooo...............//
