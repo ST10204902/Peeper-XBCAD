@@ -14,6 +14,7 @@ import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirma
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
+import PDFShareComponent from "../../components/PDFShareComponent";
 
 export default function SettingsScreen() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -62,10 +63,7 @@ export default function SettingsScreen() {
     {
       header: "EXPORT",
       items: [
-        {
-          title: "Export Tracking Information",
-          onPress: () => navigation.navigate("ExportReportScreen"),
-        },
+        
       ],
     },
   ];
@@ -116,13 +114,14 @@ export default function SettingsScreen() {
           ))}
         
           <View style={styles.buttonContainer}>
+            <PDFShareComponent/>
             <CustomButton
               title="REQUEST DATA DELETION"
               fontFamily='Quittance'
               textColor={theme.fontRegular}
               textSize={20}
               buttonColor={theme.settingsBlueButton}
-              onPress={() => console.log('Request data deletion')}
+              onPress={handleDataDeletion}
             />
             <CustomButton
               title="LOG OUT"
@@ -130,8 +129,9 @@ export default function SettingsScreen() {
               textColor={theme.fontRegular}
               textSize={20}
               buttonColor='#FE7143'
-              onPress={() => console.log('Log out')}
+              onPress={handleSignOut}
             />
+
           </View>
         </View>
       </ScrollView>
