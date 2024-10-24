@@ -84,27 +84,21 @@ export default function LandingScreen() {
 
   // Method to fetch data
   const fetchStudentsOrgs = async () => {
-    if (!user) {
-      console.error("Clerk user not found in LandingScreen");
+    if (!user || !currentStudent) {
+      console.error("User or student data not found while fetching organisations");
       return;
     }
     console.log("updating active orgs");
-    const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+    const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs);
+    console.log("studentOrgs", currentStudent?.activeOrgs);
     setOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      if (currentStudent) {
-        fetchStudentsOrgs();
-      }
-    }, [currentStudent])
-  );
 
   // Fetch organisation data on component mount
   useEffect(() => {
     if (currentStudent) {
       fetchStudentsOrgs();
+
     }
   }, [currentStudent]);
 
