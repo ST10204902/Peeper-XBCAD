@@ -51,7 +51,7 @@ export default function LandingScreen() {
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
-  const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
+  const snapPoints = useMemo(() => [100, "48%"], []); // Memoized snap points for the bottom sheet heights
   const setTracking = useSetRecoilState(trackingState);
   const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
   const { isDarkMode } = useTheme();
@@ -61,17 +61,7 @@ export default function LandingScreen() {
   //                          EFFECTS                          //
   //-----------------------------------------------------------//
 
-  useEffect(() => {
-    const setPushToken = async () => {
-      const token = await registerForPushNotificationsAsync();
-      console.log(token);
-      if (token) {
-        updateCurrentStudent({ pushToken: token });
-      }
-    }
-    setPushToken();
-  }, []);
-
+ 
   useEffect(() => {
     if (selectedOrganisation != null) {
       showOrUpdateTrackingNotification(
@@ -89,8 +79,8 @@ export default function LandingScreen() {
       if (!tracking.isTracking) {
         clearTrackingNotification();
       }
-    };
-  }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
+    };             
+  }, [elapsedTime, tracking.isTracking]);
 
   // Method to fetch data
   const fetchStudentsOrgs = async () => {
@@ -187,22 +177,26 @@ export default function LandingScreen() {
     try {
       // Start tracking the organisation
       await startTracking(selectedOrganisation);
-  
-      if (currentStudent) {
+      await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
+
       // Update the student's active organisations
-      const newActiveOrgs = [
-        ...currentStudent.activeOrgs,
-        selectedOrganisation.org_id,
-      ];
+      if (currentStudent && !currentStudent.activeOrgs.includes(selectedOrganisation.org_id)) {
+
+        const newActiveOrgs = [
+          ...currentStudent.activeOrgs,
+          selectedOrganisation.org_id,
+        ];
       // Update the student data using the hook
       await updateCurrentStudent({ activeOrgs: newActiveOrgs });
+       // Show or update the tracking notification
       }
-      // Hide the popup
-      setIsPopupVisible(false);
-      // Show or update the tracking notification
-      await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
-    } catch (error) {
+      }
+      catch (error) {
       console.error("Error starting tracking:", error);
+      setIsPopupVisible(false);
+    }
+    finally {
+      setIsPopupVisible(false);
     }
   };
 
@@ -220,7 +214,6 @@ export default function LandingScreen() {
    */
   const handleStopTracking = async () => {
     await stopTracking();
-    setTracking({ isTracking: false, organizationName: "" });
     await clearTrackingNotification();
   };
 
@@ -254,6 +247,7 @@ export default function LandingScreen() {
   if (error) {
     return <Text>Error: {error.message}</Text>;
   }
+
 
   if (!currentStudent) {
     return <Text>No student data available.</Text>;
