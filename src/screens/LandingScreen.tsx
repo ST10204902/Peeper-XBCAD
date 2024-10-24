@@ -75,9 +75,6 @@ export default function LandingScreen() {
 
 
   useEffect(() => {
-    if (!currentStudent) {
-      console.error("no student data found when updating current student dark mode");
-    }
     if (currentStudent?.darkMode !== null && currentStudent?.darkMode !== undefined) {
       if (isDarkMode !== currentStudent.darkMode) {
         toggleTheme();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
+import { useCurrentStudent } from '../../hooks/useCurrentStudent';
 
 const AVATARS = [
   { id: 1, source: require('../../assets/Avatars/A1.png') },
@@ -13,6 +14,18 @@ const AVATARS = [
   { id: 9, source: require('../../assets/Avatars/A9.png') },
 ];
 
+const valuePairs = {
+  1: "../assets/Avatars/A1.png",
+  2: "../assets/Avatars/A2.png",
+  3: "../assets/Avatars/A3.png",
+  4: "../assets/Avatars/A4.png",
+  5: "../assets/Avatars/A5.png",
+  6: "../assets/Avatars/A6.png",
+  7: "../assets/Avatars/A7.png",
+  8: "../assets/Avatars/A8.png",
+  9: "../assets/Avatars/A9.png",
+};
+
 interface AvatarComponentProps {
   onAvatarSelected?: (uri: string) => void; // Make the prop optional
   selectedAvatarURI?: string; // Add the selectedAvatarURI prop
@@ -20,19 +33,26 @@ interface AvatarComponentProps {
 
 const AvatarComponent: React.FC<AvatarComponentProps> = ({ onAvatarSelected = () => {}, selectedAvatarURI }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
+  const {currentStudent, updateCurrentStudent } = useCurrentStudent();
 
   useEffect(() => {
     if (selectedAvatarURI) {
-      const selected = AVATARS.find(avatar => Image.resolveAssetSource(avatar.source).uri === selectedAvatarURI);
-      if (selected) {
-        setSelectedAvatar(selected.id);
-      }
+      console.log(selectedAvatarURI);
     }
-  }, [selectedAvatarURI]);
+  }, [selectedAvatarURI, currentStudent?.profilePhotoURL]);
 
-  const handleAvatarPress = (id: number, source: any) => {
+  const handleAvatarPress = async (id: number, source: any) => {
+    console.log(id);
     setSelectedAvatar(id);
     onAvatarSelected(Image.resolveAssetSource(source).uri);
+    const selected = AVATARS.find((avatar) => avatar.id === id);
+    console.log(selected);
+      if (selected) {
+        setSelectedAvatar(selected.id);
+        const newAvatar = valuePairs[selected.id as keyof typeof valuePairs];
+        console.log(newAvatar);
+        await updateCurrentStudent({ profilePhotoURL : newAvatar });
+      }
   };
 
   return (
