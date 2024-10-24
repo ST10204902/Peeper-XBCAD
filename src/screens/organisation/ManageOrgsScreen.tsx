@@ -156,31 +156,32 @@ export default function ManageOrgsScreen() {
    * Handle start tracking button click to start tracking the student's location
    */
   const handleStartTracking = async () => {
-    if (!currentStudent) {
-      console.error("No student data found while starting tracking");
+    if (!selectedOrganisation) {
+      console.error("organisation not found");
       return;
     }
     try {
-      if (selectedOrganisation) {
-
-        
-        if (tracking.isTracking) {
-          Alert.alert("Error", "Tracking is already in progress.");
-          return; 
-        }
-
-         // Start tracking the organisation
+      // Start tracking the organisation
       await startTracking(selectedOrganisation);
 
-      
-      }
-      // Hide the popup
-      setIsPopupVisible(false);
+      // Update the student's active organisations
+      if (currentStudent && !currentStudent.activeOrgs.includes(selectedOrganisation.org_id)) {
 
-      // IMPLEMENT TRACKING NOTIFICATION!!!!! 
-      // await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
-    } catch (error) {
+        const newActiveOrgs = [
+          ...currentStudent.activeOrgs,
+          selectedOrganisation.org_id,
+        ];
+      // Update the student data using the hook
+      await updateCurrentStudent({ activeOrgs: newActiveOrgs });
+       // Show or update the tracking notification
+      }
+      }
+      catch (error) {
       console.error("Error starting tracking:", error);
+      setIsPopupVisible(false);
+    }
+    finally {
+      setIsPopupVisible(false);
     }
   };
 
