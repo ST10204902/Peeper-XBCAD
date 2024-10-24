@@ -44,11 +44,19 @@ const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
     const fetchSessionLocations = () => {
       const tempSessionStartLocations: LocationLog[] = [];
       const seenOrgs = new Set<string>();
-
+      if (!currentStudent.locationData) {
+        setLoading(false);
+        return;
+      }
       Object.values(currentStudent.locationData).forEach((sessionLog) => {
         if (!seenOrgs.has(sessionLog.orgID)) {
           seenOrgs.add(sessionLog.orgID);
-          tempSessionStartLocations.push(new LocationLog(sessionLog.locationLogs[0]));
+      
+          // Check if locationLogs is an array and has at least one element
+          if (Array.isArray(sessionLog.locationLogs) && sessionLog.locationLogs.length > 0) {
+            const firstLocationLogData = sessionLog.locationLogs[0];
+            tempSessionStartLocations.push(new LocationLog(firstLocationLogData));
+          }
         }
       });
 
