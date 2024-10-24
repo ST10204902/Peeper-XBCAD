@@ -7,6 +7,8 @@ import { useUser } from "@clerk/clerk-expo";
 import MapSessionHistory from "../../components/MapSessionHistory";
 import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';

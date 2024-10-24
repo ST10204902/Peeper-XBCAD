@@ -12,7 +12,6 @@ import { Student } from "../../databaseModels/databaseClasses/Student";
 import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 import { useNavigation } from "@react-navigation/native";
-import { useStudent } from "../../hooks/useStudent";
 import { RootStackParamsList } from "../RootStackParamsList";
 import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
