@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { useCurrentStudent } from '../../hooks/useCurrentStudent';
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 const AVATARS = [
   { id: 1, source: require('../../assets/Avatars/A1.png') },
@@ -33,7 +35,9 @@ interface AvatarComponentProps {
 
 const AvatarComponent: React.FC<AvatarComponentProps> = ({ onAvatarSelected = () => {}, selectedAvatarURI }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
-  const {currentStudent, updateCurrentStudent } = useCurrentStudent();
+  const { currentStudent, updateCurrentStudent } = useCurrentStudent();
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   useEffect(() => {
     if (selectedAvatarURI) {
@@ -41,25 +45,34 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({ onAvatarSelected = ()
     }
   }, [selectedAvatarURI, currentStudent?.profilePhotoURL]);
 
+  useEffect(() => {
+    if (currentStudent?.profilePhotoURL) {
+      const avatar = AVATARS.find(a => valuePairs[a.id] === currentStudent.profilePhotoURL);
+      if (avatar) {
+        setSelectedAvatar(avatar.id);
+      }
+    }
+  }, [currentStudent]);
+
   const handleAvatarPress = async (id: number, source: any) => {
     console.log(id);
     setSelectedAvatar(id);
     onAvatarSelected(Image.resolveAssetSource(source).uri);
     const selected = AVATARS.find((avatar) => avatar.id === id);
     console.log(selected);
-      if (selected) {
-        setSelectedAvatar(selected.id);
-        const newAvatar = valuePairs[selected.id as keyof typeof valuePairs];
-        console.log(newAvatar);
-        await updateCurrentStudent({ profilePhotoURL : newAvatar });
-      }
+    if (selected) {
+      setSelectedAvatar(selected.id);
+      const newAvatar = valuePairs[selected.id as keyof typeof valuePairs];
+      console.log(newAvatar);
+      await updateCurrentStudent({ profilePhotoURL: newAvatar });
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
       {/* Title */}
-      <Text style={styles.title}>CUSTOMIZE PROFILE</Text>
-      <Text style={styles.subtitle}>Avatar</Text>
+      <Text style={[styles.title, { color: theme.fontRegular }]}>CUSTOMIZE PROFILE</Text>
+      <Text style={[styles.subtitle, { color: theme.fontRegular }]}>Avatar</Text>
 
       {/* Selected Avatar Preview */}
       <View style={styles.previewContainer}>
@@ -70,12 +83,20 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({ onAvatarSelected = ()
             resizeMode="contain"
           />
         ) : (
-          <View style={[styles.selectedAvatar, styles.placeholderAvatar]} />
+          <View style={[styles.selectedAvatar, styles.placeholderAvatar, { backgroundColor: theme.componentBackground }]}>
+            {currentStudent?.profilePhotoURL && (
+              <Image
+                source={{ uri: currentStudent.profilePhotoURL }}
+                style={styles.selectedAvatar}
+                resizeMode="contain"
+              />
+            )}
+          </View>
         )}
       </View>
 
       {/* Avatar Selection Background */}
-      <View style={styles.selectionBackground}>
+      <View style={[styles.selectionBackground, { backgroundColor: theme.componentBackground }]}>
         {/* Avatar Grid */}
         <View style={styles.gridContainer}>
           {AVATARS.map((avatar) => (
@@ -104,7 +125,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#F9F9F9',
   },
   title: {
     fontSize: 24,
