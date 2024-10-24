@@ -8,6 +8,8 @@ import {
   FlatList,
   Pressable
 } from 'react-native';
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 // Simple chevron down icon component using just View elements
 const ChevronDownIcon = ({ color, size = 15 }: { color: string, size?: number }) => (
@@ -50,6 +52,8 @@ function ComboBoxComponent({
   value,
   onValueChange
 }: Props) {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
   const [isOpen, setIsOpen] = useState(false);
   
   // Find the selected option's label
@@ -63,7 +67,7 @@ function ComboBoxComponent({
   return (
     <View>
       <TouchableOpacity
-        style={[styles.comboBoxContainer, { borderColor: "#EBEBEB" }]}
+        style={[styles.comboBoxContainer, { borderColor: "transparent" }, {backgroundColor: theme.componentBackground}]}
         onPress={() => setIsOpen(true)}
       >
         <Text 
@@ -127,7 +131,7 @@ function ComboBoxComponent({
 const styles = StyleSheet.create({
   comboBoxContainer: {
     backgroundColor: '#EBEBEB',
-    borderRadius: 20,
+    borderRadius: 15,
     padding: 0,
     paddingLeft: 15,
     paddingRight: 15,

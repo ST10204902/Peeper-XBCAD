@@ -2,6 +2,8 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { OrgAddressData } from "../databaseModels/OrgAddressData";
 import * as Location from "expo-location";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
@@ -17,6 +19,8 @@ interface Props {
   oddOrEven: "odd" | "even";
   listButton: ReactNode;
   userLocation?: Location.LocationObject;
+  index: number; // Add the index of the item
+  totalItems: number; // Add the total number of items
 }
 
 /**
@@ -33,22 +37,39 @@ export default function ExpandableOrgListItem({
   oddOrEven,
   listButton,
   userLocation,
+  index,
+  totalItems,
 }: Props) {
-  // Odd even code
-  const containerStyle =
-    oddOrEven === "odd" ? styles.itemContainerOdd : styles.itemContainerEven;
-  const expandedContainerStyle =
-    oddOrEven === "odd"
-      ? expandedStyles.itemContainerOdd
-      : expandedStyles.itemContainerEven;
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
+  // Determine the corner radius based on the item position
+  const borderRadiusStyle = {
+    borderTopLeftRadius: index === 0 ? 30 : 0, // First item
+    borderTopRightRadius: index === 0 ? 30 : 0, // First item
+    borderBottomLeftRadius: index === totalItems - 1 ? 30 : 0, // Last item
+    borderBottomRightRadius: index === totalItems - 1 ? 30 : 0, // Last item
+  };
+
+  // Combine the corner radius with odd/even styles
+  const containerStyle = [
+    oddOrEven === "odd" ? styles.itemContainerOdd : styles.itemContainerEven,
+    { backgroundColor: oddOrEven === "odd" ? theme.orgListOdd : theme.orgListeven },
+    borderRadiusStyle, // Apply the dynamic corner radius
+  ];
+  const expandedContainerStyle = [
+    oddOrEven === "odd" ? expandedStyles.itemContainerOdd : expandedStyles.itemContainerEven,
+    { backgroundColor: oddOrEven === "odd" ? theme.orgListOdd : theme.orgListeven },
+    borderRadiusStyle
+  ];
 
   // Hook for setting the expanded state of the item
   const [expanded, setExpanded] = useState(false);
   const [distanceInKm, setDistanceInKm] = useState<string>('0');
   const [validDistance, setValidDistance] = useState<boolean>(false);
 
-   // Function to format the address for the API
-   function formatAddress(orgAddress: OrgAddressData): string {
+  // Function to format the address for the API
+  function formatAddress(orgAddress: OrgAddressData): string {
     const { streetAddress, suburb, city, province, postalCode } = orgAddress;
     return `${streetAddress}, ${suburb}, ${city}, ${province}, ${postalCode}`;
   }
@@ -92,17 +113,17 @@ export default function ExpandableOrgListItem({
 
   return !expanded ? (
     <View style={containerStyle} onTouchEnd={() => setExpanded(true)}>
-      <Text style={styles.orgName}>{orgName}</Text>
-      {validDistance && <Text style={styles.distance}>{distanceInKm}km</Text>}
+      <Text style={[styles.orgName, { color: theme.fontRegular }]}>{orgName}</Text>
+      {validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>}
     </View>
   ) : (
     <View style={expandedContainerStyle} onTouchEnd={() => setExpanded(false)}>
       <View style={expandedStyles.firstRow}>
-        <Text style={expandedStyles.orgName}>{orgName}</Text>
-        {validDistance && <Text style={styles.distance}>{distanceInKm}km</Text>}
+        <Text style={[expandedStyles.orgName, { color: theme.fontRegular }]}>{orgName}</Text>
+        {validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>}
       </View>
 
-      <Text style={expandedStyles.addressRow}>
+      <Text style={[expandedStyles.addressRow, { color: theme.componentTextColour }]}>
         {`${orgAddress.streetAddress}, ${orgAddress.suburb}, ${orgAddress.city}, ${orgAddress.province}, ${orgAddress.postalCode}`}
       </Text>
 
@@ -119,18 +140,15 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#E7E7E7",
     gap: 10,
   },
   itemContainerEven: {
     paddingBottom: 0,
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#00000000",
     gap: 10,
   },
   orgName: {
-    color: "#161616",
     paddingVertical: 15,
     marginStart: 30,
     fontWeight: "600",
@@ -140,7 +158,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   distance: {
-    color: "#696969",
     fontWeight: "regular",
     marginEnd: 11,
     fontSize: 17,
@@ -154,12 +171,9 @@ const styles = StyleSheet.create({
 const expandedStyles = StyleSheet.create({
   itemContainerOdd: {
     paddingVertical: 5,
-    backgroundColor: "#E7E7E7",
   },
   itemContainerEven: {
     paddingVertical: 5,
-
-    backgroundColor: "#00000000",
   },
   firstRow: {
     flexDirection: "row",
@@ -168,7 +182,6 @@ const expandedStyles = StyleSheet.create({
   },
   orgName: {
     paddingStart: 30,
-    color: "#161616",
     fontWeight: "600",
     fontSize: 18,
     flexShrink: 1,
@@ -182,7 +195,6 @@ const expandedStyles = StyleSheet.create({
     alignSelf: "center",
   },
   distance: {
-    color: "#696969",
     fontWeight: "regular",
     marginEnd: 11,
     fontSize: 17,
@@ -195,4 +207,3 @@ const expandedStyles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-// End of File
