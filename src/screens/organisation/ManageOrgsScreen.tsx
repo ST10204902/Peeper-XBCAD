@@ -162,24 +162,10 @@ export default function ManageOrgsScreen() {
     try {
       // Start tracking the organisation
       await startTracking(selectedOrganisation);
-
-      // Update the student's active organisations
-      if (currentStudent && !currentStudent.activeOrgs.includes(selectedOrganisation.org_id)) {
-
-        const newActiveOrgs = [
-          ...currentStudent.activeOrgs,
-          selectedOrganisation.org_id,
-        ];
-      // Update the student data using the hook
-      await updateCurrentStudent({ activeOrgs: newActiveOrgs });
-       // Show or update the tracking notification
-      }
+      setIsPopupVisible(false);
       }
       catch (error) {
       console.error("Error starting tracking:", error);
-      setIsPopupVisible(false);
-    }
-    finally {
       setIsPopupVisible(false);
     }
   };
