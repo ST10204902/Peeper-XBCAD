@@ -9,7 +9,7 @@ import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
 import LessonsScreen from "./LessonsScreen";
 import ExportReportScreen from "./ExportReportScreen";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';
@@ -24,7 +24,7 @@ export default function SettingsScreen() {
   const navigation = useNavigation<any>();
 
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
-  const { currentStudent } = useCurrentStudent(); // Getting student in the database
+  const { currentStudent , updateCurrentStudent } = useCurrentStudent(); // Getting student in the database
 
   // Error if the student number can't be obtained.
   if (currentStudent && !currentStudent.studentNumber) {
@@ -32,6 +32,17 @@ export default function SettingsScreen() {
       "Settings Screen: Failed to get student's student number. Was null or empty"
     );
   }
+
+  useEffect(() => {
+    if (!currentStudent) {
+      console.error("Settings Screen: No current student found");
+    }
+    if (currentStudent?.darkMode !== null && currentStudent?.darkMode !== undefined) {
+      if (isDarkMode !== currentStudent.darkMode) {
+        toggleTheme();
+      }
+    }
+  }, [currentStudent?.darkMode]);
 
   const settingsSections: SettingsSection[] = [
     {
@@ -95,7 +106,7 @@ export default function SettingsScreen() {
             </Text>
             <Switch
               value={isDarkMode}
-              onValueChange={toggleTheme}
+              onValueChange={(x) => {updateCurrentStudent({darkMode: x}); toggleTheme();}}
               trackColor={{ false: '#767577', true: '#4CD964' }}
               thumbColor={isDarkMode ? '#ffffff' : '#f4f3f4'}
               ios_backgroundColor="#767577"
