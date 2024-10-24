@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
 import SearchIcon from "../assets/icons/searchIcon";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 interface Props {
     FGColor: string;
@@ -14,7 +16,8 @@ function SearchBarComponent({ FGColor, onSearchInputChange, placeHolderColor, on
     const [searchInput, setSearchInput] = useState('');
     const searchInputRef = useRef('');  // Ref to store the latest value of searchInput
     const [isFocused, setIsFocused] = useState(false); // Track focus state
-
+    const { isDarkMode } = useTheme();
+    const theme = isDarkMode ? darkTheme : lightTheme;
     // Handle input change and update both state and ref
     const handleSearchChange = (text: string) => {
         setSearchInput(text);
@@ -37,16 +40,16 @@ function SearchBarComponent({ FGColor, onSearchInputChange, placeHolderColor, on
 
     return (
         <View>
-            <View style={[styles.searchBarContainer, { borderColor: isFocused ? "#000" : "#EBEBEB" }]}>
-                <SearchIcon size={15} color={placeHolderColor} />
+            <View style={[styles.searchBarContainer, { borderColor: isFocused ? "transparent" : "transparent", backgroundColor: theme.componentBackground }]}>
+                <SearchIcon size={15} color={theme.componentTextColour} />
                 <TextInput
-                    style={[styles.input, { color: FGColor }]} // Use FGColor for input text color
+                    style={[styles.input, { color: theme.componentTextColour }]} // Use FGColor for input text color
                     placeholder="Search" // Updated placeholder text
                     value={searchInput}
                     onChangeText={handleSearchChange}
                     onFocus={handleFocus}  // Use custom focus handler
                     onBlur={handleBlur}    // Use custom blur handler
-                    placeholderTextColor={placeHolderColor}
+                    placeholderTextColor={theme.componentTextColour}
                 />
             </View>
         </View>
