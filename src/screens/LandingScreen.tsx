@@ -6,6 +6,7 @@ import {
   Text,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
@@ -104,6 +105,13 @@ useFocusEffect(
     }
   }, [currentStudent])
 );
+
+  // Fetch organisation data on component mount
+  useEffect(() => {
+    if (currentStudent) {
+      fetchStudentsOrgs();
+    }
+  }, [currentStudent]);
 
 
 
@@ -239,7 +247,7 @@ useFocusEffect(
   //-----------------------------------------------------------//
 
   if (loading) {
-    return <Text> Loading... </Text>;
+    return  <ActivityIndicator/>;
   }
 
   if (error) {
