@@ -3,8 +3,6 @@ import { DatabaseUtility } from "./DatabaseUtility";
 import { StudentData } from "../StudentData";
 import { SessionLogData } from "../SessionLogData";
 import { SessionLog } from "./SessionLog";
-import { Viewport } from "./Viewport";
-import { LocationLog } from "./LocationLog";
 
 export class Student implements StudentData {
   student_id: string;

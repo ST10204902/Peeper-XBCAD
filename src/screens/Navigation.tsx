@@ -71,6 +71,7 @@ function OrganisationsNavigator() {
       <Stack.Screen
         name="RequestProgressScreen"
         component={RequestProgressScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

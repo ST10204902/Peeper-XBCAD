@@ -28,9 +28,9 @@ import {
 } from "../services/trackingNotification";
 
 import * as Notifications from "expo-notifications";
-import { useStudent } from "../hooks/useStudent";
 import { useUser } from "@clerk/clerk-expo";
 import { useFocusEffect } from "@react-navigation/native";
+import { useCurrentStudent } from "../hooks/useCurrentStudent";
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
  */
@@ -42,12 +42,10 @@ export default function LandingScreen() {
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking, stopTracking, errorMsg } =
     useLocationTracking(); // Import location tracking functions from hook
-  const {currentStudent, setCurrentStudent, error} = useStudent(); // State to hold current student's data
+    const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
   const { user } = useUser(); // Get the current authenticated user from Clerk
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
-  const [sessionData, setSessionData] = useState<SessionLog>(); // State to hold session data
-  const [endTracking, setEndTracking] = useState(false); // State to manage tracking status
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
   const setTracking = useSetRecoilState(trackingState);
@@ -61,10 +59,11 @@ export default function LandingScreen() {
     const setPushToken = async () => {
       const token = await registerForPushNotificationsAsync();
       console.log(token);
-      if (currentStudent && token) {
-        currentStudent.pushToken = token;
+      if (token) {
+        updateCurrentStudent({ pushToken: token });
       }
     }
+    setPushToken();
   }, []);
 
   useEffect(() => {
@@ -87,53 +86,28 @@ export default function LandingScreen() {
     };
   }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
 
-  // Fetch organisations from the database when component is mounted
-  useEffect(() => {
-    const fetchOrganisations = async () => {
-      try {
-        if (!currentStudent) {
-          console.error("Student not found");
-          return;
-        }
-        const studentsActiveOrgs = currentStudent.activeOrgs ?? [];
-        const orgs = await Organisation.getStudentsOrgs(studentsActiveOrgs);
-        setOrganisations(orgs);
-      } catch (error) {
-        console.error("Error fetching organisations:", error);
-      }
-    };
-    console.log("fetching organisations");
-    fetchOrganisations();
-  }, []);
-
-
-  const updatedActiveOrgs = async () => {
-    if (currentStudent) {
-      console.log("updating active orgs");
-      const studentsActiveOrgs = currentStudent.activeOrgs;
-        const orgs = await Organisation.getStudentsOrgs(studentsActiveOrgs);
-        setOrganisations((prev) => {
-          return orgs;
-        });
-    }
+// Method to fetch data
+const fetchStudentsOrgs = async () => {
+  if (!user) {
+    console.error("Clerk user not found in LandingScreen");
+    return;
   }
-  
-  useFocusEffect(
-    React.useCallback(() => {
-     console.log("focus effect");
-     updatedActiveOrgs();
-    }, [user?.id])
-  );
+  console.log("updating active orgs");
+  const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+  setOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
+};
 
-  
-
-  // Fetch current student data based on the logged-in user
-  useEffect(() => {
-    if (error) {
-      console.error("Error fetching student:", error);
-      return;
+useFocusEffect(
+  React.useCallback(() => {
+    if (currentStudent) {
+      fetchStudentsOrgs();
     }
-  }, [error]);
+  }, [currentStudent])
+);
+
+
+
+
 
   // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
@@ -196,22 +170,31 @@ export default function LandingScreen() {
   /*
    * Handle start tracking button click to start tracking the student's location
    */
-  const handleStartTracking = () => {
-    if (!currentStudent || !selectedOrganisation) {
-      console.error("Student or organisation not found");
+  const handleStartTracking = async () => {
+    if (!selectedOrganisation) {
+      console.error("organisation not found");
       return;
     }
-    startTracking(selectedOrganisation).then(async () => {
-      if (errorMsg !== null) {
-        setIsPopupVisible(false);
-        currentStudent.activeOrgs.push(selectedOrganisation.org_id);
-        setCurrentStudent(currentStudent);
-        await currentStudent.save();
-        await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
-      } else {
-        console.error("Error starting tracking:", errorMsg);
+    try {
+      // Start tracking the organisation
+      await startTracking(selectedOrganisation);
+  
+      if (currentStudent) {
+      // Update the student's active organisations
+      const newActiveOrgs = [
+        ...currentStudent.activeOrgs,
+        selectedOrganisation.org_id,
+      ];
+      // Update the student data using the hook
+      await updateCurrentStudent({ activeOrgs: newActiveOrgs });
       }
-    });
+      // Hide the popup
+      setIsPopupVisible(false);
+      // Show or update the tracking notification
+      await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
+    } catch (error) {
+      console.error("Error starting tracking:", error);
+    }
   };
 
   /**
@@ -250,6 +233,26 @@ export default function LandingScreen() {
   const handleCancel = async () => {
     setIsPopupVisible(false); // Close the popup
   };
+
+   //-----------------------------------------------------------//
+  //                      CONDITIONAL RENDERING                //
+  //-----------------------------------------------------------//
+
+  if (loading) {
+    return <Text> Loading... </Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
+  if (!currentStudent) {
+    return <Text>No student data available.</Text>;
+  }
+
+  //-----------------------------------------------------------//
+  //                          RENDER                           //
+  //-----------------------------------------------------------//
 
   /*
    * Render each organisation list item with alternating colors for styling
@@ -309,6 +312,7 @@ export default function LandingScreen() {
         </View>
         {/* Scrollable list of organisations */}
         {(organisations.length > 0 && <BottomSheetFlatList
+        
           data={organisations}
           // Use organisation ID as key
           keyExtractor={(item) => item.org_id}
@@ -316,7 +320,9 @@ export default function LandingScreen() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContentContainer}
         />
-        )}
+        )
+        }
+        
       </BottomSheet>
     </SafeAreaView>
   );
