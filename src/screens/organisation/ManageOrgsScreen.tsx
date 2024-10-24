@@ -16,6 +16,8 @@ import { useStudent } from "../../hooks/useStudent";
 import { RootStackParamsList } from "../RootStackParamsList";
 import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
+import TrackingPopup from "../../components/TrackingPopup";
+import { useLocationTracking } from "../../hooks/useLocationTracking";
 
 /**
  * Component For the ManageOrgsScreen
@@ -54,6 +56,9 @@ export default function ManageOrgsScreen() {
   const navigation = useNavigation();
   const clerkUser = useUser();
   const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
+  const { tracking, startTracking, stopTracking, errorMsg } =
+    useLocationTracking(); // Import location tracking functions from hook
   const [allOrganisations, setAllOrganisations] = useState<OrganisationData[]>([]);
   const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>(
     []
@@ -62,7 +67,8 @@ export default function ManageOrgsScreen() {
   const [studentsOrgsLoaded, setStudentsOrgsLoaded] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("name_asc");
   const [location, setLocation] = useState< Location.LocationObject>(); // State to hold location data
-  const allOrgs = Organisation.getAllOrganisations();
+  const [selectedOrganisation, setSelectedOrganisation] =
+    useState<Organisation | null>(null);
   let itemList: OrganisationData[] = [];
 
   // Method to fetch data
@@ -142,8 +148,42 @@ export default function ManageOrgsScreen() {
    * @param org Corresponding organisation
    */
   function onStudentOrgsListButtonPressed(org: OrganisationData) {
-    // start tracking pop up
+    setIsPopupVisible(true);
+    setSelectedOrganisation(new Organisation(org));
   }
+
+  /*
+   * Handle start tracking button click to start tracking the student's location
+   */
+  const handleStartTracking = async () => {
+    if (!currentStudent) {
+      console.error("No student data found while starting tracking");
+      return;
+    }
+    try {
+      if (selectedOrganisation) {
+
+        
+        if (tracking.isTracking) {
+          Alert.alert("Error", "Tracking is already in progress.");
+          return; 
+        }
+
+         // Start tracking the organisation
+      await startTracking(selectedOrganisation);
+
+      
+      }
+      // Hide the popup
+      setIsPopupVisible(false);
+
+      // IMPLEMENT TRACKING NOTIFICATION!!!!! 
+      // await showOrUpdateTrackingNotification(selectedOrganisation.orgName, 0);
+    } catch (error) {
+      console.error("Error starting tracking:", error);
+    }
+  };
+
 
   /**
    * This function activates when the user clicks on the button for a given
@@ -347,6 +387,12 @@ export default function ManageOrgsScreen() {
   }
   return (
     <SafeAreaView style={styles.safeArea}>
+       {/* Tracking Popup for start/stop tracking */}
+       <TrackingPopup
+        visible={isPopupVisible}
+        onStartTracking={handleStartTracking}
+        onCancel={() => setIsPopupVisible(false)}
+      />
       <FlatList
         data={itemList}
         renderItem={null} // Use `renderItem` to handle FlatList rendering, but in this case we are rendering static content
