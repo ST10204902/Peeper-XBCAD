@@ -3,7 +3,8 @@ import { OrganisationData } from "../databaseModels/OrganisationData";
 import ExpandableOrgListItem from "./ExpandableOrgListItem";
 import React from "react";
 import * as Location from "expo-location";
-
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
 /**
  * Defines the properties to be passed to the expandable Orgs List
  * @items List of organisations
@@ -33,24 +34,29 @@ export default function ExpandableOrgList({
   userLocation,
   onListButtonClicked,
 }: Props) {
-
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
   return (
-    <View style={styles.listContainer}>
+    <View style={[styles.listContainer, { backgroundColor: theme.orgListOdd }]}>
       <FlatList
-        data={items}
-        renderItem={({ index, item }) => (
-          <ExpandableOrgListItem
-            userLocation={userLocation}
-            orgName={item.orgName}
-            orgAddress={item.orgAddress}
-            oddOrEven={index % 2 === 0 ? "even" : "odd"}
-            listButton={React.cloneElement(
-              listButtonComp as React.ReactElement,
-              { onPress: () => onListButtonClicked(item) }
-            )}
-          />
-        )}
-      />
+  data={items}
+  renderItem={({ index, item }) => (
+    <ExpandableOrgListItem
+      userLocation={userLocation}
+      orgName={item.orgName}
+      orgAddress={item.orgAddress}
+      oddOrEven={index % 2 === 0 ? "even" : "odd"}
+      listButton={React.cloneElement(
+        listButtonComp as React.ReactElement,
+        { onPress: () => onListButtonClicked(item) }
+      )}
+      // Pass index and length of the list to determine corner radius
+      index={index}
+      totalItems={items.length}
+    />
+  )}
+/>
+
     </View>
   );
 }
@@ -58,7 +64,6 @@ export default function ExpandableOrgList({
 const styles = StyleSheet.create({
   // Add styles here
   listContainer: {
-    backgroundColor: "#F3F3F3",
     borderRadius: 30,
   },
 });
