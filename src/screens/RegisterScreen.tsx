@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Alert, View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import CustomButton from "../components/CustomButton"; // Ensure the path is correct
 import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
@@ -118,7 +118,6 @@ const RegisterScreen: React.FC = () => {
           const uid = completeSignUp.createdUserId || "";
 
           console.log("Clerk User ID:", uid); // Log Clerk User ID
-          Alert.alert(`Welcome, ${uid}!`);
 
           if (!uid) {
             throw new Error("No Clerk User ID found");
@@ -144,9 +143,6 @@ const RegisterScreen: React.FC = () => {
             // Save to Firebase
             await newStudent
               .save()
-              .then(() => {
-                Alert.alert(newStudent.email);
-              })
               .catch((error) => {
                 console.error(`Error saving new student: ${newStudent}`, error); // Log error if save fails
               });
