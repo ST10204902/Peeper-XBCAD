@@ -12,10 +12,11 @@ import { Student } from "../../databaseModels/databaseClasses/Student";
 import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 import { useNavigation } from "@react-navigation/native";
-import { useStudent } from "../../hooks/useStudent";
 import { RootStackParamsList } from "../RootStackParamsList";
 import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
+import TrackingPopup from "../../components/TrackingPopup";
+import { useLocationTracking } from "../../hooks/useLocationTracking";
 
 /**
  * Component For the ManageOrgsScreen
@@ -54,6 +55,9 @@ export default function ManageOrgsScreen() {
   const navigation = useNavigation();
   const clerkUser = useUser();
   const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
+  const { tracking, startTracking, stopTracking, errorMsg } =
+    useLocationTracking(); // Import location tracking functions from hook
   const [allOrganisations, setAllOrganisations] = useState<OrganisationData[]>([]);
   const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>(
     []
@@ -62,7 +66,8 @@ export default function ManageOrgsScreen() {
   const [studentsOrgsLoaded, setStudentsOrgsLoaded] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("name_asc");
   const [location, setLocation] = useState< Location.LocationObject>(); // State to hold location data
-  const allOrgs = Organisation.getAllOrganisations();
+  const [selectedOrganisation, setSelectedOrganisation] =
+    useState<Organisation | null>(null);
   let itemList: OrganisationData[] = [];
 
   // Method to fetch data
@@ -142,8 +147,43 @@ export default function ManageOrgsScreen() {
    * @param org Corresponding organisation
    */
   function onStudentOrgsListButtonPressed(org: OrganisationData) {
-    // start tracking pop up
+    setIsPopupVisible(true);
+    setSelectedOrganisation(new Organisation(org));
   }
+
+  /*
+   * Handle start tracking button click to start tracking the student's location
+   */
+  const handleStartTracking = async () => {
+    if (!selectedOrganisation) {
+      console.error("organisation not found");
+      return;
+    }
+    try {
+      // Start tracking the organisation
+      await startTracking(selectedOrganisation);
+
+      // Update the student's active organisations
+      if (currentStudent && !currentStudent.activeOrgs.includes(selectedOrganisation.org_id)) {
+
+        const newActiveOrgs = [
+          ...currentStudent.activeOrgs,
+          selectedOrganisation.org_id,
+        ];
+      // Update the student data using the hook
+      await updateCurrentStudent({ activeOrgs: newActiveOrgs });
+       // Show or update the tracking notification
+      }
+      }
+      catch (error) {
+      console.error("Error starting tracking:", error);
+      setIsPopupVisible(false);
+    }
+    finally {
+      setIsPopupVisible(false);
+    }
+  };
+
 
   /**
    * This function activates when the user clicks on the button for a given
@@ -347,6 +387,12 @@ export default function ManageOrgsScreen() {
   }
   return (
     <SafeAreaView style={styles.safeArea}>
+       {/* Tracking Popup for start/stop tracking */}
+       <TrackingPopup
+        visible={isPopupVisible}
+        onStartTracking={handleStartTracking}
+        onCancel={() => setIsPopupVisible(false)}
+      />
       <FlatList
         data={itemList}
         renderItem={null} // Use `renderItem` to handle FlatList rendering, but in this case we are rendering static content
