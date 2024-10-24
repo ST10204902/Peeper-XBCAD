@@ -51,7 +51,7 @@ export default function LandingScreen() {
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
-  const snapPoints = useMemo(() => [100, "50%", "100%"], []); // Memoized snap points for the bottom sheet heights
+  const snapPoints = useMemo(() => [100, "48%"], []); // Memoized snap points for the bottom sheet heights
   const setTracking = useSetRecoilState(trackingState);
   const [elapsedTime, setElapsedTime] = useRecoilState(elapsed_time);
   const { isDarkMode } = useTheme();
@@ -89,8 +89,8 @@ export default function LandingScreen() {
       if (!tracking.isTracking) {
         clearTrackingNotification();
       }
-    };
-  }, [elapsedTime, selectedOrganisation, tracking.isTracking]);
+    };             
+  }, [elapsedTime, tracking.isTracking]);
 
   // Method to fetch data
   const fetchStudentsOrgs = async () => {
