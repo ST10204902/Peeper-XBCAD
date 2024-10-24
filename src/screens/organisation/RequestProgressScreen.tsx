@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   requests_container: {
     borderRadius: 30,
-    width: "95%",
+    width: "100%",
   },
   itemContainerEven: {
     paddingVertical: 20,
