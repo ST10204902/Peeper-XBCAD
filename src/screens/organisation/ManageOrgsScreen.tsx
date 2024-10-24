@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, FlatList, Alert } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, FlatList, Alert, ActivityIndicator } from "react-native";
 import { OrgAddressData } from "../../databaseModels/OrgAddressData";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
@@ -258,7 +258,7 @@ export default function ManageOrgsScreen() {
       ) : studentsOrgsLoaded ? (
         <Text> Select up to 4 organisations list below</Text>
       ) : (
-        <Text>Loading...</Text>
+        <ActivityIndicator/>
       )}
       <Text style={styles.sectionHeading}>Organisation Management</Text>
       <View style={styles.buttonWrapper}>
@@ -335,7 +335,7 @@ export default function ManageOrgsScreen() {
   );
 
   if (loading) {
-    return <Text>Loading student data...</Text>;
+    return <ActivityIndicator/>;
   }
 
   if (error) {

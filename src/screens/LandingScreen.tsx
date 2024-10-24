@@ -6,6 +6,7 @@ import {
   Text,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
@@ -246,7 +247,7 @@ useFocusEffect(
   //-----------------------------------------------------------//
 
   if (loading) {
-    return <Text> Loading... </Text>;
+    return  <ActivityIndicator/>;
   }
 
   if (error) {
