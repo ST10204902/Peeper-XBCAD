@@ -529,6 +529,7 @@ export default function PDFShareComponent() {
         textSize={20}
         onPress={printToFile}
         disabled={loading}
+        lineHeight={22}
       />}
     </View>
   );
