@@ -34,9 +34,6 @@ export default function SettingsScreen() {
   }
 
   useEffect(() => {
-    if (!currentStudent) {
-      console.error("Settings Screen: No current student found");
-    }
     if (currentStudent?.darkMode !== null && currentStudent?.darkMode !== undefined) {
       if (isDarkMode !== currentStudent.darkMode) {
         toggleTheme();
