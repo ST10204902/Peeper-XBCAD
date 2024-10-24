@@ -7,41 +7,89 @@ import { Organisation } from "../../databaseModels/databaseClasses/Organisation"
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-expo";
+import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
 
 /**
  * Screen Component where the user can Remove an Org
  * @returns a created RemoveOrgsScreen Component
  */
 export default function RemoveOrgScreen() {
-  const clerkUser = useUser();
+  const { user: clerkUser } = useUser();
   const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
+  const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
+  const [selectedOrg, setSelectedOrg] = useState<OrganisationData | null>(null);
 
   // Method to fetch data
   const fetchData = async () => {
-    if (!clerkUser.user) {
+    if (!clerkUser) {
       console.error("Clerk user not found in ManageOrgsScreen");
       return;
     }
-    const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
+    
+    if (!currentStudent?.activeOrgs) {
+      console.error("No active orgs found for current student");
+      return;
+    }
 
-    setStudentOrganisations(
-      studentOrgs
-        .filter((org) => org && typeof org.toJSON === "function")
-        .map((org) => org.toJSON())
-    );
+    try {
+      const studentOrgs = await Organisation.getStudentsOrgs(currentStudent.activeOrgs);
+      
+      const validOrgs = studentOrgs
+        .filter((org): org is Organisation => org !== null && typeof org.toJSON === "function")
+        .map(org => org.toJSON());
+      
+      setStudentOrganisations(validOrgs);
+    } catch (error) {
+      console.error("Error fetching student organizations:", error);
+    }
   };
 
-  // Run the fetchData method when the screen is focused (navigated to) or when currentStudent changes
+  // Run the fetchData method when the screen is focused or when currentStudent changes
   useEffect(() => {
     if (currentStudent) {
       fetchData();
     }
   }, [currentStudent]);
 
-  const handleListButtonClick = (selectedOrg: OrganisationData) => {
-   let newOrgs = currentStudent?.activeOrgs.filter((org) => org !== selectedOrg.org_id);
-    updateCurrentStudent({ activeOrgs: newOrgs });
+  const handleOrgSelection = (org: OrganisationData) => {
+    setSelectedOrg(org);
+    setIsDeletionPopupShown(true);
+  };
+
+  const handleDataDeletion = async () => {
+    if (!currentStudent) {
+      console.error("No current student found");
+      return;
+    }
+
+    if (!selectedOrg) {
+      console.error("No organization selected for deletion");
+      return;
+    }
+
+    try {
+      const newOrgs = currentStudent.activeOrgs.filter(
+        (orgId) => orgId !== selectedOrg.org_id
+      );
+
+      await updateCurrentStudent({ activeOrgs: newOrgs });
+      
+      // Refresh the organizations list after successful deletion
+      await fetchData();
+      
+      // Reset UI state
+      setIsDeletionPopupShown(false);
+      setSelectedOrg(null);
+    } catch (error) {
+      console.error("Error deleting organization:", error);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  const handleCancelDeletion = () => {
+    setIsDeletionPopupShown(false);
+    setSelectedOrg(null);
   };
 
   const renderHeader = () => (
@@ -51,29 +99,46 @@ export default function RemoveOrgScreen() {
     </>
   );
 
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error loading organizations</Text>;
+  }
+
   return (
-    <FlatList
-      style={styles.screenLayout}
-      data={studentOrganisations}
-      ListHeaderComponent={renderHeader}
-      renderItem={({ item }) => (
-        <ExpandableOrgList
-          items={[item]}
-          listButtonComp={
-            <CustomButton
-              onPress={() => handleListButtonClick(item)}
-              title="Remove Organisation"
-              textSize={18}
-              buttonColor="#A4DB51"
-              textColor="#000000"
-              fontFamily="Rany-Bold"
-            />
-          }
-          onListButtonClicked={handleListButtonClick}
+    <>
+      <FlatList
+        style={styles.screenLayout}
+        data={studentOrganisations}
+        ListHeaderComponent={renderHeader}
+        renderItem={({ item }) => (
+          <ExpandableOrgList
+            items={[item]}
+            listButtonComp={
+              <CustomButton
+                onPress={() => handleOrgSelection(item)}
+                title="Remove Organisation"
+                textSize={18}
+                buttonColor="#A4DB51"
+                textColor="#000000"
+                fontFamily="Rany-Bold"
+              />
+            }
+            onListButtonClicked={() => handleOrgSelection(item)}
+          />
+        )}
+        keyExtractor={(item) => item.org_id}
+      />
+      {isDeletionPopupShown && selectedOrg && (
+        <DataDeletionConfirmationPopup
+          studentNumber={currentStudent?.studentNumber ?? ""}
+          onConfirmation={handleDataDeletion}
+          onCancel={handleCancelDeletion}
         />
       )}
-      keyExtractor={(item) => item.org_id}
-    />
+    </>
   );
 }
 
