@@ -56,7 +56,7 @@ export default function ManageOrgsScreen() {
   const clerkUser = useUser();
   const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
-  const { tracking, startTracking, stopTracking, errorMsg } =
+  const { tracking, startTracking } =
     useLocationTracking(); // Import location tracking functions from hook
   const [allOrganisations, setAllOrganisations] = useState<OrganisationData[]>([]);
   const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>(
@@ -156,7 +156,13 @@ export default function ManageOrgsScreen() {
    */
   const handleStartTracking = async () => {
     if (!selectedOrganisation) {
+      setIsPopupVisible(false);
       console.error("organisation not found");
+      return;
+    }
+    if (tracking.isTracking) {
+      setIsPopupVisible(false);
+      Alert.alert("Tracking already in progress");
       return;
     }
     try {
