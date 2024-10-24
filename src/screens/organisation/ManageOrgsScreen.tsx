@@ -17,6 +17,8 @@ import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import TrackingPopup from "../../components/TrackingPopup";
 import { useLocationTracking } from "../../hooks/useLocationTracking";
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 /**
  * Component For the ManageOrgsScreen
@@ -52,6 +54,8 @@ import { useLocationTracking } from "../../hooks/useLocationTracking";
  * @property {number} orgLongitude - The longitude coordinate of the organization.
  */
 export default function ManageOrgsScreen() {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
   const navigation = useNavigation();
   const clerkUser = useUser();
   const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
@@ -268,9 +272,10 @@ export default function ManageOrgsScreen() {
   // 2. Making the code more modular and easier to maintain.
   // 3. Allowing reuse of the constant if needed in multiple places within the component.
   const renderContent = () => (
-    <View style={styles.page}>
-      <Text style={styles.pageHeading}>Your Organisations</Text>
+    <View style={[styles.page, { backgroundColor: theme.background }]}>
+      <Text style={[styles.pageHeading, { color: theme.fontRegular }]}>Your Organisations</Text>
 
+<View style={styles.componentWrapper}>
       {studentOrganisations.length > 0 ? (
         <ExpandableOrgList
           userLocation={location}
@@ -282,7 +287,7 @@ export default function ManageOrgsScreen() {
               title="Start Tracking"
               textSize={18}
               buttonColor="#A4DB51"
-              textColor="#000000"
+              textColor={theme.fontRegular}
               fontFamily="Rany-Bold"
             />
           }
@@ -292,14 +297,15 @@ export default function ManageOrgsScreen() {
       ) : (
         <ActivityIndicator/>
       )}
-      <Text style={styles.sectionHeading}>Organisation Management</Text>
+      </View>
+      <Text style={[styles.sectionHeading, { color: theme.fontRegular }]}>Organisation Management</Text>
       <View style={styles.buttonWrapper}>
         <CustomButton
           onPress={handleRequestNewOrganisation}
           title="Request a New Organisation"
           textSize={18}
           buttonColor="#FE7143"
-          textColor="#161616"
+          textColor={theme.fontRegular}
           fontFamily="Rany-Bold"
         />
       </View>
@@ -309,7 +315,7 @@ export default function ManageOrgsScreen() {
           title="Request Progress"
           textSize={18}
           buttonColor="#C8B0FF"
-          textColor="#161616"
+          textColor={theme.fontRegular}
           fontFamily="Rany-Bold"
         />
       </View>
@@ -319,11 +325,11 @@ export default function ManageOrgsScreen() {
           title="Remove Organisation"
           textSize={18}
           buttonColor="#FCDE39"
-          textColor="#161616"
+          textColor={theme.fontRegular}
           fontFamily="Rany-Bold"
         />
       </View>
-      <Text style={styles.sectionHeading}>Add Organisation</Text>
+      <Text style={[styles.sectionHeading, { color: theme.fontRegular }]}>Add Organisation</Text>
 
       <View style={styles.inputRow}>
         <View style={styles.inputWrapper}>
@@ -341,8 +347,8 @@ export default function ManageOrgsScreen() {
               { label: "Name (Z-A)", value: "name_desc" },
             ]}
             placeholder="Sort By"
-            FGColor="#969696"
-            placeHolderColor="#A9A9A9"
+            FGColor={theme.componentTextColour}
+            placeHolderColor={theme.componentTextColour}
             value={sortBy}
             onValueChange={(value: string) => changeSortBy(value)}
           />
@@ -358,7 +364,7 @@ export default function ManageOrgsScreen() {
             title="Add Organisation"
             textSize={15}
             buttonColor="#D9E7FF"
-            textColor="#000000"
+            textColor={theme.fontRegular}
             fontFamily="Rany-Bold"
           />
         }
@@ -378,7 +384,7 @@ export default function ManageOrgsScreen() {
     return <Text>No student data available.</Text>;
   }
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
        {/* Tracking Popup for start/stop tracking */}
        <TrackingPopup
         visible={isPopupVisible}
@@ -398,29 +404,28 @@ export default function ManageOrgsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F9F9F9",
   },
   page: {
-    backgroundColor: "#F9F9F9",
     flex: 1,
     padding: 16,
   },
   pageHeading: {
     fontSize: 30,
     fontFamily: "Quittance",
-    color: "#161616",
     marginTop: 30,
     marginBottom: 15,
   },
   sectionHeading: {
     fontSize: 20,
     fontFamily: "Quittance",
-    color: "#161616",
     marginTop: 30,
     marginBottom: 15,
   },
   buttonWrapper: {
     marginBottom: 8, // Adjust the value for desired spacing between buttons
+  },
+  componentWrapper: {
+borderRadius: 30,
   },
   inputRow: {
     flexDirection: "row",
