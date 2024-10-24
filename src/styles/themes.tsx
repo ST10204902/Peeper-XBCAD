@@ -22,6 +22,12 @@ export const lightTheme = {
     landingListItemBackground: '#F1F1F1',
     landingListFont: '#969696',
 
+    //Org Manage Screen 
+    componentBackground: '#EBEBEB',
+    componentTextColour: '#969696',
+    orgListeven: '#E7E7E7',
+    orgListOdd: '#F3F3F3',
+
     //Settings Screen
     settingsBlueButton: '#D9E7FF',
 
@@ -53,6 +59,12 @@ export const lightTheme = {
    landingListBackgroundOverall: '#303030',
    landingListItemBackground: '#2A2A2A',
    landingListFont: '#F3F3F3',
+
+   //Org Manage Screen 
+    componentBackground: '#444444',
+    componentTextColour: '#F3F3F3',
+    orgListeven: '#4F4F4F',
+    orgListOdd: '#444444',
 
    //Settings Screen 
    settingsBlueButton: '#334FD7',
