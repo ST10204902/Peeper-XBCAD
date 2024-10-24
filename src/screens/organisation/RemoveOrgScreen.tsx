@@ -69,14 +69,12 @@ export default function RemoveOrgScreen() {
     }
 
     try {
+      // the selectedOrg id is removed from the activeOrgs array
       const newOrgs = currentStudent.activeOrgs.filter(
         (orgId) => orgId !== selectedOrg.org_id
       );
 
       await updateCurrentStudent({ activeOrgs: newOrgs });
-      
-      // Refresh the organizations list after successful deletion
-      await fetchData();
       
       // Reset UI state
       setIsDeletionPopupShown(false);
