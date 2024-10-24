@@ -71,6 +71,7 @@ const OrgDetailsScreen = () => {
             textSize={28}
             verticalPadding={25}
             cornerRadius={20}
+            lineHeight={30}
           />
           <Text style={[styles.BeSafeText, { color: theme.fontRegular }]}>Session History</Text>
         </View>
