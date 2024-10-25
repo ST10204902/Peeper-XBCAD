@@ -22,6 +22,7 @@ import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
 import { useRecoilState } from "recoil";
 import { trackingState } from "../atoms/atoms";
+import CurrentTrackingBanner from "../components/CurrentTrackingBanner";
 
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
@@ -177,19 +178,7 @@ export default function LandingScreen() {
 
       {/* Tracking Status or Popup */}
       {tracking.isTracking ? (
-        <View style={styles.trackingStatusContainer}>
-          <View style={styles.trackingStatus}>
-            <Text style={[styles.trackingText, { color: theme.fontRegular }]}>
-              Tracking: {trackingAtom.organizationName}
-            </Text>
-            <Pressable 
-              style={styles.stopButton}
-              onPress={() => setTrackingAtom({ isTracking: false, organizationName: "" })}
-            >
-              <Text style={[styles.stopButtonText, { color: theme.fontRegular }]}>Stop Tracking</Text>
-            </Pressable>
-          </View>
-        </View>
+        <CurrentTrackingBanner />
       ) : (
         <TrackingPopup
           visible={isPopupVisible}
