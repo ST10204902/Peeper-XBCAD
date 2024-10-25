@@ -10,6 +10,7 @@ import AppNavigator from "./src/screens/Navigation";
 import { registerForPushNotificationsAsync } from "./src/services/RequestNotificationPermissions";
 import * as Notifications from "expo-notifications";
 import { ThemeProvider } from "./src/styles/ThemeContext";
+import "react-native-get-random-values";
 
 /**
  * App component
@@ -48,13 +49,12 @@ export default function App() {
     registerForPushNotificationsAsync();
   }, []);
 
-
-  Notifications.addNotificationReceivedListener(notification => {
-    console.log('Notification received:', notification);
+  Notifications.addNotificationReceivedListener((notification) => {
+    console.log("Notification received:", notification);
   });
-  
-  Notifications.addNotificationResponseReceivedListener(response => {
-    console.log('Notification response received:', response);
+
+  Notifications.addNotificationResponseReceivedListener((response) => {
+    console.log("Notification response received:", response);
   });
 
   // Setting the notification handler using expo-notifications
@@ -114,13 +114,13 @@ export default function App() {
     <ClerkProvider publishableKey={publishableKey} tokenCache={localTokenCache}>
       <FontLoader>
         <ThemeProvider>
-        <RecoilRoot>
+          <RecoilRoot>
             <CurrentTrackingBanner />
             <NavigationContainer>
               <SafeAreaView></SafeAreaView>
               <AppNavigator />
             </NavigationContainer>
-        </RecoilRoot>
+          </RecoilRoot>
         </ThemeProvider>
       </FontLoader>
     </ClerkProvider>
