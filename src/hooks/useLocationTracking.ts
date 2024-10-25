@@ -8,13 +8,13 @@ import { Viewport } from "../databaseModels/databaseClasses/Viewport";
 import { useCurrentStudent } from "./useCurrentStudent";
 import { DatabaseUtility } from "../databaseModels/databaseClasses/DatabaseUtility";
 import { clearTrackingNotification, requestNotificationPermissions, showOrUpdateTrackingNotification } from "../services/trackingNotification";
-import { trackingState } from "../atoms/atoms";
-import { useRecoilState } from "recoil";
+import { trackingState, trackingStartTimeState } from "../atoms/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 export function useLocationTracking() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [tracking, setTracking] = useRecoilState(trackingState);
-
+  const setStartTime = useSetRecoilState(trackingStartTimeState);
   const { currentStudent, error, updateCurrentStudent } = useCurrentStudent();
 
   const locationSubscriptionRef = useRef<any>(null);
@@ -118,7 +118,8 @@ export function useLocationTracking() {
 
       // Reset elapsed time
       elapsedTimeRef.current = 0;
-      
+      const now = Date.now();
+      setStartTime(now);
       // Show initial notification
       await showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
 
@@ -130,6 +131,7 @@ export function useLocationTracking() {
 
     } catch (error) {
       // If anything fails, make sure tracking state is false
+      setStartTime(0);
       setTracking({ isTracking: false, organizationName: "" });
       setErrorMsg(`Error starting tracking: ${error}`);
       console.error(error);
