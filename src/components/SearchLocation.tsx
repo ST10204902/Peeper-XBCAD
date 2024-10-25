@@ -13,6 +13,42 @@ interface Props {
   handlePlaceUpdated: (place: string) => void;
 }
 
+/**
+ * SearchLocation component provides a location search and selection interface.
+ *
+ * This component allows users to search for a location using the Google Places API, display the selected location on a map, and place a marker at the    selected coordinates. It includes an autocomplete input field and a map view.
+ *
+ * @component
+ * @param {Props} props - Props containing a function to handle place updates.
+ * @returns {JSX.Element} The rendered SearchLocation component.
+ *
+ * @example
+ * // Usage example:
+ * <SearchLocation handlePlaceUpdated={(place) => console.log(place)} />
+ *
+ * @remarks
+ * - Requires a valid Google Maps API key to function.
+ * - Updates the map's region and adds a marker to the map based on the selected place.
+ * - Includes keyboard handling with `KeyboardAvoidingView` for a smooth user experience on iOS.
+ *
+ * @function
+ * @name SearchLocation
+ *
+ * @param {function} handlePlaceUpdated - Callback function to handle updates when a place is selected.
+ * `place` is in the format: Street Address, Suburb, City, Postal Code, Country
+ *
+ * @hook
+ * @name useState
+ * @description Manages the state for the marker's coordinates.
+ *
+ * @hook
+ * @name useRef
+ * @description Provides a reference to the MapView component for controlling the map's region.
+ *
+ * @state {Object | null} markerCoordinate - The coordinates of the marker on the map.
+ *
+ * @throws Will throw an error if the Google Maps API key is missing.
+ */
 export default function SearchLocation({ handlePlaceUpdated }: Props) {
   const [markerCoordinate, setMarkerCoordinate] = useState<{
     latitude: number;
