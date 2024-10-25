@@ -68,8 +68,8 @@ const MapSessionHistory:  React.FC<MapSessionHistoryComponentProps> = ({
         const newRegion = {
           latitude: (boundingBox.low.latitude + boundingBox.high.latitude) / 2,
           longitude: (boundingBox.low.longitude + boundingBox.high.longitude) / 2,
-          latitudeDelta: boundingBox.high.latitude - boundingBox.low.latitude + 0.003,
-          longitudeDelta: boundingBox.high.longitude - boundingBox.low.longitude + 0.003,
+          latitudeDelta: boundingBox.high.latitude - boundingBox.low.latitude + 0.5*(boundingBox.high.latitude - boundingBox.low.latitude),
+          longitudeDelta: boundingBox.high.longitude - boundingBox.low.longitude + 0.5*(boundingBox.high.latitude - boundingBox.low.latitude),
         };
         setRegion(newRegion);
       }
