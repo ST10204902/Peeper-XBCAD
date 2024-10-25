@@ -175,22 +175,27 @@ export default function LandingScreen() {
       {/* Map Component displaying selected organisation */}
       <MapComponent selectedOrganisation={selectedOrganisation} />
 
-      {/* Tracking Popup for start/stop tracking */}
-      <TrackingPopup
-        visible={isPopupVisible}
-        onStartTracking={handleStartTracking}
-        onCancel={() => setIsPopupVisible(false)}
-      />
-        
-        {/* Where is this?? */}
-      {tracking.isTracking && (
-        <View>
-          <Text style={{ color: theme.fontRegular }}>Tracking: {trackingAtom.organizationName}</Text>
-          <Text style={{ color: theme.fontRegular }}>Time: where is this seconds</Text>
-          <Pressable onPress={() => () => setTrackingAtom({ isTracking: false, organizationName: "" }) }>
-            <Text style={{ color: theme.fontRegular }}>Stop Tracking</Text>
-          </Pressable>
+      {/* Tracking Status or Popup */}
+      {tracking.isTracking ? (
+        <View style={styles.trackingStatusContainer}>
+          <View style={styles.trackingStatus}>
+            <Text style={[styles.trackingText, { color: theme.fontRegular }]}>
+              Tracking: {trackingAtom.organizationName}
+            </Text>
+            <Pressable 
+              style={styles.stopButton}
+              onPress={() => setTrackingAtom({ isTracking: false, organizationName: "" })}
+            >
+              <Text style={[styles.stopButtonText, { color: theme.fontRegular }]}>Stop Tracking</Text>
+            </Pressable>
+          </View>
         </View>
+      ) : (
+        <TrackingPopup
+          visible={isPopupVisible}
+          onStartTracking={handleStartTracking}
+          onCancel={() => setIsPopupVisible(false)}
+        />
       )}
       {/* Bottom Sheet containing the organisation list */}
       <BottomSheet
@@ -248,6 +253,42 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
+  },
+  trackingStatusContainer: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  trackingStatus: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  trackingText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  stopButton: {
+    backgroundColor: '#ff4444',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  stopButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 //------------------------***EOF***-----------------------------//
