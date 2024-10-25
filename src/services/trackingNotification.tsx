@@ -1,7 +1,40 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
-// Initialize the active notification ID
+
+// Define a constant identifier for iOS notifications
+const IOS_NOTIFICATION_IDENTIFIER = 'tracking-notification';
+
+/**
+ * Requests notification permissions from the user.
+ *
+ * This function uses the Notifications.requestPermissionsAsync method to request
+ * notification permissions. If the permissions are granted, it returns true.
+ * Otherwise, it returns false.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to true if the permissions
+ * are granted, and false otherwise.
+ *
+ * @throws {Error} If there is an error while requesting notification permissions,
+ * it catches the error and returns false.
+ */
+export const requestNotificationPermissions = async () => {
+  try {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== "granted") {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+/**
+ * A variable to store the ID of the currently active notification.
+ * For iOS, this will always be IOS_NOTIFICATION_IDENTIFIER
+ * For Android, it will be the dynamically generated ID
+ */
 let activeNotificationId: string | null = null;
 
 /**
@@ -30,7 +63,7 @@ export const showOrUpdateTrackingNotification = async (orgName: string, elapsedT
   try {
     const validElapsedTime = Math.max(0, Math.floor(elapsedTime));
 
-    // Cancel any existing notification before showing a new one on both platforms
+    // Cancel any existing notification
     if (activeNotificationId) {
       await Notifications.dismissNotificationAsync(activeNotificationId);
     }
@@ -47,15 +80,24 @@ export const showOrUpdateTrackingNotification = async (orgName: string, elapsedT
 
     if (Platform.OS === "ios") {
       content.subtitle = "Time Tracking";
+      
+      // For iOS, we'll use a consistent identifier
+      activeNotificationId = IOS_NOTIFICATION_IDENTIFIER;
+      
+      // On iOS, we need to use the identifier option to update the same notification
+      return await Notifications.scheduleNotificationAsync({
+        content,
+        trigger: null,
+        identifier: IOS_NOTIFICATION_IDENTIFIER
+      });
+    } else {
+      // For Android, continue with the current behavior
+      activeNotificationId = await Notifications.scheduleNotificationAsync({
+        content,
+        trigger: null,
+      });
+      return activeNotificationId;
     }
-
-    // Create a new notification
-    activeNotificationId = await Notifications.scheduleNotificationAsync({
-      content,
-      trigger: null,
-    });
-
-    return activeNotificationId;
   } catch (error) {
     console.error("Error showing/updating notification:", error);
     return null;
