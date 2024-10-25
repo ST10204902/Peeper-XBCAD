@@ -14,8 +14,10 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
 import SearchLocation from "../../components/SearchLocation";
 import { set } from "firebase/database";
-import { useTheme } from '../../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../../styles/themes';
+import { useTheme } from "../../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../../styles/themes";
+import useOrgRequests from "../../hooks/useOrgRequests";
+import DuplicateRequestPopup from "../../components/DuplicateRequestPopup";
 
 /**
  * SearchLocation component provides a location search and selection interface.
@@ -60,12 +62,19 @@ export default function RequestOrgScreen() {
   const [phoneNum, setPhoneNum] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const { currentStudent } = useCurrentStudent();
+  const orgRequests = useOrgRequests(currentStudent?.student_id || "");
   const [lng, setLng] = useState<number>(0);
-  const [lat, setLat] = useState<number>(0); 
+  const [lat, setLat] = useState<number>(0);
   const navigation =
     useNavigation<
       NavigationProp<RootStackParamsList, "RequestProgressScreen">
     >();
+  const [duplicate, setDuplicate] = useState<{
+    location: string;
+    orgName: string;
+    phoneNo: string;
+    email: string;
+  } | null>(null);
 
   // Function to handle form submission
   const handleSubmit = async () => {
@@ -76,7 +85,9 @@ export default function RequestOrgScreen() {
     }
     if (!orgName || !location || !phoneNum || !email) {
       Alert.alert("Error", "Please fill in all fields.");
-      console.log(location);
+      console.log(
+        `org name: ${orgName} location: ${location} phone number: ${!phoneNum} email: ${!email}`
+      );
       return;
     }
 
@@ -106,20 +117,46 @@ export default function RequestOrgScreen() {
 
       // Create and save the OrgRequest
       const newRequest = new OrgRequest(requestData);
-      console.log("New request:", newRequest);
-      await newRequest.save();
 
-      // Success message
-      Alert.alert("Success", "Your request has been submitted.");
+      let isDuplicate = false;
 
-      // Navigate to Request Progress Screen
-      navigation.navigate("RequestProgressScreen");
+      for (const existingRequest of orgRequests) {
+        if (
+          existingRequest.orgAddress.streetAddress ===
+            newRequest.orgAddress.streetAddress &&
+          existingRequest.orgAddress.suburb === newRequest.orgAddress.suburb &&
+          existingRequest.orgAddress.city === newRequest.orgAddress.city
+        ) {
+          isDuplicate = true;
+          break;
+        }
+      }
 
-      // Clear input fields
-      setOrgName("");
-      setLocation("");
-      setPhoneNum("");
-      setEmail("");
+      if (isDuplicate) {
+        console.log("is a duplicate");
+        // Triggers Popup
+        setDuplicate({
+          location: location,
+          orgName: orgName,
+          phoneNo: phoneNum,
+          email: email,
+        });
+
+        // Linking request regardless of popup
+      } else {
+        console.log("New request:", newRequest);
+        await newRequest.save();
+        // Success message
+        Alert.alert("Success", "Your request has been submitted.");
+        // Navigate to Request Progress Screen
+        navigation.navigate("RequestProgressScreen");
+
+        // Clear input fields
+        setOrgName("");
+        setLocation("");
+        setPhoneNum("");
+        setEmail("");
+      }
     } catch (error) {
       // Handle errors (e.g., network or database errors)
       Alert.alert("Error", "Failed to submit request. Please try again later.");
@@ -127,20 +164,26 @@ export default function RequestOrgScreen() {
     }
   };
 
-  const handlePlaceUpdated = (place: string, coordinate: { latitude: number; longitude: number }) => {
+  const handlePlaceUpdated = (
+    place: string,
+    coordinate: { latitude: number; longitude: number }
+  ) => {
     setLocation(place);
     setLat(coordinate.latitude);
     setLng(coordinate.longitude);
   };
 
   return (
-    <ScrollView style={[styles.screenLayout, { backgroundColor: theme.background }]} keyboardShouldPersistTaps="handled">
-      <Text style={[styles.headerText, { color: theme.fontRegular }]}>Request an Organisation</Text>
+    <ScrollView
+      style={[styles.screenLayout, { backgroundColor: theme.background }]}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={[styles.headerText, { color: theme.fontRegular }]}>
+        Request an Organisation
+      </Text>
 
       <View style={styles.map_container}>
-        <SearchLocation
-          handlePlaceUpdated={handlePlaceUpdated}
-        />
+        <SearchLocation handlePlaceUpdated={handlePlaceUpdated} />
       </View>
 
       <View style={styles.inputSpacing}>
@@ -181,6 +224,14 @@ export default function RequestOrgScreen() {
         buttonColor="#C8B0FF"
         textColor="#161616"
       />
+      {duplicate ? (
+        <DuplicateRequestPopup
+          request={duplicate}
+          onOk={() => {
+            setDuplicate(null);
+          }}
+        />
+      ) : null}
     </ScrollView>
   );
 }
