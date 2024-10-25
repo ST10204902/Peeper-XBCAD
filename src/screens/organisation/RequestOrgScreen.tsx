@@ -14,6 +14,8 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
 import SearchLocation from "../../components/SearchLocation";
 import { set } from "firebase/database";
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 /**
  * SearchLocation component provides a location search and selection interface.
@@ -51,6 +53,8 @@ import { set } from "firebase/database";
  * @throws Will throw an error if the Google Maps API key is missing.
  */
 export default function RequestOrgScreen() {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
   const [orgName, setOrgName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [phoneNum, setPhoneNum] = useState<string>("");
@@ -130,8 +134,8 @@ export default function RequestOrgScreen() {
   };
 
   return (
-    <ScrollView style={styles.screenLayout} keyboardShouldPersistTaps="handled">
-      <Text style={styles.headerText}>Request an Organisation</Text>
+    <ScrollView style={[styles.screenLayout, { backgroundColor: theme.background }]} keyboardShouldPersistTaps="handled">
+      <Text style={[styles.headerText, { color: theme.fontRegular }]}>Request an Organisation</Text>
 
       <View style={styles.map_container}>
         <SearchLocation
