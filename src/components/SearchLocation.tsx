@@ -64,10 +64,7 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <View style={styles.container}>
       {/* Autocomplete Input */}
       <Text style={styles.label}>Location</Text>
 
@@ -75,6 +72,7 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
         googleApiKey={googleApiKey}
         placeHolder="Enter Address"
         onSelect={(place) => {
+          console.log(place);
           const location =
             place.result?.geometry?.location || place?.geometry?.location;
 
@@ -105,6 +103,7 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
 
       <View style={styles.mapContainer}>
         <MapView
+          pointerEvents="none"
           ref={mapRef}
           style={styles.map}
           initialRegion={{
@@ -117,33 +116,32 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
           {markerCoordinate && <Marker coordinate={markerCoordinate} />}
         </MapView>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex: 100,
   },
   label: {
     fontSize: 20,
     fontFamily: "Rany-Bold",
     color: "#4A4A4A",
-    paddingLeft: 15,
     marginBottom: 10,
+    marginLeft: 35,
   },
   input: {
-    marginLeft: -10,
     marginTop: 20,
     backgroundColor: "#EBEBEB",
-    marginStart: 0,
+    marginStart: 5,
     borderRadius: 15,
     fontFamily: "Rany-Medium",
     paddingStart: 30,
     fontSize: 16,
     color: "#5A5A5A",
     height: 50,
+    zIndex: 2,
   },
   list: {
     backgroundColor: "#F9F9F9",
@@ -152,12 +150,12 @@ const styles = StyleSheet.create({
     // Your custom styles for each suggestion item
   },
   mapContainer: {
-    flex: 1,
+    height: 200,
     marginTop: 50,
     marginBottom: 10,
-    marginHorizontal: -16,
   },
   map: {
     flex: 1,
+    zIndex: 1,
   },
 });
