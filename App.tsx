@@ -7,7 +7,6 @@ import { ClerkProvider } from "@clerk/clerk-expo";
 import FontLoader from "./src/components/FontLoader";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import AppNavigator from "./src/screens/Navigation";
-import { registerForPushNotificationsAsync } from "./src/services/RequestNotificationPermissions";
 import * as Notifications from "expo-notifications";
 import { ThemeProvider } from "./src/styles/ThemeContext";
 
@@ -41,12 +40,6 @@ export default function App() {
       "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
     );
   }
-
-  // Registering the push notifications for the application.
-  // The '[]' empty dependency array ensures this only happens once, and not every time the component is rendered.
-  useEffect(() => {
-    registerForPushNotificationsAsync();
-  }, []);
 
 
  

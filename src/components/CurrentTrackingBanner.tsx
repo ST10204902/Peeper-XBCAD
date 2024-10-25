@@ -10,8 +10,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"; // Using only setState for elapsedTime
-import { elapsed_time, trackingState } from "../atoms/atoms";
+import { elapsed_time, trackingStartTimeState, trackingState } from "../atoms/atoms";
 import { useEffect } from "react";
+import { clearTrackingNotification } from "../services/trackingNotification";
 
 /**
  * Component responsible for displaying the current tracking session to the user.
@@ -21,34 +22,37 @@ import { useEffect } from "react";
  */
 const CurrentTrackingBanner = () => {
   const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
-
+  const startTime = useRecoilValue(trackingStartTimeState);
   const setElapsedTime = useSetRecoilState(elapsed_time); // Only setElapsedTime is needed here
+
+  const handleStopTracking = async () => {
+    await clearTrackingNotification();
+    setTrackingAtom({ isTracking: false, organizationName: "" });
+    setElapsedTime(0);
+  };
 
   // Start or stop the timer when tracking starts or stops
   useEffect(() => {
-    let timer: NodeJS.Timeout | undefined;
+    let frameId: number;
 
-    if (trackingAtom.isTracking) {
-      // Clear any existing timer before starting a new one
-      clearInterval(timer);
-
-      // Start the timer
-      timer = setInterval(() => {
-        setElapsedTime((prevTime) => prevTime + 1);
-      }, 1000);
+    if (trackingAtom.isTracking && startTime > 0) {
+      const updateTimer = () => {
+        const currentTime = Date.now();
+        const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+        setElapsedTime(elapsedSeconds);
+        frameId = requestAnimationFrame(updateTimer);
+      };
+      frameId = requestAnimationFrame(updateTimer);
     } else {
-      // Clear the timer and reset elapsed time when tracking stops
-      clearInterval(timer);
-      setElapsedTime(0); // Reset timer when tracking stops
+      setElapsedTime(0);
     }
 
-    // Cleanup interval when the component unmounts or isTracking changes
     return () => {
-      if (timer) {
-        clearInterval(timer);
+      if (frameId) {
+        cancelAnimationFrame(frameId);
       }
     };
-  }, [trackingAtom.isTracking, setElapsedTime]);
+  }, [trackingAtom.isTracking, startTime]);
 
   if (!trackingAtom.isTracking) {
     return null; // Don't render the component if tracking is not active
@@ -72,7 +76,7 @@ const CurrentTrackingBanner = () => {
       </View>
       <Pressable
         style={styles.stop_button}
-        onPress={() => setTrackingAtom({ isTracking: false, organizationName: "" })}
+        onPress={handleStopTracking}
       >
         <ImageBackground
           style={styles.button_image}
@@ -85,7 +89,7 @@ const CurrentTrackingBanner = () => {
 
 /**
  * A separate component that only displays the elapsed time.
- * This component will only re-render when `elapsedTime` changes.
+ * This component will only re-render when elapsedTime changes.
  */
 const ElapsedTimeDisplay = () => {
   const elapsedTime = useRecoilValue(elapsed_time); // Use Recoil to subscribe to elapsedTime
@@ -105,62 +109,51 @@ const ElapsedTimeDisplay = () => {
 
 const styles = StyleSheet.create({
   root_container: {
-    paddingTop: Platform.OS === "ios" ? 50 : 0,
-    display: "flex",
-    paddingBottom: 20,
-    paddingHorizontal: 30,
-    flexDirection: "row",
-    borderBottomStartRadius: 35,
-    justifyContent: "space-between",
-    borderBottomEndRadius: 35,
-    backgroundColor: "white",
-    marginBottom: -30,
-    elevation: 100,
-  },
-  text_container: {
-    flexDirection: "column",
-    gap: 6,
-    flexShrink: 1,
-  },
-  details_container: {
-    paddingHorizontal: 5,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  org_name: {
-    fontFamily: "Rany-Bold",
-    color: "#565656",
-    fontSize: 17,
-    flexShrink: 1,
-  },
-  elapsed_time: {
-    marginEnd: 5,
-    fontFamily: "Rany-Bold",
-    color: "#565656",
-    fontSize: 17,
-  },
-  header: {
-    fontFamily: "Quittance",
-    fontSize: 18,
-  },
-  stop_button: {
-    height: "100%",
-  },
-  button_image: {
-    objectFit: "contain",
-    flex: 1,
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "flex-end",
-  },
-  background: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 50 : 0,
     left: 0,
     right: 0,
+    zIndex: 1000,
+    paddingHorizontal: 16,
+    paddingVertical: Platform.OS === 'ios' ? 12 : 8,
+  },
+  text_container: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingTop: Platform.OS === 'ios' ? 8 : 0,
+  },
+  details_container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: Platform.OS === 'ios' ? 4 : 0,
+  },
+  header: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: Platform.OS === 'ios' ? 4 : 2,
+  },
+  org_name: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    flex: 1,
+    marginRight: 8,
+  },
+  stop_button: {
+    position: 'absolute',
+    right: 16,
+    top: Platform.OS === 'ios' ? 12 : 8,
+    width: 24,
+    height: 24,
+  },
+  button_image: {
+    width: '100%',
+    height: '100%',
+  },
+  elapsed_time: {
+    fontSize: 14,
+    color: '#FFFFFF',
   },
 });
 
