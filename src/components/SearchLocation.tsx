@@ -10,7 +10,10 @@ import MapView, { Marker, Region } from "react-native-maps";
 import PlacesInput from "react-native-places-input";
 
 interface Props {
-  handlePlaceUpdated: (place: string, coordinate: { latitude: number; longitude: number }) => void;
+  handlePlaceUpdated: (
+    place: string,
+    coordinate: { latitude: number; longitude: number }
+  ) => void;
 }
 
 /**
