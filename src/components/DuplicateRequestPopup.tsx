@@ -14,6 +14,27 @@ interface Props {
   onOk: () => void;
 }
 
+/**
+ * DuplicateRequestPopup component is used to inform the user when a request for adding an organization has already been submitted by another student.
+ * It displays the details of the existing request and allows the user to confirm if those details are correct.
+ * The component also warns the user that their request will be linked to the displayed details, and if incorrect, they should contact their lecturer.
+ *
+ * @component
+ * @param {Object} request - The existing organization request data (including location, organization name, phone number, and email address).
+ * @param {Function} onOk - Callback function triggered when the "OK" button is pressed.
+ * @returns {JSX.Element} The rendered duplicate request popup.
+ *
+ * @example
+ * <DuplicateRequestPopup
+ *   request={{ location: "Location A", orgName: "Org A", phoneNo: "123456789", email: "example@email.com" }}
+ *   onOk={handleOkPress}
+ * />
+ *
+ * @remarks
+ * - Displays key details of an organization request submitted by another student.
+ * - Provides the user with an option to acknowledge the duplicate request by pressing the "OK" button.
+ * - If the request is null or empty, the component logs an error and does not render.
+ */
 export default function DuplicateRequestPopup({ request, onOk }: Props) {
   // Don't render if request is null or empty
   if (!request) {
