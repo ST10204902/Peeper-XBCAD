@@ -128,15 +128,18 @@ export default function LandingScreen() {
   //-----------------------------------------------------------//
 
   if (loading) {
+    console.log("Loading student data...");
     return  <ActivityIndicator/>;
   }
 
   if (error) {
+    console.error("Error loading student data:", error);
     return <Text>Error: {error.message}</Text>;
   }
 
 
   if (!currentStudent) {
+    console.log("Student data not found");
     return <Text>No student data available.</Text>;
   }
 
