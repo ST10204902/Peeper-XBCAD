@@ -7,7 +7,6 @@ import { ClerkProvider } from "@clerk/clerk-expo";
 import FontLoader from "./src/components/FontLoader";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import AppNavigator from "./src/screens/Navigation";
-import { registerForPushNotificationsAsync } from "./src/services/RequestNotificationPermissions";
 import * as Notifications from "expo-notifications";
 import { ThemeProvider } from "./src/styles/ThemeContext";
 import "react-native-get-random-values";
@@ -43,11 +42,8 @@ export default function App() {
     );
   }
 
-  // Registering the push notifications for the application.
-  // The '[]' empty dependency array ensures this only happens once, and not every time the component is rendered.
-  useEffect(() => {
-    registerForPushNotificationsAsync();
-  }, []);
+
+ 
 
   // Setting the notification handler using expo-notifications
   // Determines how notifications will appear for the application
