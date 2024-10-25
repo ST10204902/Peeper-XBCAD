@@ -100,6 +100,8 @@ export function useLocationTracking() {
       }, 1000);
 
     } catch (error) {
+      // If anything fails, make sure tracking state is false
+      setTracking({ isTracking: false, organizationName: "" });
       setErrorMsg(`Error starting tracking: ${error}`);
       console.error(error);
     }
@@ -107,13 +109,15 @@ export function useLocationTracking() {
 
   const stopTracking = async () => {
     console.log("Stopping tracking called");
+    
+    try {
+      // Finalize session log
+      const currentSessionLog = sessionLogRef.current;
+      const currentStudent = studentRef.current;
 
-    const currentSessionLog = sessionLogRef.current;
-    const currentStudent = studentRef.current;
-
-    if (!currentSessionLog || !currentStudent) {
-      return;
-    }
+      if (!currentSessionLog || !currentStudent) {
+        return;
+      }
 
     try {
       // Finalize session log
@@ -150,6 +154,9 @@ export function useLocationTracking() {
       setErrorMsg(`Error stopping tracking: ${error}`);
       console.error(error);
     }
+
+    // Move this AFTER cleanup is successful
+    setTracking({ isTracking: false, organizationName: "" });
   };
 
   function handleLocationUpdate(location: ExpoLocation.LocationObject) {
@@ -183,8 +190,9 @@ export function useLocationTracking() {
 
   useEffect(() => {
     if (!tracking.isTracking) {
-      stopTracking();
-      console.log("Tracking stopped");
+      if (locationSubscriptionRef.current || sessionLogRef.current) {
+        stopTracking();
+      }
     }
   }, [tracking.isTracking]);
 
@@ -207,4 +215,5 @@ export function useLocationTracking() {
   }, []);
 
   return { tracking, startTracking };
+}
 }
