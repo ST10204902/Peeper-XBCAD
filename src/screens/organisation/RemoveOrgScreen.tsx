@@ -75,6 +75,10 @@ export default function RemoveOrgScreen() {
       );
 
       await updateCurrentStudent({ activeOrgs: newOrgs });
+
+      const newLocationData = { ...currentStudent.locationData };
+      Object.values(newLocationData).filter((sessionLog) => sessionLog.orgID !== selectedOrg.org_id);
+      
       
       // Reset UI state
       setIsDeletionPopupShown(false);

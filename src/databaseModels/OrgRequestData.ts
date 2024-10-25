@@ -9,4 +9,6 @@ export interface OrgRequestData {
   email?: string;
   phoneNo?: string;
   approvalStatus: number; // Assuming this is an ENUM
+  orgLatitude: number;
+  orgLongitude: number;
 }
