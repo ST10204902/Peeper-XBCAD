@@ -13,6 +13,7 @@ import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
 import SearchLocation from "../../components/SearchLocation";
+import { set } from "firebase/database";
 
 /**
  * SearchLocation component provides a location search and selection interface.
@@ -55,6 +56,8 @@ export default function RequestOrgScreen() {
   const [phoneNum, setPhoneNum] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const { currentStudent } = useCurrentStudent();
+  const [lng, setLng] = useState<number>(0);
+  const [lat, setLat] = useState<number>(0); 
   const navigation =
     useNavigation<
       NavigationProp<RootStackParamsList, "RequestProgressScreen">
@@ -84,15 +87,17 @@ export default function RequestOrgScreen() {
         org_id: DatabaseUtility.generateUniqueId(),
         name: orgName,
         orgAddress: new OrgAddress({
-          streetAddress: locationData[0] ?? "nah",
-          suburb: locationData[1] ?? "nah",
-          city: locationData[2] ?? "nah",
+          streetAddress: locationData[0] ?? "",
+          suburb: locationData[1] ?? "",
+          city: locationData[2] ?? "",
           province: "",
           postalCode: locationData[3] ?? "",
         }),
         email: email ?? "nah",
         phoneNo: phoneNum ?? "nah",
         approvalStatus: ApprovalStatus.Pending, // Default to pending approval status
+        orgLatitude: lat,
+        orgLongitude: lng,
       };
 
       // Create and save the OrgRequest
@@ -118,15 +123,19 @@ export default function RequestOrgScreen() {
     }
   };
 
+  const handlePlaceUpdated = (place: string, coordinate: { latitude: number; longitude: number }) => {
+    setLocation(place);
+    setLat(coordinate.latitude);
+    setLng(coordinate.longitude);
+  };
+
   return (
     <ScrollView style={styles.screenLayout} keyboardShouldPersistTaps="handled">
       <Text style={styles.headerText}>Request an Organisation</Text>
 
       <View style={styles.map_container}>
         <SearchLocation
-          handlePlaceUpdated={(place: string) => {
-            setLocation(place);
-          }}
+          handlePlaceUpdated={handlePlaceUpdated}
         />
       </View>
 
