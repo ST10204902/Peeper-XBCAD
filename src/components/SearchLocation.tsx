@@ -12,7 +12,10 @@ import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
 
 interface Props {
-  handlePlaceUpdated: (place: string, coordinate: { latitude: number; longitude: number }) => void;
+  handlePlaceUpdated: (
+    place: string,
+    coordinate: { latitude: number; longitude: number }
+  ) => void;
 }
 
 /**
