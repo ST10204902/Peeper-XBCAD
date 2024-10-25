@@ -3,6 +3,8 @@ import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import useOrgRequests from "../../hooks/useOrgRequests";
 import { ApprovalStatus } from "../../databaseModels/enums";
 import { ScrollView } from "react-native-gesture-handler";
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 /**
  * RequestProgressScreen component renders the progress of the user's organisation approval requests.
@@ -44,6 +46,9 @@ export default function RequestProgressScreen() {
   const { currentStudent } = useCurrentStudent();
   const orgRequests = useOrgRequests(currentStudent?.student_id || "");
 
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   // Render Loading component if still loading
   if (!currentStudent) {
     return <Text>Loading student data...</Text>;
@@ -80,22 +85,22 @@ export default function RequestProgressScreen() {
   };
 
   return (
-    <View style={styles.page_container}>
-      <Text style={styles.header}>REQUEST PROGRESS</Text>
+    <View style={[styles.page_container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.header, { color: theme.fontRegular }]}>REQUEST PROGRESS</Text>
       <ScrollView contentContainerStyle={styles.scroll_view}>
         <View style={styles.requests_container}>
           {orgRequests.map((request, i) => (
-            <View key={request.request_id} style={styles.itemContainerEven}>
+            <View key={request.request_id} style={[styles.itemContainerEven, { backgroundColor: theme.componentBackground }]}>
               <View style={styles.firstRow}>
                 <Text
-                  style={styles.orgName}
+                  style={[styles.orgName, { color: theme.fontRegular }]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
                   {request.name}
                 </Text>
                 <Text
-                  style={styles.distance}
+                  style={[styles.distance, { color: theme.fontRegular }]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
@@ -104,7 +109,7 @@ export default function RequestProgressScreen() {
               </View>
 
               <Text
-                style={styles.addressRow}
+                style={[styles.addressRow, { color: theme.fontRegular }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
