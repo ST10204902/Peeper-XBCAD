@@ -1,8 +1,30 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
+import { trackingState } from "../atoms/atoms";
+import { useSetRecoilState } from "recoil";
 
 // Define a constant identifier for iOS notifications
 const IOS_NOTIFICATION_IDENTIFIER = 'tracking-notification';
+
+// Add notification category configuration
+Notifications.setNotificationCategoryAsync("tracking", [
+  {
+    identifier: "stop_tracking",
+    buttonTitle: "Stop Tracking",
+    options: {
+      isDestructive: true,
+    },
+  },
+]);
+
+// Add notification handler setup
+Notifications.addNotificationResponseReceivedListener((response) => {
+  if (response.actionIdentifier === "stop_tracking") {
+    // Update tracking state
+    const setTrackingAtom = useSetRecoilState(trackingState);
+    setTrackingAtom({ isTracking: false, organizationName: "" });
+  }
+});
 
 /**
  * Requests notification permissions from the user.
