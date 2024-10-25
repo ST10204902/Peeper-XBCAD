@@ -1,22 +1,11 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
-
 // Define a constant identifier for iOS notifications
 const IOS_NOTIFICATION_IDENTIFIER = 'tracking-notification';
 
 /**
  * Requests notification permissions from the user.
- *
- * This function uses the Notifications.requestPermissionsAsync method to request
- * notification permissions. If the permissions are granted, it returns true.
- * Otherwise, it returns false.
- *
- * @returns {Promise<boolean>} A promise that resolves to true if the permissions
- * are granted, and false otherwise.
- *
- * @throws {Error} If there is an error while requesting notification permissions,
- * it catches the error and returns false.
  */
 export const requestNotificationPermissions = async () => {
   try {
@@ -63,41 +52,44 @@ export const showOrUpdateTrackingNotification = async (orgName: string, elapsedT
   try {
     const validElapsedTime = Math.max(0, Math.floor(elapsedTime));
 
-    // Cancel any existing notification
-    if (activeNotificationId) {
-      await Notifications.dismissNotificationAsync(activeNotificationId);
-    }
-
     const content: Notifications.NotificationContentInput = {
       title: `Tracking at ${orgName}`,
       body: `You have logged ${formatElapsedTime(validElapsedTime)} at ${orgName}`,
       data: { orgName, elapsedTime: validElapsedTime },
       categoryIdentifier: "tracking",
-      sound: "default",
+      sound: "", // Disable sound for updates
       priority: Notifications.AndroidNotificationPriority.HIGH,
       badge: 1,
+      sticky: true,  // Make notification persistent
     };
 
+    // Set platform-specific options
     if (Platform.OS === "ios") {
       content.subtitle = "Time Tracking";
-      
-      // For iOS, we'll use a consistent identifier
       activeNotificationId = IOS_NOTIFICATION_IDENTIFIER;
-      
-      // On iOS, we need to use the identifier option to update the same notification
-      return await Notifications.scheduleNotificationAsync({
+    }
+
+    // If we already have an active notification, update it
+    if (activeNotificationId) {
+      await Notifications.scheduleNotificationAsync({
         content,
         trigger: null,
-        identifier: IOS_NOTIFICATION_IDENTIFIER
+        identifier: activeNotificationId
       });
     } else {
-      // For Android, continue with the current behavior
-      activeNotificationId = await Notifications.scheduleNotificationAsync({
+      // Create new notification if none exists
+      const id = await Notifications.scheduleNotificationAsync({
         content,
         trigger: null,
+        identifier: Platform.OS === "ios" ? IOS_NOTIFICATION_IDENTIFIER : undefined
       });
-      return activeNotificationId;
+      
+      if (Platform.OS === "android") {
+        activeNotificationId = id;
+      }
     }
+
+    return activeNotificationId;
   } catch (error) {
     console.error("Error showing/updating notification:", error);
     return null;
@@ -109,7 +101,15 @@ export const showOrUpdateTrackingNotification = async (orgName: string, elapsedT
  */
 export const clearTrackingNotification = async () => {
   if (activeNotificationId) {
-    await Notifications.dismissNotificationAsync(activeNotificationId);
+    try {
+      if (Platform.OS === "ios") {
+        await Notifications.cancelScheduledNotificationAsync(activeNotificationId);
+      } else {
+        await Notifications.dismissNotificationAsync(activeNotificationId);
+      }
+    } catch (error) {
+      console.error("Error clearing notification:", error);
+    }
     activeNotificationId = null;
   }
 };

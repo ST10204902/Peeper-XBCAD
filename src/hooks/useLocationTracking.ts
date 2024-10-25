@@ -8,15 +8,12 @@ import { Viewport } from "../databaseModels/databaseClasses/Viewport";
 import { useCurrentStudent } from "./useCurrentStudent";
 import { DatabaseUtility } from "../databaseModels/databaseClasses/DatabaseUtility";
 import { clearTrackingNotification, requestNotificationPermissions, showOrUpdateTrackingNotification } from "../services/trackingNotification";
-import { trackingStartTimeState, trackingState } from "../atoms/atoms";
+import { trackingState } from "../atoms/atoms";
 import { useRecoilState } from "recoil";
-import { useSetRecoilState } from "recoil";
 
 export function useLocationTracking() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [tracking, setTracking] = useRecoilState(trackingState);
-  const setTrackingStartTime = useSetRecoilState(trackingStartTimeState);
-  const startTimeRef = useRef<number>(0);
 
   const { currentStudent, error, updateCurrentStudent } = useCurrentStudent();
 
@@ -25,6 +22,7 @@ export function useLocationTracking() {
   const studentRef = useRef<Student | null>(null);
   const orgNameRef = useRef<string>("");
   const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const elapsedTimeRef = useRef<number>(0); // To keep track of elapsed time in seconds
 
   const startTracking = async (organisation: Organisation) => {
     console.log("Starting tracking called");
@@ -53,9 +51,6 @@ export function useLocationTracking() {
         return;
       }
 
-      const startTime = Date.now();
-      startTimeRef.current = startTime;
-      setTrackingStartTime(startTime); // Set the shared start time
       // Set tracking status
       setTracking({ isTracking: true, organizationName: organisation.orgName });
       orgNameRef.current = organisation.orgName;
@@ -80,7 +75,7 @@ export function useLocationTracking() {
       await updateCurrentStudent({ locationData: currentStudent.locationData });
       console.log("Session log saved to student");
 
-      // Start location tracking
+      // Start location tracking (keep at 5 seconds for location updates)
       locationSubscriptionRef.current = await ExpoLocation.watchPositionAsync(
         { accuracy: ExpoLocation.Accuracy.High, timeInterval: 5000, distanceInterval: 0 },
         handleLocationUpdate
@@ -92,12 +87,20 @@ export function useLocationTracking() {
         console.log("Notification permissions not granted");
       }
 
-        // Show initial notification with 0 elapsed time
-      await showOrUpdateTrackingNotification(organisation.orgName, 0);
+      // Reset elapsed time
+      elapsedTimeRef.current = 0;
+      
+      // Show initial notification
+      await showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
 
-   
+      // Start notification timer (update every second)
+      notificationTimerRef.current = setInterval(() => {
+        elapsedTimeRef.current += 1;
+        showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
+      }, 1000);
+
     } catch (error) {
-      setErrorMsg("Error starting tracking: ${error}");
+      setErrorMsg(`Error starting tracking: ${error}`);
       console.error(error);
     }
   };
@@ -132,16 +135,8 @@ export function useLocationTracking() {
         locationSubscriptionRef.current = null;
       }
 
-
       // Clear notification
       await clearTrackingNotification();
-
-      await clearTrackingNotification();
-    if (locationSubscriptionRef.current) {
-      await locationSubscriptionRef.current.remove();
-    }
-    setTracking({ isTracking: false, organizationName: "" });
-    setTrackingStartTime(0);
 
       // Clear notification timer
       if (notificationTimerRef.current) {
@@ -152,7 +147,7 @@ export function useLocationTracking() {
       sessionLogRef.current = null; // Reset session log reference
       
     } catch (error) {
-      setErrorMsg("Error stopping tracking: ${error}");
+      setErrorMsg(`Error stopping tracking: ${error}`);
       console.error(error);
     }
   };
@@ -167,10 +162,6 @@ export function useLocationTracking() {
       setErrorMsg("No session log or student found while updating location");
       return;
     }
-
-    // Calculate elapsed time from startTimeRef
-    const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
-    showOrUpdateTrackingNotification(orgNameRef.current, elapsedSeconds);
 
     const ISOTimeStamp = new Date(location.timestamp).toISOString();
     const newLocationLog = new LocationLog({
@@ -199,7 +190,7 @@ export function useLocationTracking() {
 
   useEffect(() => {
     if (errorMsg) {
-      console.error("Error during tracking: ${errorMsg}");
+      console.error(`Error during tracking: ${errorMsg}`);
       setErrorMsg(null); // Reset error message
     }
 
@@ -215,5 +206,5 @@ export function useLocationTracking() {
     };
   }, []);
 
-  return { tracking, startTracking };
+  return { tracking, startTracking };
 }
