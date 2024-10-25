@@ -135,6 +135,7 @@ const RegisterScreen: React.FC = () => {
               activeOrgs: [],
               locationData: {},
               profilePhotoURL: profilePhotoURL,
+              darkMode: false  // Add this line to set default dark mode value
             };
 
             const newStudent = new Student(newStudentData);

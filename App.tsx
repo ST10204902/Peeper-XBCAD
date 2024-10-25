@@ -7,9 +7,9 @@ import { ClerkProvider } from "@clerk/clerk-expo";
 import FontLoader from "./src/components/FontLoader";
 import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import AppNavigator from "./src/screens/Navigation";
-import { registerForPushNotificationsAsync } from "./src/services/RequestNotificationPermissions";
 import * as Notifications from "expo-notifications";
 import { ThemeProvider } from "./src/styles/ThemeContext";
+import { Platform } from "react-native";
 import "react-native-get-random-values";
 
 /**
@@ -43,21 +43,53 @@ export default function App() {
     );
   }
 
-  // Registering the push notifications for the application.
-  // The '[]' empty dependency array ensures this only happens once, and not every time the component is rendered.
-  useEffect(() => {
-    registerForPushNotificationsAsync();
-  }, []);
 
-  // Setting the notification handler using expo-notifications
-  // Determines how notifications will appear for the application
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
+ 
+
+  // Configure how notifications are handled
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    priority: Notifications.AndroidNotificationPriority.HIGH
+  }),
+});
+
+// Set up Android notification channel
+if (Platform.OS === 'android') {
+  Notifications.setNotificationChannelAsync('tracking', {
+    name: 'Location Tracking',
+    importance: Notifications.AndroidImportance.HIGH,
+    enableVibrate: false,
+    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+    enableLights: false,
+    showBadge: true,
   });
+}
+ 
+
+  // Configure how notifications are handled
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    priority: Notifications.AndroidNotificationPriority.HIGH
+  }),
+});
+
+// Set up Android notification channel
+if (Platform.OS === 'android') {
+  Notifications.setNotificationChannelAsync('tracking', {
+    name: 'Location Tracking',
+    importance: Notifications.AndroidImportance.HIGH,
+    enableVibrate: false,
+    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+    enableLights: false,
+    showBadge: true,
+  });
+}
 
   // Cache for storing the jwt token used for persistent login
   const localTokenCache = {
