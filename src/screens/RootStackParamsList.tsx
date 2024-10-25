@@ -11,6 +11,7 @@ export type RootStackParamsList = {
   RegisterProfilePhotoScreen: {
     handleSaveStudent: (profilePhotoURL: string) => Promise<void>;
   };
+  LoadingScreen: undefined;
   RegisterScreen: undefined;
   SafetyInfoScreen: undefined;
   LandingScreen: undefined;
@@ -31,4 +32,5 @@ export type RootStackParamsList = {
   TermsAndConditionsScreen: undefined;
   OrgDetailsScreen: undefined;
   LessonScreen: undefined;
+
 };

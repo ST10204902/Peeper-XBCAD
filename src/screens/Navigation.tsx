@@ -23,9 +23,9 @@ import LoginScreen from "./LoginScreen";
 import RegisterProfilePhotoScreen from "./RegisterProfilePhotoScreen";
 import SafetyInfoScreen from "./SafetyInfoScreen";
 import React from "react";
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes'; // Import themes
-
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes"; // Import themes
+import LoadingScreen from "./LoadingScreen";
 
 /**
  * Bottom Tab Navigator for managing navigation between the main app screens.
@@ -207,7 +207,7 @@ export default function AppNavigator() {
   const onboardingComplete = user?.unsafeMetadata?.onboardingComplete;
 
   return (
-    <Stack.Navigator initialRouteName="RegisterScreen">
+    <Stack.Navigator initialRouteName="LoadingScreen">
       {isSignedIn && onboardingComplete ? (
         <>
           <Stack.Screen
@@ -218,6 +218,11 @@ export default function AppNavigator() {
         </>
       ) : (
         <>
+          <Stack.Screen
+            name="LoadingScreen"
+            component={LoadingScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="RegisterScreen"
             component={RegisterScreen}
