@@ -88,7 +88,7 @@ export default function RequestOrgScreen() {
           suburb: locationData[1] ?? "nah",
           city: locationData[2] ?? "nah",
           province: "",
-          postalCode: locationData[3] ?? "nah",
+          postalCode: locationData[3] ?? "",
         }),
         email: email ?? "nah",
         phoneNo: phoneNum ?? "nah",
@@ -119,7 +119,7 @@ export default function RequestOrgScreen() {
   };
 
   return (
-    <View style={styles.screenLayout}>
+    <ScrollView style={styles.screenLayout} keyboardShouldPersistTaps="handled">
       <Text style={styles.headerText}>Request an Organisation</Text>
 
       <View style={styles.map_container}>
@@ -168,17 +168,17 @@ export default function RequestOrgScreen() {
         buttonColor="#C8B0FF"
         textColor="#161616"
       />
-    </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
   screenLayout: {
     flex: 1,
-    padding: 16,
     backgroundColor: "#F9F9F9",
   },
   headerText: {
-    marginTop: 30,
+    marginHorizontal: 16,
+    marginTop: 50,
     marginBottom: 10,
     fontSize: 32,
     fontFamily: "Quittance",
@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
   },
   inputSpacing: {
     marginBottom: 15,
+    marginHorizontal: 16,
   },
   map_container: {
     flex: 1,
