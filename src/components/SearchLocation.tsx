@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import PlacesInput from "react-native-places-input";
+import { useTheme } from '../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 interface Props {
   handlePlaceUpdated: (place: string, coordinate: { latitude: number; longitude: number }) => void;
@@ -56,6 +58,8 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
   } | null>(null);
   const mapRef = useRef<MapView>(null);
   const googleApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   if (!googleApiKey) {
     throw new Error(
@@ -65,8 +69,7 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
 
   return (
     <View style={styles.container}>
-      {/* Autocomplete Input */}
-      <Text style={styles.label}>Location</Text>
+      <Text style={[styles.label, { color: theme.fontRegular }]}>Location</Text>
 
       <PlacesInput
         googleApiKey={googleApiKey}
@@ -97,8 +100,14 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
           }
         }}
         stylesInput={styles.input}
-        stylesList={styles.list}
-        stylesItem={styles.item}
+        stylesList={{
+          ...styles.list,
+          backgroundColor: theme.componentBackground,
+        }}
+        stylesItem={{
+          ...styles.item,
+          color: theme.fontRegular,
+        }}
       />
 
       <View style={styles.mapContainer}>
@@ -133,21 +142,19 @@ const styles = StyleSheet.create({
   },
   input: {
     marginTop: 20,
-    backgroundColor: "#EBEBEB",
     marginStart: 5,
     borderRadius: 15,
     fontFamily: "Rany-Medium",
     paddingStart: 30,
     fontSize: 16,
-    color: "#5A5A5A",
     height: 50,
     zIndex: 2,
   },
   list: {
-    backgroundColor: "#F9F9F9",
+    // styles for the suggestions list
   },
   item: {
-    // Your custom styles for each suggestion item
+    // styles for each suggestion item
   },
   mapContainer: {
     height: 200,
