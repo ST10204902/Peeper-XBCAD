@@ -10,6 +10,9 @@ import { OrgRequestData } from "../../databaseModels/OrgRequestData";
 import { OrgAddress } from "../../databaseModels/databaseClasses/OrgAddress";
 import { DatabaseUtility } from "../../databaseModels/databaseClasses/DatabaseUtility";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamsList } from "../RootStackParamsList";
+import SearchLocation from "../../components/SearchLocation";
 
 /**
  * Screen Component where the user can request approval for an org
@@ -26,12 +29,15 @@ import { useCurrentStudent } from "../../hooks/useCurrentStudent";
  * @returns {JSX.Element} The rendered component.
  */
 export default function RequestOrgScreen() {
-  // State for form fields
   const [orgName, setOrgName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [phoneNum, setPhoneNum] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const { currentStudent } = useCurrentStudent(); // Fetch student data from context
+  const { currentStudent } = useCurrentStudent();
+  const navigation =
+    useNavigation<
+      NavigationProp<RootStackParamsList, "RequestProgressScreen">
+    >();
 
   // Function to handle form submission
   const handleSubmit = async () => {
@@ -40,8 +46,9 @@ export default function RequestOrgScreen() {
       console.log("No student data found while submitting request");
       return;
     }
-    if (!orgName || !location) {
+    if (!orgName || !location || !phoneNum || !email) {
       Alert.alert("Error", "Please fill in all fields.");
+      console.log(location);
       return;
     }
 
@@ -51,19 +58,19 @@ export default function RequestOrgScreen() {
 
       // Create OrgRequestData object
       const requestData: OrgRequestData = {
-        request_id: DatabaseUtility.generateUniqueId(), // For simplicity, use timestamp as request_id
-        studentID: currentStudent?.student_id, // Replace with actual studentID, could be fetched from context or user state
-        org_id: DatabaseUtility.generateUniqueId(), // Generate org_id (or handle it in another way)
+        request_id: DatabaseUtility.generateUniqueId(),
+        studentID: currentStudent?.student_id,
+        org_id: DatabaseUtility.generateUniqueId(),
         name: orgName,
         orgAddress: new OrgAddress({
           streetAddress: locationData[0] ?? "nah",
           suburb: locationData[1] ?? "nah",
           city: locationData[2] ?? "nah",
-          province: locationData[3] ?? "nah",
-          postalCode: locationData[4] ?? "nah",
+          province: "",
+          postalCode: locationData[3] ?? "nah",
         }),
-        email: email ?? "nah", // Optional, can add if needed
-        phoneNo: phoneNum ?? "nah", // Optional, can add if needed
+        email: email ?? "nah",
+        phoneNo: phoneNum ?? "nah",
         approvalStatus: ApprovalStatus.Pending, // Default to pending approval status
       };
 
@@ -75,9 +82,14 @@ export default function RequestOrgScreen() {
       // Success message
       Alert.alert("Success", "Your request has been submitted.");
 
+      // Navigate to Request Progress Screen
+      navigation.navigate("RequestProgressScreen");
+
       // Clear input fields
       setOrgName("");
       setLocation("");
+      setPhoneNum("");
+      setEmail("");
     } catch (error) {
       // Handle errors (e.g., network or database errors)
       Alert.alert("Error", "Failed to submit request. Please try again later.");
@@ -86,13 +98,21 @@ export default function RequestOrgScreen() {
   };
 
   return (
-    <ScrollView style={styles.screenLayout}>
+    <View style={styles.screenLayout}>
       <Text style={styles.headerText}>Request an Organisation</Text>
+
+      <View style={styles.map_container}>
+        <SearchLocation
+          handlePlaceUpdated={(place: string) => {
+            setLocation(place);
+          }}
+        />
+      </View>
 
       <View style={styles.inputSpacing}>
         <Input
           FGColor="#5A5A5A"
-          onSearchInputChange={setOrgName} // Bind the state setter
+          onSearchInputChange={setOrgName}
           placeHolderColor="grey"
           placeholderText="Enter organisation name"
           labelText="Organisation Name"
@@ -102,17 +122,7 @@ export default function RequestOrgScreen() {
       <View style={styles.inputSpacing}>
         <Input
           FGColor="#5A5A5A"
-          onSearchInputChange={setLocation} // Bind the state setter
-          placeHolderColor="grey"
-          placeholderText="Street, Suburb, City, Province, Postal Code"
-          labelText="Location"
-        />
-      </View>
-
-      <View style={styles.inputSpacing}>
-        <Input
-          FGColor="#5A5A5A"
-          onSearchInputChange={setPhoneNum} // Bind the state setter
+          onSearchInputChange={setPhoneNum}
           placeHolderColor="grey"
           placeholderText="Enter organisation phone number"
           labelText="Phone Number"
@@ -122,7 +132,7 @@ export default function RequestOrgScreen() {
       <View style={styles.inputSpacing}>
         <Input
           FGColor="#5A5A5A"
-          onSearchInputChange={setEmail} // Bind the state setter
+          onSearchInputChange={setEmail}
           placeHolderColor="grey"
           placeholderText="Enter organisation email"
           labelText="Email"
@@ -137,22 +147,26 @@ export default function RequestOrgScreen() {
         buttonColor="#C8B0FF"
         textColor="#161616"
       />
-    </ScrollView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
   screenLayout: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#F9F9F9",
   },
   headerText: {
     marginTop: 30,
-    marginBottom: 20,
+    marginBottom: 10,
     fontSize: 32,
     fontFamily: "Quittance",
     color: "#161616",
   },
   inputSpacing: {
-    marginBottom: 20,
+    marginBottom: 15,
+  },
+  map_container: {
+    flex: 1,
   },
 });
