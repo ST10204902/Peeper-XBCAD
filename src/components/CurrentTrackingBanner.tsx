@@ -10,7 +10,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"; // Using only setState for elapsedTime
-import { elapsed_time, trackingStartTimeState, trackingState } from "../atoms/atoms";
+import {
+  elapsed_time,
+  trackingStartTimeState,
+  trackingState,
+} from "../atoms/atoms";
 import { useEffect } from "react";
 import { clearTrackingNotification } from "../services/trackingNotification";
 
@@ -33,40 +37,36 @@ const CurrentTrackingBanner = () => {
 
   // Start or stop the timer when tracking starts or stops
   useEffect(() => {
-    let frameId: number;
+    let intervalId: NodeJS.Timeout;
 
     if (trackingAtom.isTracking && startTime > 0) {
-      const updateTimer = () => {
+      intervalId = setInterval(() => {
         const currentTime = Date.now();
         const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
         setElapsedTime(elapsedSeconds);
-        frameId = requestAnimationFrame(updateTimer);
-      };
-      frameId = requestAnimationFrame(updateTimer);
-    } else {
-      setElapsedTime(0);
+      }, 1000);
     }
 
     return () => {
-      if (frameId) {
-        cancelAnimationFrame(frameId);
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
-  }, [trackingAtom.isTracking, startTime]);
+  }, [trackingAtom.isTracking, startTime, setElapsedTime]);
 
   if (!trackingAtom.isTracking) {
-    return null; // Don't render the component if tracking is not active
+    return null;
   }
 
   return (
     <SafeAreaView style={styles.root_container}>
       <TrackingBackground />
       <View style={styles.text_container}>
-        <Text style={styles.header}> Tracking Your Location </Text>
+        <Text style={styles.header}>Tracking Your Location</Text>
         <View style={styles.details_container}>
           <Text
             style={styles.org_name}
-            numberOfLines={1} // Limit to one line
+            numberOfLines={1}
             ellipsizeMode="tail"
           >
             {trackingAtom.organizationName}
@@ -92,68 +92,75 @@ const CurrentTrackingBanner = () => {
  * This component will only re-render when elapsedTime changes.
  */
 const ElapsedTimeDisplay = () => {
-  const elapsedTime = useRecoilValue(elapsed_time); // Use Recoil to subscribe to elapsedTime
+  const elapsedTime = useRecoilValue(elapsed_time);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return (
-      <Text>{`${String(minutes).padStart(2, "0")}:${String(
-        remainingSeconds
-      ).padStart(2, "0")}`}</Text>
-    );
+    return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
   };
 
-  return <Text style={styles.elapsed_time}> {formatTime(elapsedTime)} </Text>;
+  return (
+    <Text style={[styles.elapsed_time, { top: -20 }]}>
+      {formatTime(elapsedTime)}
+    </Text>
+  );
 };
 
 const styles = StyleSheet.create({
   root_container: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 50 : 0,
+    position: "absolute",
+    top: Platform.OS === "ios" ? 60 : 40,
     left: 0,
     right: 0,
+    color: "f9f9f9",
     zIndex: 1000,
     paddingHorizontal: 16,
-    paddingVertical: Platform.OS === 'ios' ? 12 : 8,
+    paddingVertical: Platform.OS === "ios" ? 12 : 8,
   },
   text_container: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    paddingTop: Platform.OS === 'ios' ? 8 : 0,
+    flexDirection: "column",
+    justifyContent: "center",
+    paddingTop: Platform.OS === "ios" ? 8 : 0,
   },
   details_container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: Platform.OS === 'ios' ? 4 : 0,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: Platform.OS === "ios" ? 4 : 0,
   },
   header: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: Platform.OS === 'ios' ? 4 : 2,
+    fontSize: 22,
+    top:-30,
+    fontWeight: "600",
+    color: "#000000",
+    marginBottom: Platform.OS === "ios" ? 4 : 2,
   },
   org_name: {
-    fontSize: 14,
-    color: '#FFFFFF',
+    fontSize: 20,
+    color: "#000000",
     flex: 1,
+    top: -20,
     marginRight: 8,
   },
   stop_button: {
-    position: 'absolute',
+    position: "absolute",
     right: 16,
-    top: Platform.OS === 'ios' ? 12 : 8,
-    width: 24,
-    height: 24,
+    top: "50%", // Center vertically
+    transform: [{ translateY: -20 }], // Offset by half the height to truly center
+    width: 40, // Increased from 24
+    height: 40, // Increased from 24
+    justifyContent: "center",
+    alignItems: "center",
   },
   button_image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain", // Ensure the image scales properly
   },
   elapsed_time: {
-    fontSize: 14,
-    color: '#FFFFFF',
+    fontSize: 18,
+    color: "#000000",
   },
 });
 
