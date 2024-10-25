@@ -67,6 +67,29 @@ if (Platform.OS === 'android') {
     showBadge: true,
   });
 }
+ 
+
+  // Configure how notifications are handled
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    priority: Notifications.AndroidNotificationPriority.HIGH
+  }),
+});
+
+// Set up Android notification channel
+if (Platform.OS === 'android') {
+  Notifications.setNotificationChannelAsync('tracking', {
+    name: 'Location Tracking',
+    importance: Notifications.AndroidImportance.HIGH,
+    enableVibrate: false,
+    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+    enableLights: false,
+    showBadge: true,
+  });
+}
 
   // Cache for storing the jwt token used for persistent login
   const localTokenCache = {
