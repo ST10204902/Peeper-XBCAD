@@ -10,7 +10,7 @@ import MapView, { Marker, Region } from "react-native-maps";
 import PlacesInput from "react-native-places-input";
 
 interface Props {
-  handlePlaceUpdated: (place: string) => void;
+  handlePlaceUpdated: (place: string, coordinate: { latitude: number; longitude: number }) => void;
 }
 
 /**
@@ -85,12 +85,12 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
               latitudeDelta: 0.015,
               longitudeDelta: 0.0121,
             };
-
-            setMarkerCoordinate({ latitude: lat, longitude: lng });
+            const coordinate = { latitude: lat, longitude: lng };
+            setMarkerCoordinate(coordinate);
 
             if (mapRef.current) {
               mapRef.current.animateToRegion(newRegion, 1000);
-              handlePlaceUpdated(place.result.formatted_address);
+              handlePlaceUpdated(place.result.formatted_address, coordinate);
             }
           } else {
             console.error("Place details are missing geometry data.");
@@ -107,10 +107,10 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
           ref={mapRef}
           style={styles.map}
           initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121,
+            latitude: -33.9249,
+            longitude: 18.4241,
+            latitudeDelta: 0.15,
+            longitudeDelta: 0.121,
           }}
         >
           {markerCoordinate && <Marker coordinate={markerCoordinate} />}
