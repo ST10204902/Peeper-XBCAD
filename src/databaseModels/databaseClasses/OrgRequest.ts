@@ -7,7 +7,7 @@ import { equalTo, onValue, orderByChild, query } from 'firebase/database';
 
 export class OrgRequest implements OrgRequestData {
   request_id: string;
-  studentID: string;
+  studentIDs: string[];
   org_id: string;
   name: string;
   orgAddress: OrgAddress;
@@ -19,7 +19,7 @@ export class OrgRequest implements OrgRequestData {
 
   constructor(data: OrgRequestData) {
     this.request_id = data.request_id;
-    this.studentID = data.studentID;
+    this.studentIDs = data.studentIDs;
     this.org_id = data.org_id;
     this.name = data.name;
     this.orgAddress = new OrgAddress(data.orgAddress);
@@ -50,7 +50,7 @@ export class OrgRequest implements OrgRequestData {
   toJSON(): OrgRequestData {
     return {
       request_id: this.request_id,
-      studentID: this.studentID,
+      studentIDs: this.studentIDs,
       org_id: this.org_id,
       name: this.name,
       orgAddress: this.orgAddress.toJSON(),
@@ -67,19 +67,19 @@ export class OrgRequest implements OrgRequestData {
     callback: (requests: OrgRequest[]) => void
   ): () => void {
     const dbRef = DatabaseUtility.getRef('orgRequests');
-    const queryRef = query(dbRef, orderByChild('studentID'), equalTo(studentID));
-
-    // Set up the listener
-    const unsubscribe = onValue(queryRef, (snapshot) => {
+  
+    const unsubscribe = onValue(dbRef, (snapshot) => {
       const requests: OrgRequest[] = [];
       snapshot.forEach((childSnapshot) => {
         const data = childSnapshot.val() as OrgRequestData;
-        requests.push(new OrgRequest(data));
+        if (Array.isArray(data.studentIDs) && data.studentIDs.includes(studentID)) {
+          requests.push(new OrgRequest(data));
+        }
       });
       callback(requests);
     });
-
+  
     // Return the unsubscribe function
-    return unsubscribe;
+    return () => unsubscribe();
   }
 }
