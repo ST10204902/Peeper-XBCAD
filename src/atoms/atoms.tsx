@@ -15,3 +15,8 @@ export const elapsed_time = atom({
   key: "elapsed_time",
   default: 0,
 });
+
+export const trackingStartTimeState = atom({
+  key: "trackingStartTimeState",
+  default: 0
+});
