@@ -13,7 +13,7 @@ export class Student implements StudentData {
   locationData: {
     [sessionLog_id: string]: SessionLog;
   };
-  darkMode?: boolean;
+  darkMode: boolean;
 
   constructor(data: StudentData) {
     this.student_id = data.student_id ?? "";
@@ -22,7 +22,7 @@ export class Student implements StudentData {
     this.profilePhotoURL = data.profilePhotoURL ?? ""; // Initialize with default value
     this.activeOrgs = data.activeOrgs ?? [];
     this.locationData = {};
-    this.darkMode = data.darkMode;
+    this.darkMode = data.darkMode ?? false;
 
     for (const key in data.locationData) {
       if (data.locationData.hasOwnProperty(key)) {

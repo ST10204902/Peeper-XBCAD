@@ -11,7 +11,7 @@ function useOrgRequests(studentID: string) {
     if (!currentStudent) return;
 
     // Set up the listener
-    const unsubscribe = OrgRequest.listenToRequestsByStudentId(currentStudent.student_id, setOrgRequests);
+    const unsubscribe = OrgRequest.listenToRequestsByStudentId(currentStudent.studentNumber, setOrgRequests);
 
     // Clean up the listener when the component unmounts or studentID changes
     return () => {

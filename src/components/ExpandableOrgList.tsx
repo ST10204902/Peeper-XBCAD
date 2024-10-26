@@ -43,7 +43,7 @@ export default function ExpandableOrgList({
   renderItem={({ index, item }) => (
     <ExpandableOrgListItem
       userLocation={userLocation}
-      orgName={item.orgName}
+      orgData={item}
       orgAddress={item.orgAddress}
       oddOrEven={index % 2 === 0 ? "even" : "odd"}
       listButton={React.cloneElement(
