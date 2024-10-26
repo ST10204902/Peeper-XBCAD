@@ -94,11 +94,11 @@ export default function RequestOrgScreen() {
     try {
       // Temporary location data input for development
       const locationData = location.split(",");
-
+      const requestStudentID = [currentStudent.student_id] ;
       // Create OrgRequestData object
       const requestData: OrgRequestData = {
         request_id: DatabaseUtility.generateUniqueId(),
-        studentID: currentStudent?.student_id,
+        studentIDs: requestStudentID,
         org_id: DatabaseUtility.generateUniqueId(),
         name: orgName,
         orgAddress: new OrgAddress({
