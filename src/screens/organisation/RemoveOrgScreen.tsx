@@ -1,5 +1,4 @@
 import { Text, StyleSheet, View, FlatList } from "react-native";
-import Input from "../../components/GeneralInputComponent";
 import CustomButton from "../../components/CustomButton";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
@@ -8,6 +7,8 @@ import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-expo";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 /**
  * Screen Component where the user can Remove an Org
@@ -19,7 +20,8 @@ export default function RemoveOrgScreen() {
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<OrganisationData | null>(null);
-
+  const { isDarkMode, toggleTheme } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;  
   // Method to fetch data
   const fetchData = async () => {
     if (!clerkUser) {
@@ -92,7 +94,7 @@ export default function RemoveOrgScreen() {
 
   const renderHeader = () => (
     <>
-      <Text style={styles.headerText}>Remove an Organisation</Text>
+      <Text style={[styles.headerText, { color: theme.fontRegular}]}>Remove an Organisation</Text>
       <View style={styles.inputSpacing} />
     </>
   );
@@ -108,7 +110,7 @@ export default function RemoveOrgScreen() {
   return (
     <>
       <FlatList
-        style={styles.screenLayout}
+        style={[styles.screenLayout, { backgroundColor: theme.background }]}
         data={studentOrganisations}
         ListHeaderComponent={renderHeader}
         renderItem={({ item }) => (
@@ -128,6 +130,7 @@ export default function RemoveOrgScreen() {
           />
         )}
         keyExtractor={(item) => item.org_id}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />} // Add space between items
       />
       {isDeletionPopupShown && selectedOrg && (
         <DataDeletionConfirmationPopup
