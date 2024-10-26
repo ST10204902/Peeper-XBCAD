@@ -3,7 +3,7 @@ import Input from "../../components/GeneralInputComponent";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import CustomButton from "../../components/CustomButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApprovalStatus } from "../../databaseModels/enums";
 import { OrgRequest } from "../../databaseModels/databaseClasses/OrgRequest";
 import { OrgRequestData } from "../../databaseModels/OrgRequestData";
@@ -18,6 +18,7 @@ import { useTheme } from "../../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../../styles/themes";
 import useOrgRequests from "../../hooks/useOrgRequests";
 import DuplicateRequestPopup from "../../components/DuplicateRequestPopup";
+import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 
 /**
  * SearchLocation component provides a location search and selection interface.
@@ -62,7 +63,8 @@ export default function RequestOrgScreen() {
   const [phoneNum, setPhoneNum] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const { currentStudent } = useCurrentStudent();
-  const orgRequests = useOrgRequests(currentStudent?.student_id || "");
+  const [orgRequests, setOrgRequests] = useState<OrgRequest[]>([]);
+  const [allOrganisations, setAllOrganisations] = useState<Organisation[]>([]);
   const [lng, setLng] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
   const navigation =
@@ -75,6 +77,16 @@ export default function RequestOrgScreen() {
     phoneNo: string;
     email: string;
   } | null>(null);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const requests = await OrgRequest.getAllOrgRequests();
+      const orgs = await Organisation.getAllOrganisations();
+      setAllOrganisations(orgs);
+      setOrgRequests(requests);
+    };
+    fetchdata();
+  }, []);
 
   // Function to handle form submission
   const handleSubmit = async () => {
@@ -94,11 +106,11 @@ export default function RequestOrgScreen() {
     try {
       // Temporary location data input for development
       const locationData = location.split(",");
-      const requestStudentID = [currentStudent.student_id] ;
+      const requestStudentNumber = [currentStudent.studentNumber] ;
       // Create OrgRequestData object
       const requestData: OrgRequestData = {
         request_id: DatabaseUtility.generateUniqueId(),
-        studentIDs: requestStudentID,
+        studentIDs: requestStudentNumber,
         org_id: DatabaseUtility.generateUniqueId(),
         name: orgName,
         orgAddress: new OrgAddress({
@@ -120,30 +132,34 @@ export default function RequestOrgScreen() {
 
       let isDuplicate = false;
 
-      for (const existingRequest of orgRequests) {
+
+      for (const org of allOrganisations) {
         if (
-          existingRequest.orgAddress.streetAddress ===
-            newRequest.orgAddress.streetAddress &&
-          existingRequest.orgAddress.suburb === newRequest.orgAddress.suburb &&
-          existingRequest.orgAddress.city === newRequest.orgAddress.city
+          org.orgLatitude === lat && org.orgLongitude === lng
         ) {
-          isDuplicate = true;
-          break;
+         return Alert.alert("Error", "Organisation already exists at this location.");
         }
       }
 
-      if (isDuplicate) {
-        console.log("is a duplicate");
-        // Triggers Popup
-        setDuplicate({
-          location: location,
-          orgName: orgName,
-          phoneNo: phoneNum,
-          email: email,
-        });
+      for (const existingRequest of orgRequests) {
+        if (
+          existingRequest.orgLatitude === lat && existingRequest.orgLongitude === lng
+        ) {
+          isDuplicate = true;
+          let updatedRequest = existingRequest;
+          updatedRequest.studentIDs = [...existingRequest.studentIDs, currentStudent.studentNumber.toLocaleLowerCase()];
+          setDuplicate({
+            location: existingRequest.orgAddress.toString(),
+          orgName: existingRequest.name,
+            phoneNo: existingRequest.phoneNo ?? "",
+            email: existingRequest.email ?? "",
+          });
+  
 
-        // Linking request regardless of popup
-      } else {
+          existingRequest.update(updatedRequest);
+        }
+      }
+      if (!isDuplicate) {
         console.log("New request:", newRequest);
         await newRequest.save();
         // Success message
@@ -168,6 +184,7 @@ export default function RequestOrgScreen() {
     place: string,
     coordinate: { latitude: number; longitude: number }
   ) => {
+    console.log("Place updated:", place, coordinate);
     setLocation(place);
     setLat(coordinate.latitude);
     setLng(coordinate.longitude);
@@ -228,7 +245,9 @@ export default function RequestOrgScreen() {
         <DuplicateRequestPopup
           request={duplicate}
           onOk={() => {
+
             setDuplicate(null);
+            navigation.navigate("RequestProgressScreen");
           }}
         />
       ) : null}
