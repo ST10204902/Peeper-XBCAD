@@ -12,7 +12,7 @@ import { lightTheme, darkTheme } from '../../styles/themes';
  * @returns {JSX.Element} The rendered PrivacyPolicyScreen component.
  */
 export default function PrivacyPolicyScreen() {
-   const { isDarkMode, toggleTheme } = useTheme();
+  const { isDarkMode, toggleTheme } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;  
   const policySections: PolicySection[] = [
     {
