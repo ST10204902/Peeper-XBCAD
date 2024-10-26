@@ -22,6 +22,7 @@ import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
 import { useRecoilState } from "recoil";
 import { trackingState } from "../atoms/atoms";
+import CurrentTrackingBanner from "../components/CurrentTrackingBanner";
 
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
@@ -128,15 +129,18 @@ export default function LandingScreen() {
   //-----------------------------------------------------------//
 
   if (loading) {
+    console.log("Loading student data...");
     return  <ActivityIndicator/>;
   }
 
   if (error) {
+    console.error("Error loading student data:", error);
     return <Text>Error: {error.message}</Text>;
   }
 
 
   if (!currentStudent) {
+    console.log("Student data not found");
     return <Text>No student data available.</Text>;
   }
 
@@ -172,22 +176,15 @@ export default function LandingScreen() {
       {/* Map Component displaying selected organisation */}
       <MapComponent selectedOrganisation={selectedOrganisation} />
 
-      {/* Tracking Popup for start/stop tracking */}
-      <TrackingPopup
-        visible={isPopupVisible}
-        onStartTracking={handleStartTracking}
-        onCancel={() => setIsPopupVisible(false)}
-      />
-        
-        {/* Where is this?? */}
-      {tracking.isTracking && (
-        <View>
-          <Text style={{ color: theme.fontRegular }}>Tracking: {trackingAtom.organizationName}</Text>
-          <Text style={{ color: theme.fontRegular }}>Time: where is this seconds</Text>
-          <Pressable onPress={() => () => setTrackingAtom({ isTracking: false, organizationName: "" }) }>
-            <Text style={{ color: theme.fontRegular }}>Stop Tracking</Text>
-          </Pressable>
-        </View>
+      {/* Tracking Status or Popup */}
+      {tracking.isTracking ? (
+        <CurrentTrackingBanner />
+      ) : (
+        <TrackingPopup
+          visible={isPopupVisible}
+          onStartTracking={handleStartTracking}
+          onCancel={() => setIsPopupVisible(false)}
+        />
       )}
       {/* Bottom Sheet containing the organisation list */}
       <BottomSheet
@@ -245,6 +242,42 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
+  },
+  trackingStatusContainer: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  trackingStatus: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  trackingText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  stopButton: {
+    backgroundColor: '#ff4444',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  stopButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 //------------------------***EOF***-----------------------------//

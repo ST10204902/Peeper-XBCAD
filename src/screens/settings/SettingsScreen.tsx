@@ -11,20 +11,20 @@ import ExportReportScreen from "./ExportReportScreen";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
-import { useTheme } from '../../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../../styles/themes';
+import { useTheme } from "../../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../../styles/themes";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import PDFShareComponent from "../../components/PDFShareComponent";
 
 export default function SettingsScreen() {
   const { isDarkMode, toggleTheme } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const theme = isDarkMode ? darkTheme : lightTheme;
   const { signOut } = useAuth(); // used to sign the Clerk user out
   const { user } = useUser(); // Clerk user for deleting the user's account
   const navigation = useNavigation<any>();
 
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
-  const { currentStudent , updateCurrentStudent } = useCurrentStudent(); // Getting student in the database
+  const { currentStudent, updateCurrentStudent } = useCurrentStudent(); // Getting student in the database
 
   // Error if the student number can't be obtained.
   if (currentStudent && !currentStudent.studentNumber) {
@@ -34,7 +34,10 @@ export default function SettingsScreen() {
   }
 
   useEffect(() => {
-    if (currentStudent?.darkMode !== null && currentStudent?.darkMode !== undefined) {
+    if (
+      currentStudent?.darkMode !== null &&
+      currentStudent?.darkMode !== undefined
+    ) {
       if (isDarkMode !== currentStudent.darkMode) {
         toggleTheme();
       }
@@ -70,9 +73,7 @@ export default function SettingsScreen() {
     },
     {
       header: "EXPORT",
-      items: [
-        
-      ],
+      items: [],
     },
   ];
 
@@ -93,19 +94,26 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+      <ScrollView
+        style={[styles.container, { backgroundColor: theme.background }]}
+      >
         {/* Header Section with Dark Mode Toggle */}
         <View style={styles.headerContainer}>
-          <Text style={[styles.title, { color: theme.fontRegular }]}>SETTINGS</Text>
+          <Text style={[styles.title, { color: theme.fontRegular }]}>
+            SETTINGS
+          </Text>
           <View style={styles.darkModeContainer}>
             <Text style={[styles.darkModeText, { color: theme.fontRegular }]}>
               Dark Mode
             </Text>
             <Switch
               value={isDarkMode}
-              onValueChange={(x) => {updateCurrentStudent({darkMode: x}); toggleTheme();}}
-              trackColor={{ false: '#767577', true: '#4CD964' }}
-              thumbColor={isDarkMode ? '#ffffff' : '#f4f3f4'}
+              onValueChange={(x) => {
+                updateCurrentStudent({ darkMode: x });
+                toggleTheme();
+              }}
+              trackColor={{ false: "#767577", true: "#4CD964" }}
+              thumbColor={isDarkMode ? "#ffffff" : "#f4f3f4"}
               ios_backgroundColor="#767577"
               style={styles.switch}
             />
@@ -120,26 +128,27 @@ export default function SettingsScreen() {
               items={section.items}
             />
           ))}
-        
+
           <View style={styles.buttonContainer}>
-            <PDFShareComponent/>
+            <PDFShareComponent />
             <CustomButton
               title="REQUEST DATA DELETION"
-              fontFamily='Quittance'
+              fontFamily="Quittance"
               textColor={theme.fontRegular}
               textSize={20}
               buttonColor={theme.settingsBlueButton}
-              onPress={handleDataDeletion}
+              onPress={() => {
+                setIsDeletionPopupShown(true);
+              }}
             />
             <CustomButton
               title="LOG OUT"
-              fontFamily='Quittance'
+              fontFamily="Quittance"
               textColor={theme.fontRegular}
               textSize={20}
-              buttonColor='#FE7143'
+              buttonColor="#FE7143"
               onPress={handleSignOut}
             />
-
           </View>
         </View>
       </ScrollView>
@@ -159,9 +168,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     paddingTop: 32,
   },
@@ -179,13 +188,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   darkModeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   darkModeText: {
     fontSize: 16,
-    fontFamily: 'Rany-Regular',
+    fontFamily: "Rany-Regular",
   },
   switch: {
     transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }],

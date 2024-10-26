@@ -74,53 +74,53 @@ export default function ExpandableOrgListItem({
     return `${streetAddress}, ${suburb}, ${city}, ${province}, ${postalCode}`;
   }
 
-  useEffect(() => {
-    const getDistance = async () => {
-      if (userLocation && orgAddress) {
-        try {
-          const origin = `${userLocation.coords.latitude},${userLocation.coords.longitude}`;
-          const destination = encodeURIComponent(formatAddress(orgAddress));
+  // useEffect(() => {
+  //   const getDistance = async () => {
+  //     if (userLocation && orgAddress) {
+  //       try {
+  //         const origin = `${userLocation.coords.latitude},${userLocation.coords.longitude}`;
+  //         const destination = encodeURIComponent(formatAddress(orgAddress));
 
-          const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${GOOGLE_MAPS_API_KEY}`;
+  //         const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${GOOGLE_MAPS_API_KEY}`;
 
-          const response = await fetch(url);
-          const data = await response.json();
+  //         const response = await fetch(url);
+  //         const data = await response.json();
 
-          if (data.status === 'OK') {
-            const element = data.rows[0].elements[0];
-            if (element.status === 'OK') {
-              const distance = element.distance.value; // in meters
-              const distanceInKm = (distance / 1000).toFixed(1); // Round to 1 decimal place
-              setDistanceInKm(distanceInKm);
-              setValidDistance(true);
-            } else {
-              console.error('Distance Matrix API error:', element.status);
-              setValidDistance(false);
-            }
-          } else {
-            console.error('Distance Matrix API error:', data.status);
-            setValidDistance(false);
-          }
-        } catch (error) {
-          console.error('Error fetching distance:', error);
-          setValidDistance(false);
-        }
-      }
-    };
+  //         if (data.status === 'OK') {
+  //           const element = data.rows[0].elements[0];
+  //           if (element.status === 'OK') {
+  //             const distance = element.distance.value; // in meters
+  //             const distanceInKm = (distance / 1000).toFixed(1); // Round to 1 decimal place
+  //             setDistanceInKm(distanceInKm);
+  //             setValidDistance(true);
+  //           } else {
+  //             console.error('Distance Matrix API error:', element.status);
+  //             setValidDistance(false);
+  //           }
+  //         } else {
+  //           console.error('Distance Matrix API error:', data.status);
+  //           setValidDistance(false);
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching distance:', error);
+  //         setValidDistance(false);
+  //       }
+  //     }
+  //   };
 
-    getDistance();
-  }, [userLocation, orgAddress]);
+  //   getDistance();
+  // }, [userLocation, orgAddress]);
 
   return !expanded ? (
     <View style={containerStyle} onTouchEnd={() => setExpanded(true)}>
       <Text style={[styles.orgName, { color: theme.fontRegular }]}>{orgName}</Text>
-      {validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>}
+      {/*validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>*/}
     </View>
   ) : (
     <View style={expandedContainerStyle} onTouchEnd={() => setExpanded(false)}>
       <View style={expandedStyles.firstRow}>
         <Text style={[expandedStyles.orgName, { color: theme.fontRegular }]}>{orgName}</Text>
-        {validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>}
+        {/*validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>*/}
       </View>
 
       <Text style={[expandedStyles.addressRow, { color: theme.componentTextColour }]}>

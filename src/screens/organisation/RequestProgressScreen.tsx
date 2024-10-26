@@ -5,6 +5,7 @@ import { ApprovalStatus } from "../../databaseModels/enums";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';
+
 /**
  * RequestProgressScreen component renders the progress of the user's organisation approval requests.
  *
@@ -44,8 +45,8 @@ import { lightTheme, darkTheme } from '../../styles/themes';
 export default function RequestProgressScreen() {
   const { currentStudent } = useCurrentStudent();
   const orgRequests = useOrgRequests(currentStudent?.student_id || "");
-  const { isDarkMode, toggleTheme } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
   // Render Loading component if still loading
   if (!currentStudent) {
     return <Text>Loading student data...</Text>;
@@ -87,7 +88,7 @@ export default function RequestProgressScreen() {
       <ScrollView contentContainerStyle={styles.scroll_view}>
         <View style={styles.requests_container}>
           {orgRequests.map((request, i) => (
-            <View key={request.request_id} style={styles.itemContainerEven}>
+            <View key={request.request_id} style={[styles.itemContainerEven, { backgroundColor: theme.componentBackground }]}>
               <View style={styles.firstRow}>
                 <Text
                   style={[styles.orgName, { color: theme.fontRegular }]}
@@ -97,7 +98,7 @@ export default function RequestProgressScreen() {
                   {request.name}
                 </Text>
                 <Text
-                  style={[styles.distance, { color: theme.componentTextColour }]}
+                  style={[styles.distance, { color: theme.fontRegular }]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
@@ -106,7 +107,7 @@ export default function RequestProgressScreen() {
               </View>
 
               <Text
-                style={[styles.addressRow, { color: theme.componentTextColour }]}
+                style={[styles.addressRow, { color: theme.fontRegular }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   },
   requests_container: {
     borderRadius: 30,
-    width: "95%",
+    width: "97%",
   },
   itemContainerEven: {
     paddingVertical: 20,
