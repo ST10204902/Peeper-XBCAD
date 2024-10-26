@@ -354,7 +354,7 @@ export default function ManageOrgsScreen() {
       </View>
       <ExpandableOrgList
         userLocation={location}
-        items={allOrganisations}
+        items={displayedOrganisations}
         onListButtonClicked={onAllOrgsListButtonPressed}
         listButtonComp={
           <CustomButton
