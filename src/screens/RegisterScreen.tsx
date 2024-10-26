@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { KeyboardAvoidingView, Platform, SafeAreaView, View } from "react-native";
 import CustomButton from "../components/CustomButton"; // Ensure the path is correct
 import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
 import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
@@ -164,7 +164,7 @@ const RegisterScreen: React.FC = () => {
    * The RegisterScreen component renders the registration screen.
    */
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios'? 'padding' : 'height'} style={styles.container} >
       <View style={styles.headingContainer}>
         <LoginRegisterHeadingComponent
           text={
@@ -232,7 +232,7 @@ const RegisterScreen: React.FC = () => {
           }}
         />
       ) : null}
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
