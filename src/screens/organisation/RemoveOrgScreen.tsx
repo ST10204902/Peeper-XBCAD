@@ -77,6 +77,10 @@ export default function RemoveOrgScreen() {
       );
 
       await updateCurrentStudent({ activeOrgs: newOrgs });
+
+      const newLocationData = { ...currentStudent.locationData };
+      Object.values(newLocationData).filter((sessionLog) => sessionLog.orgID !== selectedOrg.org_id);
+      
       
       // Reset UI state
       setIsDeletionPopupShown(false);
@@ -153,7 +157,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 32,
     fontFamily: 'Quittance',
-    color: '#161616',
   },
   inputSpacing: {
     height: 20,
