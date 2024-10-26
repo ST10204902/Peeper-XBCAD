@@ -178,13 +178,13 @@ const RegisterScreen: React.FC = () => {
       </View>
       {!pendingVerification && (
         <>
-          <View style={styles.inputContainer}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios'? 'padding' : 'height'} style={styles.inputContainer}>
             <LoginRegisterInputComponent
               label="Register with your Student Email:"
               FGColor="#ffffff"
               onEmailChange={handleEmailChange}
             />
-          </View>
+          </KeyboardAvoidingView>
           <View style={styles.inputContainer}></View>
           <View style={styles.buttonContainer}>
             <CustomButton
