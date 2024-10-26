@@ -15,6 +15,7 @@ import { StackNavigationProp } from "@react-navigation/stack"; // Ensure the pat
 import { StudentData } from "../databaseModels/StudentData";
 import ConfirmationInputComponent from "../components/ConfirmationInputComponent";
 import { RootStackParamsList } from "./RootStackParamsList";
+import TermsAndConditionsPopup from "../components/TermsAndConditionsPopup";
 
 /**
  * RegisterScreen component handles the user registration process.
@@ -70,16 +71,10 @@ const RegisterScreen: React.FC = () => {
   const [code, setCode] = useState("");
   const navigation =
     useNavigation<NavigationProp<RootStackParamsList, "RegisterScreen">>();
-  const { userId: clerkUserId } = useAuth();
-  const { isSignedIn } = useAuth();
+  const [isTermsAndConditionsShown, setIsTermsAndConditionsShown] =
+    useState(false);
 
-  // useEffect(() => {
-  //   if (isSignedIn) {
-  //     navigation.navigate("BottomNavigationBar");
-  //   }
-  // }, [isSignedIn, navigation]);
-
-  const handlePress = async () => {
+  const handleAccept = async () => {
     if (!isLoaded) {
       return;
     }
@@ -88,9 +83,7 @@ const RegisterScreen: React.FC = () => {
       await signUp.create({
         emailAddress,
       });
-
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
       setPendingVerification(true);
     } catch (err: any) {
       // See https://clerk.com/docs/custom-flows/error-handling
@@ -135,18 +128,16 @@ const RegisterScreen: React.FC = () => {
               activeOrgs: [],
               locationData: {},
               profilePhotoURL: profilePhotoURL,
-              darkMode: false  // Add this line to set default dark mode value
+              darkMode: false, // Add this line to set default dark mode value
             };
 
             const newStudent = new Student(newStudentData);
             console.log("New Student Data:", newStudentData); // Log new student data
 
             // Save to Firebase
-            await newStudent
-              .save()
-              .catch((error) => {
-                console.error(`Error saving new student: ${newStudent}`, error); // Log error if save fails
-              });
+            await newStudent.save().catch((error) => {
+              console.error(`Error saving new student: ${newStudent}`, error); // Log error if save fails
+            });
           };
 
           navigation.navigate("RegisterProfilePhotoScreen", {
@@ -197,7 +188,9 @@ const RegisterScreen: React.FC = () => {
           <View style={styles.inputContainer}></View>
           <View style={styles.buttonContainer}>
             <CustomButton
-              onPress={handlePress}
+              onPress={() => {
+                setIsTermsAndConditionsShown(true);
+              }}
               title="Register"
               textColor="#334FD7"
               buttonColor="#ffffff"
@@ -230,6 +223,15 @@ const RegisterScreen: React.FC = () => {
           Already have an account? Log in
         </LoginRegisterHyperlink>
       </View>
+      {isTermsAndConditionsShown ? (
+        <TermsAndConditionsPopup
+          onAccept={() => {
+            setIsTermsAndConditionsShown(false);
+            // Proccede to OTP authentication
+            handleAccept();
+          }}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };
