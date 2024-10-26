@@ -8,6 +8,8 @@ import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-expo";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
+import { useTheme } from '../../styles/ThemeContext';
+import { lightTheme, darkTheme } from '../../styles/themes';
 
 /**
  * Screen Component where the user can Remove an Org
@@ -19,6 +21,8 @@ export default function RemoveOrgScreen() {
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<OrganisationData | null>(null);
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   // Method to fetch data
   const fetchData = async () => {
@@ -75,6 +79,10 @@ export default function RemoveOrgScreen() {
       );
 
       await updateCurrentStudent({ activeOrgs: newOrgs });
+
+      const newLocationData = { ...currentStudent.locationData };
+      Object.values(newLocationData).filter((sessionLog) => sessionLog.orgID !== selectedOrg.org_id);
+      
       
       // Reset UI state
       setIsDeletionPopupShown(false);
@@ -92,7 +100,7 @@ export default function RemoveOrgScreen() {
 
   const renderHeader = () => (
     <>
-      <Text style={styles.headerText}>Remove an Organisation</Text>
+      <Text style={[styles.headerText, { color: theme.fontRegular }]}>Remove an Organisation</Text>
       <View style={styles.inputSpacing} />
     </>
   );
@@ -108,7 +116,7 @@ export default function RemoveOrgScreen() {
   return (
     <>
       <FlatList
-        style={styles.screenLayout}
+        style={[styles.screenLayout, { backgroundColor: theme.background }]}
         data={studentOrganisations}
         ListHeaderComponent={renderHeader}
         renderItem={({ item }) => (
@@ -150,7 +158,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 32,
     fontFamily: 'Quittance',
-    color: '#161616',
   },
   inputSpacing: {
     height: 20,
