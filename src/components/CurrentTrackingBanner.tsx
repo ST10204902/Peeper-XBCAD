@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     right: 0,
     color: "f9f9f9",
     zIndex: 1000,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingTop: Platform.OS === "ios" ? 50 : 0,
     paddingBottom: Platform.OS === "ios" ? 12 : 20,
     flexDirection: "row",
