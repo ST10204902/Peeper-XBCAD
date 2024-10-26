@@ -32,7 +32,7 @@ const CurrentTrackingBanner = () => {
   const startTime = useRecoilValue(trackingStartTimeState);
   const setElapsedTime = useSetRecoilState(elapsed_time); // Only setElapsedTime is needed here
   const { isDarkMode } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   const handleStopTracking = async () => {
     await clearTrackingNotification();
@@ -67,9 +67,15 @@ const CurrentTrackingBanner = () => {
     <SafeAreaView style={styles.root_container}>
       <TrackingBackground />
       <View style={styles.text_container}>
-        <Text style={[styles.header, { color: theme.fontRegular }]}>Tracking Your Location</Text>
+        <Text style={[styles.header, { color: theme.fontRegular }]}>
+          Tracking Your Location
+        </Text>
         <View style={styles.details_container}>
-          <Text style={[styles.org_name, { color: theme.fontRegular }]} numberOfLines={1} ellipsizeMode="tail">
+          <Text
+            style={[styles.org_name, { color: theme.fontRegular }]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {trackingAtom.organizationName}
           </Text>
           <ElapsedTimeDisplay />
@@ -92,7 +98,7 @@ const CurrentTrackingBanner = () => {
 const ElapsedTimeDisplay = () => {
   const elapsedTime = useRecoilValue(elapsed_time);
   const { isDarkMode } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -102,7 +108,11 @@ const ElapsedTimeDisplay = () => {
     ).padStart(2, "0")}`;
   };
 
-  return <Text style={[styles.elapsed_time, { color: theme.fontRegular }]}>{formatTime(elapsedTime)}</Text>;
+  return (
+    <Text style={[styles.elapsed_time, { color: theme.fontRegular }]}>
+      {formatTime(elapsedTime)}
+    </Text>
+  );
 };
 
 const styles = StyleSheet.create({
