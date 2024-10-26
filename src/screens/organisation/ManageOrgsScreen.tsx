@@ -19,6 +19,7 @@ import TrackingPopup from "../../components/TrackingPopup";
 import { useLocationTracking } from "../../hooks/useLocationTracking";
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';
+import useAllOrganisations from "../../hooks/useAllOrganisations";
 
 /**
  * Component For the ManageOrgsScreen
@@ -62,10 +63,10 @@ export default function ManageOrgsScreen() {
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking } =
     useLocationTracking(); // Import location tracking functions from hook
-  const [allOrganisations, setAllOrganisations] = useState<OrganisationData[]>([]);
   const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>(
     []
   );
+  const {allOrganisations} = useAllOrganisations();
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
   const [studentsOrgsLoaded, setStudentsOrgsLoaded] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("name_asc");
@@ -81,15 +82,12 @@ export default function ManageOrgsScreen() {
       return;
     }
     // Fetch all organisations and student's organisations
-    const allOrgs = await Organisation.getAllOrganisations();
+    
     const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
 
     // Set the state variables with the fetched data
-    setAllOrganisations(
-      allOrgs.filter((org) => org && typeof org.toJSON === "function").map((org) => org.toJSON())
-    );
     setDisplayedOrganisations(
-      allOrgs
+      allOrganisations
         .filter((org) => org && typeof org.toJSON === "function")
         .map((org) => org.toJSON())
         .sort((a, b) => a.orgName.localeCompare(b.orgName))
