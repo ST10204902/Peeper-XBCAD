@@ -130,10 +130,11 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? 4 : 0,
   },
   header: {
-    fontSize: 22,
+    fontSize: 20,
     top:-30,
     fontWeight: "600",
     color: "#000000",
+    fontFamily: "Quittance",
     marginBottom: Platform.OS === "ios" ? 4 : 2,
   },
   org_name: {
@@ -146,10 +147,10 @@ const styles = StyleSheet.create({
   stop_button: {
     position: "absolute",
     right: 16,
-    top: "50%", // Center vertically
+    top: "75%", // Center vertically
     transform: [{ translateY: -20 }], // Offset by half the height to truly center
-    width: 40, // Increased from 24
-    height: 40, // Increased from 24
+    width: 60, // Increased from 24
+    height: 60, // Increased from 24
     justifyContent: "center",
     alignItems: "center",
   },
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
   },
   elapsed_time: {
     fontSize: 18,
+    right: 70,
     color: "#000000",
   },
 });
