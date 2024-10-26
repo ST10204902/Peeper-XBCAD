@@ -14,6 +14,8 @@ export class OrgRequest implements OrgRequestData {
   email?: string;
   phoneNo?: string;
   approvalStatus: ApprovalStatus;
+  orgLatitude: number;
+  orgLongitude: number;
 
   constructor(data: OrgRequestData) {
     this.request_id = data.request_id;
@@ -24,6 +26,8 @@ export class OrgRequest implements OrgRequestData {
     this.email = data.email;
     this.phoneNo = data.phoneNo;
     this.approvalStatus = data.approvalStatus;
+    this.orgLatitude = data.orgLatitude;
+    this.orgLongitude = data.orgLongitude;
   }
 
   static async fetchById(request_id: string): Promise<OrgRequest | null> {
@@ -53,6 +57,8 @@ export class OrgRequest implements OrgRequestData {
       email: this.email,
       phoneNo: this.phoneNo,
       approvalStatus: this.approvalStatus,
+      orgLatitude: this.orgLatitude,
+      orgLongitude: this.orgLongitude,
     };
   }
 

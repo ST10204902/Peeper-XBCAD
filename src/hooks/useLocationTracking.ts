@@ -8,13 +8,13 @@ import { Viewport } from "../databaseModels/databaseClasses/Viewport";
 import { useCurrentStudent } from "./useCurrentStudent";
 import { DatabaseUtility } from "../databaseModels/databaseClasses/DatabaseUtility";
 import { clearTrackingNotification, requestNotificationPermissions, showOrUpdateTrackingNotification } from "../services/trackingNotification";
-import { trackingState } from "../atoms/atoms";
-import { useRecoilState } from "recoil";
+import { trackingState, trackingStartTimeState } from "../atoms/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 export function useLocationTracking() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [tracking, setTracking] = useRecoilState(trackingState);
-
+  const setStartTime = useSetRecoilState(trackingStartTimeState);
   const { currentStudent, error, updateCurrentStudent } = useCurrentStudent();
 
   const locationSubscriptionRef = useRef<any>(null);
@@ -23,6 +23,35 @@ export function useLocationTracking() {
   const orgNameRef = useRef<string>("");
   const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const elapsedTimeRef = useRef<number>(0); // To keep track of elapsed time in seconds
+
+  function handleLocationUpdate(location: ExpoLocation.LocationObject) {
+    console.log("handleLocationUpdate was called");
+
+    const currentSessionLog = sessionLogRef.current;
+    const currentStudent = studentRef.current;
+
+    if (!currentSessionLog || !currentStudent) {
+      setErrorMsg("No session log or student found while updating location");
+      return;
+    }
+
+    const ISOTimeStamp = new Date(location.timestamp).toISOString();
+    const newLocationLog = new LocationLog({
+      timestamp: ISOTimeStamp,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      accuracy: location.coords.accuracy || 0,
+      altitude: location.coords.altitude || 0,
+    });
+
+    currentSessionLog.locationLogs.push(newLocationLog);
+    currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
+
+    // Save to database
+    updateCurrentStudent({ locationData: currentStudent.locationData }).then(() => {
+      console.log("New location log saved to student");
+    });
+  }
 
   const startTracking = async (organisation: Organisation) => {
     console.log("Starting tracking called");
@@ -75,7 +104,7 @@ export function useLocationTracking() {
       await updateCurrentStudent({ locationData: currentStudent.locationData });
       console.log("Session log saved to student");
 
-      // Start location tracking
+      // Start location tracking (keep at 5 seconds for location updates)
       locationSubscriptionRef.current = await ExpoLocation.watchPositionAsync(
         { accuracy: ExpoLocation.Accuracy.High, timeInterval: 5000, distanceInterval: 0 },
         handleLocationUpdate
@@ -87,13 +116,23 @@ export function useLocationTracking() {
         console.log("Notification permissions not granted");
       }
 
-      // Start notification timer
+      // Reset elapsed time
       elapsedTimeRef.current = 0;
-        // Show initial notification  
-     await showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
+      const now = Date.now();
+      setStartTime(now);
+      // Show initial notification
+      await showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
 
-   
+      // Start notification timer (update every second)
+      notificationTimerRef.current = setInterval(() => {
+        elapsedTimeRef.current += 1;
+        showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
+      }, 1000);
+
     } catch (error) {
+      // If anything fails, make sure tracking state is false
+      setStartTime(0);
+      setTracking({ isTracking: false, organizationName: "" });
       setErrorMsg(`Error starting tracking: ${error}`);
       console.error(error);
     }
@@ -101,15 +140,16 @@ export function useLocationTracking() {
 
   const stopTracking = async () => {
     console.log("Stopping tracking called");
-
-    const currentSessionLog = sessionLogRef.current;
-    const currentStudent = studentRef.current;
-
-    if (!currentSessionLog || !currentStudent) {
-      return;
-    }
-
+    
     try {
+      // Finalize session log
+      const currentSessionLog = sessionLogRef.current;
+      const currentStudent = studentRef.current;
+
+      if (!currentSessionLog || !currentStudent) {
+        return;
+      }
+
       // Finalize session log
       currentSessionLog.sessionEndTime = new Date().toISOString();
       const boundingBox = Viewport.calculateBoundingBox(currentSessionLog.locationLogs);
@@ -129,7 +169,6 @@ export function useLocationTracking() {
         locationSubscriptionRef.current = null;
       }
 
-
       // Clear notification
       await clearTrackingNotification();
 
@@ -140,51 +179,21 @@ export function useLocationTracking() {
       }
 
       sessionLogRef.current = null; // Reset session log reference
-      
+      setTracking({ isTracking: false, organizationName: "" });
     } catch (error) {
       setErrorMsg(`Error stopping tracking: ${error}`);
       console.error(error);
     }
+
+    // Move this AFTER cleanup is successful
+    setTracking({ isTracking: false, organizationName: "" });
   };
-
-  function handleLocationUpdate(location: ExpoLocation.LocationObject) {
-    console.log("handleLocationUpdate was called");
-
-    const currentSessionLog = sessionLogRef.current;
-    const currentStudent = studentRef.current;
-
-    if (!currentSessionLog || !currentStudent) {
-      setErrorMsg("No session log or student found while updating location");
-      return;
-    }
-
-    
-    elapsedTimeRef.current += 5; // Increment by 5 seconds
-     showOrUpdateTrackingNotification(orgNameRef.current, elapsedTimeRef.current);
-
-    
-    const ISOTimeStamp = new Date(location.timestamp).toISOString();
-    const newLocationLog = new LocationLog({
-      timestamp: ISOTimeStamp,
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      accuracy: location.coords.accuracy || 0,
-      altitude: location.coords.altitude || 0,
-    });
-
-    currentSessionLog.locationLogs.push(newLocationLog);
-    currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
-
-    // Save to database
-    updateCurrentStudent({ locationData: currentStudent.locationData }).then(() => {
-      console.log("New location log saved to student");
-    });
-  }
 
   useEffect(() => {
     if (!tracking.isTracking) {
-      stopTracking();
-      console.log("Tracking stopped");
+      if (locationSubscriptionRef.current || sessionLogRef.current) {
+        stopTracking();
+      }
     }
   }, [tracking.isTracking]);
 
