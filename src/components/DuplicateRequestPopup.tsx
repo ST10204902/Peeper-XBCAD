@@ -48,7 +48,7 @@ export default function DuplicateRequestPopup({ request, onOk }: Props) {
         <Text style={styles.title}>OOPS!</Text>
         <Text style={styles.explanation}>
           It looks like another student has already requested for this
-          organisation to be added.
+          organisation to be added. you will be notified once the request approval status changes.
         </Text>
         <Text style={styles.explanation_p2}>Are these details correct?</Text>
         <View style={styles.details_container}>
