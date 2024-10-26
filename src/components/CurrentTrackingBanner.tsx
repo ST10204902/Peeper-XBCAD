@@ -111,9 +111,8 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? 50 : 0,
     paddingBottom: Platform.OS === "ios" ? 12 : 20,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     alignItems: "center",
-    gap: 15,
   },
   text_container: {
     flexDirection: "column",
@@ -138,11 +137,9 @@ const styles = StyleSheet.create({
     color: "#000000",
     fontFamily: "Rany-Medium",
   },
-  stop_button: {
-    flex: 1,
-  },
+  stop_button: {},
   button_image: {
-    minWidth: 40,
+    minWidth: 50,
     width: "100%",
     height: "100%",
     resizeMode: "contain",

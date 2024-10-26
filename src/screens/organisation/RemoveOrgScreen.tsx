@@ -1,5 +1,4 @@
 import { Text, StyleSheet, View, FlatList } from "react-native";
-import Input from "../../components/GeneralInputComponent";
 import CustomButton from "../../components/CustomButton";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
@@ -21,9 +20,8 @@ export default function RemoveOrgScreen() {
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<OrganisationData | null>(null);
-  const { isDarkMode } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;
-
+  const { isDarkMode, toggleTheme } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;  
   // Method to fetch data
   const fetchData = async () => {
     if (!clerkUser) {
@@ -100,7 +98,7 @@ export default function RemoveOrgScreen() {
 
   const renderHeader = () => (
     <>
-      <Text style={[styles.headerText, { color: theme.fontRegular }]}>Remove an Organisation</Text>
+      <Text style={[styles.headerText, { color: theme.fontRegular}]}>Remove an Organisation</Text>
       <View style={styles.inputSpacing} />
     </>
   );
@@ -136,6 +134,7 @@ export default function RemoveOrgScreen() {
           />
         )}
         keyExtractor={(item) => item.org_id}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />} // Add space between items
       />
       {isDeletionPopupShown && selectedOrg && (
         <DataDeletionConfirmationPopup

@@ -41,7 +41,7 @@ interface Props {
   placeholder?: string;
   options: ComboBoxOption[];
   value?: string;
-  onValueChange: (value: string) => void; // Add this line
+  onValueChange: (value: string) => void;
 }
 
 function ComboBoxComponent({ 
@@ -81,7 +81,7 @@ function ComboBoxComponent({
         >
           {selectedOption ? selectedOption.label : placeholder}
         </Text>
-        <ChevronDownIcon color={placeHolderColor} />
+        <ChevronDownIcon color={theme.componentTextColour} />
       </TouchableOpacity>
 
       <Modal
@@ -94,7 +94,7 @@ function ComboBoxComponent({
           style={styles.modalOverlay}
           onPress={() => setIsOpen(false)}
         >
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { backgroundColor: theme.componentBackground }]}>
             <FlatList
               data={options}
               keyExtractor={(item) => item.value}
@@ -102,7 +102,7 @@ function ComboBoxComponent({
                 <TouchableOpacity
                   style={[
                     styles.optionItem,
-                    item.value === value && styles.selectedOption
+                    item.value === value && { backgroundColor: theme.orgListOdd }
                   ]}
                   onPress={() => handleSelect(item.value)}
                 >
@@ -113,7 +113,7 @@ function ComboBoxComponent({
                         color: FGColor,
                         fontFamily: 'Rany-Medium'
                       },
-                      item.value === value && styles.selectedOptionText
+                      item.value === value && { color: theme.componentTextColour }
                     ]}
                   >
                     {item.label}
@@ -130,7 +130,6 @@ function ComboBoxComponent({
 
 const styles = StyleSheet.create({
   comboBoxContainer: {
-    backgroundColor: '#EBEBEB',
     borderRadius: 15,
     padding: 0,
     paddingLeft: 15,
@@ -153,7 +152,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
     borderRadius: 12,
     width: '80%',
     maxHeight: '70%',
@@ -162,9 +160,6 @@ const styles = StyleSheet.create({
   optionItem: {
     padding: 16,
     borderRadius: 8,
-  },
-  selectedOption: {
-    backgroundColor: '#EBEBEB',
   },
   optionText: {
     fontSize: 16,
