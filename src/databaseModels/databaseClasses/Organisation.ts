@@ -2,6 +2,7 @@
 import { DatabaseUtility } from './DatabaseUtility';
 import { OrganisationData } from '../OrganisationData';
 import { OrgAddress } from './OrgAddress';
+import { onValue } from 'firebase/database';
 
 export class Organisation implements OrganisationData {
   org_id: string;
@@ -49,6 +50,29 @@ export class Organisation implements OrganisationData {
     return orgs.filter((org) => org !== null) as Organisation[];
   }
 
+  static listenToAllOrganisations(
+    callback: (organisations: Organisation[]) => void
+  ): () => void {
+    const ref = DatabaseUtility.getRef('organisations');
+
+    const unsubscribe = onValue(
+      ref,
+      (snapshot) => {
+        const orgs: Organisation[] = [];
+        snapshot.forEach((childSnapshot) => {
+          const data = childSnapshot.val() as OrganisationData;
+          orgs.push(new Organisation(data));
+        });
+        callback(orgs);
+      },
+      (error) => {
+        console.error('Error listening to organisations:', error);
+      }
+    );
+
+    // Return the unsubscribe function
+    return () => unsubscribe();
+  }
 
   toJSON(): OrganisationData {
     return {

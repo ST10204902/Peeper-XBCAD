@@ -44,7 +44,8 @@ import { lightTheme, darkTheme } from '../../styles/themes';
 
 export default function RequestProgressScreen() {
   const { currentStudent } = useCurrentStudent();
-  const orgRequests = useOrgRequests(currentStudent?.student_id || "");
+  const orgRequests = useOrgRequests(currentStudent?.student_id.toLocaleLowerCase() || "");
+
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
   // Render Loading component if still loading

@@ -62,8 +62,13 @@ export class OrgRequest implements OrgRequestData {
     };
   }
 
+  static async getAllOrgRequests(): Promise<OrgRequest[]> {
+    const data = await DatabaseUtility.getAllData<OrgRequestData>('orgRequests');
+    return data.map((org) => new OrgRequest(org));
+  }
+
   static listenToRequestsByStudentId(
-    studentID: string,
+    studentNumber: string,
     callback: (requests: OrgRequest[]) => void
   ): () => void {
     const dbRef = DatabaseUtility.getRef('orgRequests');
@@ -72,7 +77,7 @@ export class OrgRequest implements OrgRequestData {
       const requests: OrgRequest[] = [];
       snapshot.forEach((childSnapshot) => {
         const data = childSnapshot.val() as OrgRequestData;
-        if (Array.isArray(data.studentIDs) && data.studentIDs.includes(studentID)) {
+        if (Array.isArray(data.studentIDs) && data.studentIDs.includes(studentNumber)) {
           requests.push(new OrgRequest(data));
         }
       });
