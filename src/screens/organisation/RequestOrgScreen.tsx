@@ -108,8 +108,8 @@ export default function RequestOrgScreen() {
           province: "",
           postalCode: locationData[3] ?? "",
         }),
-        email: email ?? "nah",
-        phoneNo: phoneNum ?? "nah",
+        email: email ?? "",
+        phoneNo: phoneNum ?? "",
         approvalStatus: ApprovalStatus.Pending, // Default to pending approval status
         orgLatitude: lat,
         orgLongitude: lng,
