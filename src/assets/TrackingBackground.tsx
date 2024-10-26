@@ -1,26 +1,31 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
 
 export default function TrackingBackground() {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;  
+
   return (
     <View style={styles.container}>
       <LinearGradient
         colors={[
-          "#f0f0f0",
-          "#f0f0f0", // First light stripe
-          "#e0e0e0",
-          "#e0e0e0", // First dark stripe
-          "#f0f0f0",
-          "#f0f0f0", // Second light stripe
-          "#e0e0e0",
-          "#e0e0e0", // Second dark stripe
-          "#f0f0f0",
-          "#f0f0f0", // Third light stripe
-          "#e0e0e0",
-          "#e0e0e0", // Third dark stripe
-          "#f0f0f0",
-          "#f0f0f0", // Fourth light stripe
+          theme.background,
+          theme.background, // First light stripe
+          theme.componentBackground,
+          theme.componentBackground, // First dark stripe
+          theme.background,
+          theme.background, // Second light stripe
+          theme.componentBackground,
+          theme.componentBackground, // Second dark stripe
+          theme.background,
+          theme.background, // Third light stripe
+          theme.componentBackground,
+          theme.componentBackground, // Third dark stripe
+          theme.background,
+          theme.background, // Fourth light stripe
         ]}
         start={{ x: 0, y: 0 }} // Start the gradient partially across the view
         end={{ x: 1, y: 2 }} // Continue to bottom-right corner
@@ -58,5 +63,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     borderRadius: 35,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
   },
 });
