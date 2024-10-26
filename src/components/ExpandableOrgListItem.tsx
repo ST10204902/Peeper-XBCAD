@@ -5,7 +5,7 @@ import * as Location from "expo-location";
 import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
 
-const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
+
 
 /**
  * @orgName name of the organisation
