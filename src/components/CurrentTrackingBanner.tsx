@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     color: "f9f9f9",
     zIndex: 1000,
     paddingTop: Platform.OS === "ios" ? 55 : 0,
-    paddingBottom: Platform.OS === "ios" ? 20 : 20,
+    paddingBottom: Platform.OS === "ios" ? 30 : 20,
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
