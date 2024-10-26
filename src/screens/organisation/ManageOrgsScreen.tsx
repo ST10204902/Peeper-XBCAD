@@ -9,7 +9,6 @@ import * as Location from "expo-location";
 import ComboBoxComponent from "../../components/ComboComponent";
 import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../../databaseModels/databaseClasses/Student";
-import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
@@ -63,10 +62,8 @@ export default function ManageOrgsScreen() {
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking } =
     useLocationTracking(); // Import location tracking functions from hook
-  const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>(
-    []
-  );
-  const {allOrganisations} = useAllOrganisations();
+  const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>([]);
+  const { allOrganisations, loading: orgsLoading, error: orgsError } = useAllOrganisations();
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
   const [studentsOrgsLoaded, setStudentsOrgsLoaded] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("name_asc");
@@ -77,35 +74,46 @@ export default function ManageOrgsScreen() {
 
   // Method to fetch data
   const fetchData = async () => {
-    if (!clerkUser.user) {
-      console.error("Clerk user not found in ManageOrgsScreen");
-      return;
-    }
-    // Fetch all organisations and student's organisations
-    
+    if (currentStudent)
+    {
     const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
-
-    // Set the state variables with the fetched data
-    setDisplayedOrganisations(
-      allOrganisations
-        .filter((org) => org && typeof org.toJSON === "function")
-        .map((org) => org.toJSON())
-        .sort((a, b) => a.orgName.localeCompare(b.orgName))
-    );
     setStudentOrganisations(
       studentOrgs
         .filter((org) => org && typeof org.toJSON === "function")
         .map((org) => org.toJSON())
     );
     setStudentsOrgsLoaded(true);
+    }
+    if (!allOrganisations) {
+      console.error("All organisations not found in ManageOrgsScreen");
+      return
+    }
   };
 
-  // Run the fetchData method when the screen is focused (navigated to) or when currentStudent changes
   useEffect(() => {
+    if (orgsLoading) {
+      return;
+    }
+
+    if (!allOrganisations || allOrganisations.length === 0) {
+      console.error("All organisations not found in ManageOrgsScreen");
+      return;
+    }
+
     if (currentStudent) {
       fetchData();
+      console.log("all orgs displayed:", displayedOrganisations.length);
     }
-  }, [currentStudent]);
+
+    const sortedAllOrgs = allOrganisations
+      .filter((org) => org && typeof org.toJSON === "function")
+      .map((org) => org.toJSON())
+      .sort((a, b) => a.orgName.localeCompare(b.orgName));
+
+    console.log("all orgs sorted:", sortedAllOrgs.length);
+
+    setDisplayedOrganisations(sortedAllOrgs);
+  }, [currentStudent, allOrganisations, orgsLoading]);
 
 
   // Fetch the location data when the component mounts
@@ -205,6 +213,7 @@ export default function ManageOrgsScreen() {
   }
 
   function changeSortBy(value: string): void {
+    console.log("Sort by: ", value);
     setSortBy(value);
     let sortedOrgs = displayedOrganisations;
     switch (value) {
@@ -212,7 +221,6 @@ export default function ManageOrgsScreen() {
         sortedOrgs.sort((a, b) => a.orgName.localeCompare(b.orgName));
         break;
       }
-
       case "name_desc": {
         sortedOrgs.sort((a, b) => b.orgName.localeCompare(a.orgName));
         break;
@@ -223,6 +231,7 @@ export default function ManageOrgsScreen() {
   }
 
   const handleBlur = (searchInput: string) => {
+    console.log("searchInput: ", searchInput);
     if (searchInput.trim() === "") {
       setDisplayedOrganisations(allOrganisations);
       return;
@@ -371,12 +380,12 @@ export default function ManageOrgsScreen() {
     </View>
   );
 
-  if (loading) {
-    return <ActivityIndicator/>;
+  if (loading || orgsLoading) {
+    return <ActivityIndicator />;
   }
 
-  if (error) {
-    return <Text>Error loading student data: {error.message}</Text>;
+  if (error || orgsError) {
+    return <Text>Error loading data: {error?.message || orgsError?.message}</Text>;
   }
 
   if (!currentStudent) {
