@@ -282,7 +282,7 @@ export default function ManageOrgsScreen() {
     <View style={[styles.page, { backgroundColor: theme.background }]}>
       <Text style={[styles.pageHeading, { color: theme.fontRegular }]}>Your Organisations</Text>
 
-<View style={styles.componentWrapper}>
+    <View style={styles.componentWrapper}>
       {studentOrganisations.length > 0 ? (
         <ExpandableOrgList
           userLocation={location}
