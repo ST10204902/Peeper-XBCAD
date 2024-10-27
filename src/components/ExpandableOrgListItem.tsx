@@ -1,11 +1,12 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { OrgAddressData } from "../databaseModels/OrgAddressData";
 import * as Location from "expo-location";
 import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
 import { DatabaseUtility } from "../databaseModels/databaseClasses/DatabaseUtility";
 import { OrganisationData } from "../databaseModels/OrganisationData";
+import { Linking } from 'react-native';
 
 
 
@@ -89,6 +90,11 @@ export default function ExpandableOrgListItem({
     distanceNumber();
   }, [userLocation]);
 
+  const openMaps = () => {
+    const { orgLatitude, orgLongitude } = orgData;
+    const url = `https://www.google.com/maps/search/?api=1&query=${orgLatitude},${orgLongitude}`;
+    Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+  };
 
   return !expanded ? (
     <View style={containerStyle} onTouchEnd={() => setExpanded(true)}>
@@ -106,7 +112,12 @@ export default function ExpandableOrgListItem({
         {`${orgAddress.streetAddress}, ${orgAddress.suburb}, ${orgAddress.city}, ${orgAddress.province}, ${orgAddress.postalCode}`}
       </Text>
 
-      <View style={expandedStyles.buttonContainer}>{listButton}</View>
+      <View style={expandedStyles.buttonContainer}>
+        {listButton}
+        <TouchableOpacity onPress={openMaps}>
+          <Image style={expandedStyles.location_icon} source={require("../assets/icons/location.png")} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -180,9 +191,18 @@ const expandedStyles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   buttonContainer: {
-    paddingHorizontal: 70,
+    height: 56,
+    alignSelf: "center",
+    width: "60%",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 5,
+    gap: 10,
   },
+  location_icon: {
+    height: 46,
+    width: 56,
+    resizeMode: "contain",
+  }
 });
