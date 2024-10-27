@@ -360,10 +360,11 @@ export default function ManageOrgsScreen() {
           <CustomButton
             onPress={() => {}}
             title="Add Organisation"
-            textSize={15}
+            textSize={14}
             buttonColor="#D9E7FF"
             textColor={theme.fontRegular}
             fontFamily="Rany-Bold"
+            addFlex={true}
           />
         }
       />
