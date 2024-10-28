@@ -6,7 +6,7 @@ import { Student } from "../databaseModels/databaseClasses/Student";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import { Viewport } from "../databaseModels/databaseClasses/Viewport";
 import { useCurrentStudent } from "./useCurrentStudent";
-import { DatabaseUtility } from "../databaseModels/databaseClasses/DatabaseUtility";
+import { DatabaseUtility } from "../utils/DatabaseUtility";
 import { clearTrackingNotification, requestNotificationPermissions, showOrUpdateTrackingNotification } from "../services/trackingNotification";
 import { trackingState, trackingStartTimeState } from "../atoms/atoms";
 import { useRecoilState, useSetRecoilState } from "recoil";

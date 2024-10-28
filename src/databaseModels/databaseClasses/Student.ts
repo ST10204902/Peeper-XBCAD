@@ -1,5 +1,5 @@
 // This is the student class
-import { DatabaseUtility } from "./DatabaseUtility";
+import { DatabaseUtility } from "../../utils/DatabaseUtility";
 import { StudentData } from "../StudentData";
 import { SessionLogData } from "../SessionLogData";
 import { SessionLog } from "./SessionLog";

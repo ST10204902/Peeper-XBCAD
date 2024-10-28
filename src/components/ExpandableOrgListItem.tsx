@@ -4,9 +4,10 @@ import { OrgAddressData } from "../databaseModels/OrgAddressData";
 import * as Location from "expo-location";
 import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
-import { DatabaseUtility } from "../databaseModels/databaseClasses/DatabaseUtility";
+import { DatabaseUtility } from "../utils/DatabaseUtility";
 import { OrganisationData } from "../databaseModels/OrganisationData";
 import { Linking } from 'react-native';
+import MyMaths from "../utils/MyMaths";
 
 
 
@@ -81,7 +82,7 @@ export default function ExpandableOrgListItem({
     if (!userLocation) {
       return
     }
-     const distance = DatabaseUtility.haversineDistance(userLocation.coords.latitude, userLocation.coords.longitude, orgData.orgLatitude, orgData.orgLongitude);
+     const distance = MyMaths.haversineDistance(userLocation.coords.latitude, userLocation.coords.longitude, orgData.orgLatitude, orgData.orgLongitude);
      setDistanceInKm(distance.toFixed(0));
       setValidDistance(true);
   }

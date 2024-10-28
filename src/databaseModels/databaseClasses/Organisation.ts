@@ -1,5 +1,5 @@
 // Organisation.ts
-import { DatabaseUtility } from './DatabaseUtility';
+import { DatabaseUtility } from '../../utils/DatabaseUtility';
 import { OrganisationData } from '../OrganisationData';
 import { OrgAddress } from './OrgAddress';
 import { onValue } from 'firebase/database';
