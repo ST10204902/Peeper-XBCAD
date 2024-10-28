@@ -17,39 +17,9 @@ import memoizeOne from "memoize-one";
 import { useCurrentStudent } from "../hooks/useCurrentStudent";
 import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
+import MyMaths from "../utils/MyMaths";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
-
-/**
- * Calculate the distance between two latitude and longitude coordinates using the Haversine formula.
- * @param lat1 - The latitude of the first point.
- * @param lon1 - The longitude of the first point.
- * @param lat2 - The latitude of the second point.
- * @param lon2 - The longitude of the second point.
- * @returns Distance in kilometers between the two points.
- */
-const haversineDistance = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-) => {
-  const R = 6371; // Radius of the earth in km
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in kilometers
-
-  return distance;
-};
 
 /**
  * Calculate the zoom level for a Google Maps static image based on the spread of location data.
@@ -99,7 +69,7 @@ const getMinAndMaxDistance = (locationLogs: Array<LocationLog>) => {
     const pin2Latitude = pin2.latitude;
     const pin2Longitude = pin2.longitude;
 
-    let currentDistance = haversineDistance(
+    let currentDistance = MyMaths.haversineDistance(
       pin1Latitude,
       pin1Longitude,
       pin2Latitude,
@@ -216,7 +186,7 @@ const generateStaticMapURL = (
     const pin2Latitude = Number(pin2.latitude);
     const pin2Longitude = Number(pin2.longitude);
 
-    const distance = haversineDistance(
+    const distance = MyMaths.haversineDistance(
       pin1Latitude,
       pin1Longitude,
       pin2Latitude,
@@ -257,7 +227,7 @@ const calculateAverageSpeed = memoizeOne((locationLogs: Array<LocationLog>): num
     const currLog = locationLogs[i];
 
     // Calculate distance between the two points
-    const distance = haversineDistance(
+    const distance = MyMaths.haversineDistance(
       parseFloat(prevLog.latitude.toString()),
       parseFloat(prevLog.longitude.toString()),
       parseFloat(currLog.latitude.toString()),

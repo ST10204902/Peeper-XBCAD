@@ -1,4 +1,4 @@
-import { DatabaseUtility } from "../databaseModels/databaseClasses/DatabaseUtility";
+import { DatabaseUtility } from "../utils/DatabaseUtility";
 import { DataSnapshot, get } from "firebase/database";
 
 // Mock the firebase/database module
