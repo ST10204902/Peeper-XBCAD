@@ -8,7 +8,7 @@ import { ApprovalStatus } from "../../databaseModels/enums";
 import { OrgRequest } from "../../databaseModels/databaseClasses/OrgRequest";
 import { OrgRequestData } from "../../databaseModels/OrgRequestData";
 import { OrgAddress } from "../../databaseModels/databaseClasses/OrgAddress";
-import { DatabaseUtility } from "../../databaseModels/databaseClasses/DatabaseUtility";
+import { DatabaseUtility } from "../../utils/DatabaseUtility";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";

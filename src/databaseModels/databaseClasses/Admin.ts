@@ -1,5 +1,5 @@
 // Admin.ts
-import { DatabaseUtility } from './DatabaseUtility';
+import { DatabaseUtility } from '../../utils/DatabaseUtility';
 import { AdminData } from '../AdminData';
 import { AdminType } from '../enums';
 

@@ -4,26 +4,13 @@ import { LinearGradient } from "expo-linear-gradient"; // Import the expo gradie
 import { Student } from "../databaseModels/databaseClasses/Student";
 import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes'; // Import themes
+import MyMaths from '../utils/MyMaths';
+
+ 
 
 interface StudentHeaderComponentProps {
   currentStudent: Student;
 }
-
-const calculateTotalLoggedHours = (student: Student): number => {
-  let totalHours = 0;
-
-  Object.values(student.locationData).forEach((sessionLog) => {
-    const sessionStartTime = new Date(sessionLog.sessionStartTime);
-    const sessionEndTime = new Date(sessionLog.sessionEndTime) || sessionStartTime; // If session end time is not set, use start time
-    // Calculate the difference in hours between session start and end time
-    const sessionDurationMs = sessionEndTime.getTime() - sessionStartTime.getTime();
-    const sessionDurationHours = sessionDurationMs / (1000 * 60 * 60); // Convert milliseconds to hours
-
-    totalHours += sessionDurationHours;
-  });
-
-  return totalHours;
-};
 
 const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   currentStudent,
@@ -31,9 +18,13 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
-  const completedHours = calculateTotalLoggedHours(currentStudent);
+  const completedHours = MyMaths.calculateTotalLoggedHours(currentStudent);
+
+  
   const progress =  (completedHours / 4) * 100 ;
-  const completedHoursRounded = Math.round(completedHours * 100) / 100;
+
+  const completedHoursRounded  = (Math.round(completedHours * 100) / 100) >= 4 ? 4 : (Math.round(completedHours * 100) / 100);
+
   const code = currentStudent.studentNumber;
 
   // yes, this looks disgusting, but it works and that's what matters

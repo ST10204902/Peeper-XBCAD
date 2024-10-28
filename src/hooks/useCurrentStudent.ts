@@ -3,7 +3,7 @@ import { useUser } from '@clerk/clerk-expo'; // Adjust according to your authent
 import { onValue } from 'firebase/database';
 import { StudentData } from '../databaseModels/StudentData';
 import { Student } from '../databaseModels/databaseClasses/Student';
-import { DatabaseUtility } from '../databaseModels/databaseClasses/DatabaseUtility';
+import { DatabaseUtility } from '../utils/DatabaseUtility';
 
 type UseCurrentStudentResult = {
   currentStudent: Student | null;

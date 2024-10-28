@@ -1,5 +1,5 @@
 // OrgRequest.ts
-import { DatabaseUtility } from './DatabaseUtility';
+import { DatabaseUtility } from '../../utils/DatabaseUtility';
 import { OrgRequestData } from '../OrgRequestData';
 import { OrgAddress } from './OrgAddress';
 import { ApprovalStatus } from '../enums';
