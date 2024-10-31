@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#334FD7",
     padding: 20,
-    marginBottom: 300,
   },
   headingContainer: {
     alignSelf: "flex-start", // Align to the left
