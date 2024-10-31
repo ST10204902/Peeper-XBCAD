@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, FlatList } from "react-native";
+import { Text, StyleSheet, View, FlatList, ActivityIndicator, Alert } from "react-native";
 import CustomButton from "../../components/CustomButton";
 import ExpandableOrgList from "../../components/ExpandableOrgList";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
@@ -9,6 +9,8 @@ import { useUser } from "@clerk/clerk-expo";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';
+import { useRecoilState } from "recoil";
+import { trackingState } from "../../atoms/atoms";
 
 /**
  * Screen Component where the user can Remove an Org
@@ -18,6 +20,7 @@ export default function RemoveOrgScreen() {
   const { user: clerkUser } = useUser();
   const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
+  const [trackingAtom] = useRecoilState(trackingState);
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<OrganisationData | null>(null);
   const { isDarkMode, toggleTheme } = useTheme();
@@ -55,6 +58,11 @@ export default function RemoveOrgScreen() {
   }, [currentStudent]);
 
   const handleOrgSelection = (org: OrganisationData) => {
+    if ( trackingAtom.isTracking && trackingAtom.organizationName === org.orgName)
+    {
+      Alert.alert("Error", "You cannot remove an organisation that you are currently tracking");
+      return;
+    }
     setSelectedOrg(org);
     setIsDeletionPopupShown(true);
   };
@@ -104,12 +112,16 @@ export default function RemoveOrgScreen() {
   );
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <ActivityIndicator />;
   }
 
   if (error) {
     return <Text>Error loading organizations</Text>;
   }
+
+ 
+
+
 
   return (
     <>
@@ -119,7 +131,7 @@ export default function RemoveOrgScreen() {
         ListHeaderComponent={renderHeader}
         renderItem={({ item }) => (
           <ExpandableOrgList
-            items={[item]}
+            items={[new Organisation(item)]}
             listButtonComp={
               <CustomButton
                 onPress={() => handleOrgSelection(item)}

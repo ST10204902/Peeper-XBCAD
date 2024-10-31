@@ -98,13 +98,6 @@ export default function RequestProgressScreen() {
                 >
                   {request.name}
                 </Text>
-                <Text
-                  style={[styles.distance, { color: theme.fontRegular }]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  xkm away
-                </Text>
               </View>
 
               <Text
@@ -170,13 +163,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     fontSize: 15,
     alignSelf: "center",
-  },
-  distance: {
-    color: "#696969",
-    marginEnd: 11,
-    fontFamily: "Rany-Medium",
-    fontSize: 17,
-    alignSelf: "flex-start",
   },
   buttonContainer: {
     paddingHorizontal: 70,

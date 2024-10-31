@@ -14,28 +14,35 @@ interface Props {
 
 function SearchBarComponent({ FGColor, onSearchInputChange, placeHolderColor, onFocus, onBlur }: Props) {
     const [searchInput, setSearchInput] = useState('');
-    const searchInputRef = useRef('');  // Ref to store the latest value of searchInput
     const [isFocused, setIsFocused] = useState(false); // Track focus state
+    const [placeholderText, setPlaceholderText] = useState("Search");
     const { isDarkMode } = useTheme();
     const theme = isDarkMode ? darkTheme : lightTheme;
-    // Handle input change and update both state and ref
+
+    // Handle input change and update state
     const handleSearchChange = (text: string) => {
         setSearchInput(text);
-        searchInputRef.current = text;  // Update the ref with the latest input
-        onSearchInputChange(text);      // Call the parent component's search function
+        onSearchInputChange(text); // Call the parent component's search function
     };
 
-    // Handle onFocus event and call passed onFocus handler if provided
+    // Handle onFocus event
     const handleFocus = () => {
         setIsFocused(true);
-        setSearchInput(""); // Update the ref 
-        if (onFocus) onFocus(); // Call the parent-provided onFocus handler
+        setPlaceholderText("Search");
+        setSearchInput(placeholderText !== "Search" ? placeholderText : "");
+        if (onFocus) onFocus();
     };
 
-    // Handle onBlur event and call passed onBlur handler with the ref value
+    // Handle onBlur event
     const handleBlur = () => {
         setIsFocused(false);
-        if (onBlur) onBlur(searchInputRef.current); // Pass the current ref value to onBlur
+        if (searchInput.trim() !== '') {
+            setPlaceholderText(searchInput); // Set placeholder to the search term
+            setSearchInput(''); // Clear the input field
+        } else {
+            setPlaceholderText("Search"); // Keep the placeholder as "Search" if input is empty
+        }
+        if (onBlur) onBlur(searchInput); // Pass the current searchInput to onBlur
     };
 
     return (
@@ -44,7 +51,7 @@ function SearchBarComponent({ FGColor, onSearchInputChange, placeHolderColor, on
                 <SearchIcon size={15} color={theme.componentTextColour} />
                 <TextInput
                     style={[styles.input, { color: theme.componentTextColour }]} // Use FGColor for input text color
-                    placeholder="Search" // Updated placeholder text
+                    placeholder= {placeholderText} // Updated placeholder text
                     value={searchInput}
                     onChangeText={handleSearchChange}
                     onFocus={handleFocus}  // Use custom focus handler
