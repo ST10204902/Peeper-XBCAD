@@ -8,7 +8,7 @@ export class Student implements StudentData {
   student_id: string;
   studentNumber: string;
   email: string;
-  profilePhotoURL?: string;
+  profilePhotoId?: string;
   activeOrgs: string[];
   locationData: {
     [sessionLog_id: string]: SessionLog;
@@ -19,7 +19,7 @@ export class Student implements StudentData {
     this.student_id = data.student_id ?? "";
     this.studentNumber = data.studentNumber ?? "";
     this.email = data.email ?? "";
-    this.profilePhotoURL = data.profilePhotoURL ?? ""; // Initialize with default value
+    this.profilePhotoId = data.profilePhotoId ?? ""; // Initialize with default value
     this.activeOrgs = data.activeOrgs ?? [];
     this.locationData = {};
     this.darkMode = data.darkMode ?? false;
@@ -28,10 +28,9 @@ export class Student implements StudentData {
       if (data.locationData.hasOwnProperty(key)) {
         const sessionLogData = data.locationData[key];
         this.locationData[key] = new SessionLog(sessionLogData);
-      }
-    }
-  }
-
+      }
+    }
+  }
 
   static async fetchById(student_id: string): Promise<Student | null> {
     const data = await DatabaseUtility.getData<StudentData>(
@@ -65,7 +64,7 @@ export class Student implements StudentData {
       student_id: this.student_id,
       studentNumber: this.studentNumber,
       email: this.email,
-      profilePhotoURL: this.profilePhotoURL,
+      profilePhotoId: this.profilePhotoId,
       activeOrgs: this.activeOrgs ?? [],
       locationData: locationDataJSON,
       darkMode: this.darkMode,
