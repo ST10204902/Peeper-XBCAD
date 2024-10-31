@@ -12,6 +12,7 @@ export class Organisation implements OrganisationData {
   orgPhoneNo: string;
   orgLatitude: number;
   orgLongitude: number;
+  distance?: string;
 
   constructor(data: OrganisationData) {
     this.org_id = data.org_id;

@@ -7,7 +7,7 @@ import { lightTheme, darkTheme } from '../styles/themes';
 import { DatabaseUtility } from "../utils/DatabaseUtility";
 import { OrganisationData } from "../databaseModels/OrganisationData";
 import { Linking } from 'react-native';
-import MyMaths from "../utils/MyMaths";
+import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 
 
 
@@ -18,7 +18,7 @@ import MyMaths from "../utils/MyMaths";
  * @listButton button to be rendered inside of the item when expanded
  */
 interface Props {
-  orgData: OrganisationData;
+  orgData: Organisation;
   orgAddress: OrgAddressData;
   oddOrEven: "odd" | "even";
   listButton: ReactNode;
@@ -69,27 +69,12 @@ export default function ExpandableOrgListItem({
 
   // Hook for setting the expanded state of the item
   const [expanded, setExpanded] = useState(false);
-  const [distanceInKm, setDistanceInKm] = useState<string>('0');
-  const [validDistance, setValidDistance] = useState<boolean>(false);
 
   // Function to format the address for the API
   function formatAddress(orgAddress: OrgAddressData): string {
     const { streetAddress, suburb, city, province, postalCode } = orgAddress;
     return `${streetAddress}, ${suburb}, ${city}, ${province}, ${postalCode}`;
   }
-
-  const distanceNumber = () => {
-    if (!userLocation) {
-      return
-    }
-     const distance = MyMaths.haversineDistance(userLocation.coords.latitude, userLocation.coords.longitude, orgData.orgLatitude, orgData.orgLongitude);
-     setDistanceInKm(distance.toFixed(0));
-      setValidDistance(true);
-  }
-
-  useEffect(() => {
-    distanceNumber();
-  }, [userLocation]);
 
   const openMaps = () => {
     const { orgLatitude, orgLongitude } = orgData;
@@ -100,13 +85,13 @@ export default function ExpandableOrgListItem({
   return !expanded ? (
     <View style={containerStyle} onTouchEnd={() => setExpanded(true)}>
       <Text style={[styles.orgName, { color: theme.fontRegular }]}>{orgData.orgName}</Text>
-      {validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>}
+      {orgData.distance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{orgData.distance}km</Text>}
     </View>
   ) : (
     <View style={expandedContainerStyle} onTouchEnd={() => setExpanded(false)}>
       <View style={expandedStyles.firstRow}>
         <Text style={[expandedStyles.orgName, { color: theme.fontRegular }]}>{orgData.orgName}</Text>
-        {validDistance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{distanceInKm}km</Text>}
+        {orgData.distance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{orgData.distance}km</Text>}
       </View>
 
       <Text style={[expandedStyles.addressRow, { color: theme.componentTextColour }]}>
@@ -152,7 +137,7 @@ const styles = StyleSheet.create({
     fontWeight: "regular",
     marginEnd: 11,
     fontSize: 17,
-    alignSelf: "flex-end",
+    alignSelf: "center",
   },
 });
 
@@ -189,7 +174,7 @@ const expandedStyles = StyleSheet.create({
     fontWeight: "regular",
     marginEnd: 11,
     fontSize: 17,
-    alignSelf: "flex-start",
+    alignSelf: "center",
   },
   buttonContainer: {
     height: 56,

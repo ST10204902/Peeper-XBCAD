@@ -5,6 +5,7 @@ import React from "react";
 import * as Location from "expo-location";
 import { useTheme } from '../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
+import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 /**
  * Defines the properties to be passed to the expandable Orgs List
  * @items List of organisations
@@ -13,7 +14,7 @@ import { lightTheme, darkTheme } from '../styles/themes';
  * @onListButtonClicked Function run when the listButtonComp is clicked
  */
 interface Props {
-  items: OrganisationData[];
+  items: Organisation[];
   listButtonComp: React.ReactNode;
   onListButtonClicked: (selectedOrg: OrganisationData) => void;
   userLocation?: Location.LocationObject;
@@ -42,7 +43,6 @@ export default function ExpandableOrgList({
   data={items}
   renderItem={({ index, item }) => (
     <ExpandableOrgListItem
-      userLocation={userLocation}
       orgData={item}
       orgAddress={item.orgAddress}
       oddOrEven={index % 2 === 0 ? "even" : "odd"}
