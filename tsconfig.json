@@ -1,15 +1,22 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "types": ["jest", "node"],
+    "types": [
+      "jest",
+      "node"
+    ],
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types", "./@types"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./@types"
+    ],
+    "jsx": "react-native"
   },
-  "include": ["src/**/*", "tests/**/*"]
-  
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "extends": "expo/tsconfig.base"
 }
-
-
