@@ -9,8 +9,14 @@ import CurrentTrackingBanner from "./src/components/CurrentTrackingBanner";
 import AppNavigator from "./src/screens/Navigation";
 import * as Notifications from "expo-notifications";
 import { ThemeProvider } from "./src/styles/ThemeContext";
-import { Platform } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+} from "react-native";
 import "react-native-get-random-values";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 /**
  * App component
@@ -43,53 +49,49 @@ export default function App() {
     );
   }
 
+  // Configure how notifications are handled
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+    }),
+  });
 
- 
+  // Set up Android notification channel
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("tracking", {
+      name: "Location Tracking",
+      importance: Notifications.AndroidImportance.HIGH,
+      enableVibrate: false,
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      enableLights: false,
+      showBadge: true,
+    });
+  }
 
   // Configure how notifications are handled
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-    priority: Notifications.AndroidNotificationPriority.HIGH
-  }),
-});
-
-// Set up Android notification channel
-if (Platform.OS === 'android') {
-  Notifications.setNotificationChannelAsync('tracking', {
-    name: 'Location Tracking',
-    importance: Notifications.AndroidImportance.HIGH,
-    enableVibrate: false,
-    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-    enableLights: false,
-    showBadge: true,
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+    }),
   });
-}
- 
 
-  // Configure how notifications are handled
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-    priority: Notifications.AndroidNotificationPriority.HIGH
-  }),
-});
-
-// Set up Android notification channel
-if (Platform.OS === 'android') {
-  Notifications.setNotificationChannelAsync('tracking', {
-    name: 'Location Tracking',
-    importance: Notifications.AndroidImportance.HIGH,
-    enableVibrate: false,
-    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-    enableLights: false,
-    showBadge: true,
-  });
-}
+  // Set up Android notification channel
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("tracking", {
+      name: "Location Tracking",
+      importance: Notifications.AndroidImportance.HIGH,
+      enableVibrate: false,
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      enableLights: false,
+      showBadge: true,
+    });
+  }
 
   // Cache for storing the jwt token used for persistent login
   const localTokenCache = {
@@ -135,19 +137,32 @@ if (Platform.OS === 'android') {
   };
 
   return (
-    <ClerkProvider publishableKey={publishableKey} tokenCache={localTokenCache}>
-      <FontLoader>
-        <ThemeProvider>
-          <RecoilRoot>
-            <CurrentTrackingBanner />
-            <NavigationContainer>
-              <SafeAreaView></SafeAreaView>
-              <AppNavigator />
-            </NavigationContainer>
-          </RecoilRoot>
-        </ThemeProvider>
-      </FontLoader>
-    </ClerkProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ClerkProvider
+        publishableKey={publishableKey}
+        tokenCache={localTokenCache}
+      >
+        <FontLoader>
+          <ThemeProvider>
+            <RecoilRoot>
+              <CurrentTrackingBanner />
+              <NavigationContainer>
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  style={{ flex: 1 }}
+                >
+                  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <>
+                      <AppNavigator />
+                    </>
+                  </TouchableWithoutFeedback>
+                </KeyboardAvoidingView>
+              </NavigationContainer>
+            </RecoilRoot>
+          </ThemeProvider>
+        </FontLoader>
+      </ClerkProvider>
+    </GestureHandlerRootView>
   );
 }
 // End of File
