@@ -117,18 +117,17 @@ const RegisterScreen: React.FC = () => {
           }
 
           // const to save the user once their profile photo has been added
-          const handleSaveStudent = async (profilePhotoURL: string) => {
-            // Create a new student instance
+          const handleSaveStudent = async (avatarId: string) => {
             const newStudentData: StudentData = {
               student_id: uid,
               studentNumber: signUp.emailAddress
                 ? signUp.emailAddress.split("@")[0]
-                : "", // Extract part before @
+                : "",
               email: signUp.emailAddress || "",
               activeOrgs: [],
               locationData: {},
-              profilePhotoURL: profilePhotoURL,
-              darkMode: false, // Add this line to set default dark mode value
+              profilePhotoId: avatarId,
+              darkMode: false,
             };
 
             const newStudent = new Student(newStudentData);
