@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
-import StudentHeaderComponent from "../../components/StudentheaderComponent";
+import StudentheaderComponent from "../../components/StudentheaderComponent";
 import CustomButton from "../../components/CustomButton";
 import EmergencyContacts from "../../components/EmergencyContacts";
 import { useUser } from "@clerk/clerk-expo";
