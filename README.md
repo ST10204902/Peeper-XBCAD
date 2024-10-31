@@ -56,7 +56,7 @@ npm install --legacy-peer-deps
 
 The application can be run in different ways:
 
-run the `npx expo start` command in terminal and scan the Qr code with an IPhone/Android phone
+run the `npx expo start` command in terminal and scan the QR code with an IPhone/Android phone
 
 ## Related Links
 
