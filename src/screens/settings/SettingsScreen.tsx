@@ -15,6 +15,8 @@ import { useTheme } from "../../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../../styles/themes";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import PDFShareComponent from "../../components/PDFShareComponent";
+import { useRecoilState } from "recoil";
+import { trackingState } from "../../atoms/atoms";
 
 export default function SettingsScreen() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -22,6 +24,7 @@ export default function SettingsScreen() {
   const { signOut } = useAuth(); // used to sign the Clerk user out
   const { user } = useUser(); // Clerk user for deleting the user's account
   const navigation = useNavigation<any>();
+  const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
 
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
   const { currentStudent, updateCurrentStudent } = useCurrentStudent(); // Getting student in the database
@@ -79,12 +82,18 @@ export default function SettingsScreen() {
 
   const handleDataDeletion = () => {
     currentStudent?.delete();
+    if (trackingAtom.isTracking) {
+      setTrackingAtom({ isTracking: false, organizationName: "" });
+    }
     user?.delete();
     alert("User successfully deleted");
   };
 
   const handleSignOut = async () => {
     try {
+      if (trackingAtom.isTracking) {
+        setTrackingAtom({ isTracking: false, organizationName: "" });
+      }
       await signOut();
       console.log("User logged out successfully");
     } catch (error) {
@@ -130,7 +139,8 @@ export default function SettingsScreen() {
           ))}
 
           <View style={styles.buttonContainer}>
-            <PDFShareComponent />
+            {/** PDF Share Component is only shown when the user is not tracking */}
+           {!trackingAtom.isTracking && <PDFShareComponent />}
             <CustomButton
               title="REQUEST DATA DELETION"
               fontFamily="Quittance"
