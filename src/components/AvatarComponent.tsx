@@ -13,49 +13,49 @@ import AvatarArrowLeft from "../assets/icons/AvatarArrowLeft";
 
 const avatars = [
   {
-    id: "1",
+    id: 1,
     src: require("../assets/Avatars/A1.png"),
-    uri: "../assets/Avatars/A1.png",
+    avatarId: "avatar_1",
   },
   {
-    id: "2",
+    id: 2,
     src: require("../assets/Avatars/A2.png"),
-    uri: "../assets/Avatars/A2.png",
+    avatarId: "avatar_2",
   },
   {
-    id: "3",
+    id: 3,
     src: require("../assets/Avatars/A3.png"),
-    uri: "../assets/Avatars/A3.png",
+    avatarId: "avatar_3",
   },
   {
-    id: "4",
+    id: 4,
     src: require("../assets/Avatars/A4.png"),
-    uri: "../assets/Avatars/A4.png",
+    avatarId: "avatar_4",
   },
   {
-    id: "5",
+    id: 5,
     src: require("../assets/Avatars/A5.png"),
-    uri: "../assets/Avatars/A5.png",
+    avatarId: "avatar_5",
   },
   {
-    id: "6",
+    id: 6,
     src: require("../assets/Avatars/A6.png"),
-    uri: "../assets/Avatars/A6.png",
+    avatarId: "avatar_6",
   },
   {
-    id: "7",
+    id: 7,
     src: require("../assets/Avatars/A7.png"),
-    uri: "../assets/Avatars/A7.png",
+    avatarId: "avatar_7",
   },
   {
-    id: "8",
+    id: 8,
     src: require("../assets/Avatars/A8.png"),
-    uri: "../assets/Avatars/A8.png",
+    avatarId: "avatar_8",
   },
   {
-    id: "9",
+    id: 9,
     src: require("../assets/Avatars/A9.png"),
-    uri: "../assets/Avatars/A9.png",
+    avatarId: "avatar_9",
   },
 ];
 
@@ -98,7 +98,7 @@ const AvatarComponent = ({
 
   useEffect(() => {
     // Call the callback function with the URI of the selected avatar
-    onAvatarSelected(avatars[selectedAvatar].uri);
+    onAvatarSelected(avatars[selectedAvatar].avatarId);
   }, [selectedAvatar]);
 
   const renderItem = ({ item }: { item: { id: string; src: any } }) => {
@@ -131,7 +131,10 @@ const AvatarComponent = ({
       )}
 
       <FlatList
-        data={avatars}
+        data={avatars.map(avatar => ({
+          id: avatar.id.toString(),
+          src: avatar.src
+        }))}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
