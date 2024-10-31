@@ -174,7 +174,7 @@ export default function LandingScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Map Component displaying selected organisation */}
-      <MapComponent selectedOrganisation={selectedOrganisation} />
+      <MapComponent selectedOrganisation={selectedOrganisation}   />
 
       {/* Tracking Status or Popup */}
       {tracking.isTracking ? (
