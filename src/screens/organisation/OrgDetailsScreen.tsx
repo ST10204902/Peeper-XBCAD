@@ -5,27 +5,27 @@ import CustomButton from "../../components/CustomButton";
 import EmergencyContacts from "../../components/EmergencyContacts";
 import { useUser } from "@clerk/clerk-expo";
 import MapSessionHistory from "../../components/MapSessionHistory";
-import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
-import { useTheme } from '../../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../../styles/themes';
+import { useTheme } from "../../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../../styles/themes";
 
 const OrgDetailsScreen = () => {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   const clerkUser = useUser();
-  const {
-    currentStudent,
-    error,
-    loading,
-    saving,
-    updateCurrentStudent,
-  } = useCurrentStudent();
-  const navigation = useNavigation<NavigationProp<RootStackParamsList, "OrgDetails">>();
+  const { currentStudent, error, loading, saving, updateCurrentStudent } =
+    useCurrentStudent();
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamsList, "OrgDetails">>();
 
   // Method to fetch the student data
   const fetchStudent = async () => {
@@ -56,16 +56,22 @@ const OrgDetailsScreen = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.paddedContainer}>
           {loading ? (
             <Text>Loading...</Text>
           ) : (
-            currentStudent && <StudentheaderComponent currentStudent={currentStudent} />
+            currentStudent && (
+              <StudentHeaderComponent currentStudent={currentStudent} />
+            )
           )}
           <CustomButton
-            onPress={() => { navigation.navigate("ManageOrgsScreen", currentStudent!); }}
+            onPress={() => {
+              navigation.navigate("ManageOrgsScreen", currentStudent!);
+            }}
             title="Organisation Management"
             textColor={theme.fontRegular}
             buttonColor="#A4DB51"
@@ -75,11 +81,17 @@ const OrgDetailsScreen = () => {
             cornerRadius={20}
             lineHeight={30}
           />
-          <Text style={[styles.BeSafeText, { color: theme.fontRegular }]}>Session History</Text>
+          <Text style={[styles.BeSafeText, { color: theme.fontRegular }]}>
+            Session History
+          </Text>
         </View>
-        {currentStudent && <MapSessionHistory currentStudent={currentStudent} />}
+        {currentStudent && (
+          <MapSessionHistory currentStudent={currentStudent} />
+        )}
         <View style={styles.paddedContainer}>
-          <Text style={[styles.BeSafeText, { color: theme.fontRegular }]}>Be Safe!</Text>
+          <Text style={[styles.BeSafeText, { color: theme.fontRegular }]}>
+            Be Safe!
+          </Text>
           <EmergencyContacts />
         </View>
       </ScrollView>

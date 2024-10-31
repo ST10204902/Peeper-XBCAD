@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, View } from "react-native";
+import { KeyboardAvoidingView, Platform, SafeAreaView, View } from "react-native";
 import CustomButton from "../components/CustomButton"; // Ensure the path is correct
 import styles from "../styles/LoginScreenStyle"; // Ensure the path is correct
 import registerStyles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
@@ -130,7 +130,7 @@ const LoginScreen: React.FC = () => {
    * The LoginScreen component renders the login screen for the application.
    */
   return (
-    <SafeAreaView
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios'? 'padding' : 'height'}
       style={[
         pendingVerification ? registerStyles.container : styles.container,
         { backgroundColor: styles.container.backgroundColor },
@@ -201,7 +201,7 @@ const LoginScreen: React.FC = () => {
           Don't have an account? Register
         </LoginRegisterHyperlink>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
