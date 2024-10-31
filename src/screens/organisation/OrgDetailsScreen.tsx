@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
-import StudentHeaderComponent from "../../components/StudentHeaderComponent";
+import StudentheaderComponent from "../../components/StudentheaderComponent";
 import CustomButton from "../../components/CustomButton";
 import EmergencyContacts from "../../components/EmergencyContacts";
 import { useUser } from "@clerk/clerk-expo";
@@ -62,7 +62,7 @@ const OrgDetailsScreen = () => {
           {loading ? (
             <Text>Loading...</Text>
           ) : (
-            currentStudent && <StudentHeaderComponent currentStudent={currentStudent} />
+            currentStudent && <StudentheaderComponent currentStudent={currentStudent} />
           )}
           <CustomButton
             onPress={() => { navigation.navigate("ManageOrgsScreen", currentStudent!); }}
