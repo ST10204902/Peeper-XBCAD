@@ -4,7 +4,7 @@ export interface StudentData {
   student_id: string;
   studentNumber: string;
   email: string;
-  profilePhotoURL?: string;
+  profilePhotoId?: string;
   activeOrgs: string[];
   locationData: {
     [sessionLog_id: string]: SessionLogData;
