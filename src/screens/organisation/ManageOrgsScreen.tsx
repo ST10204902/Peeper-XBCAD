@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList, Alert, ActivityIndicator } from "react-native";
 import { OrgAddressData } from "../../databaseModels/OrgAddressData";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
@@ -13,13 +13,13 @@ import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
-import { set } from "firebase/database";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import TrackingPopup from "../../components/TrackingPopup";
 import { useLocationTracking } from "../../hooks/useLocationTracking";
 import { useTheme } from '../../styles/ThemeContext';
 import { lightTheme, darkTheme } from '../../styles/themes';
 import useAllOrganisations from "../../hooks/useAllOrganisations";
+import MyMaths from "../../utils/MyMaths";
 
 /**
  * Component For the ManageOrgsScreen
@@ -61,18 +61,14 @@ export default function ManageOrgsScreen() {
   const clerkUser = useUser();
   const { currentStudent, error, loading, updateCurrentStudent } = useCurrentStudent();
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
-  const { tracking, startTracking } =
-    useLocationTracking(); // Import location tracking functions from hook
-  const [displayedOrganisations, setDisplayedOrganisations] = useState<OrganisationData[]>(
-    []
-  );
-  const {allOrganisations} = useAllOrganisations();
-  const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
+  const { tracking, startTracking } = useLocationTracking(); // Import location tracking functions from hook
+  const [displayedOrganisations, setDisplayedOrganisations] = useState<Organisation[]>([]);
+  const { allOrganisations } = useAllOrganisations();
+  const [studentOrganisations, setStudentOrganisations] = useState<Organisation[]>([]);
   const [studentsOrgsLoaded, setStudentsOrgsLoaded] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("name_asc");
-  const [location, setLocation] = useState< Location.LocationObject>(); // State to hold location data
-  const [selectedOrganisation, setSelectedOrganisation] =
-    useState<Organisation | null>(null);
+  const [location, setLocation] = useState<Location.LocationObject>(); // State to hold location data
+  const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null);
   let itemList: OrganisationData[] = [];
 
   // Method to fetch data
@@ -81,44 +77,75 @@ export default function ManageOrgsScreen() {
       console.error("Clerk user not found in ManageOrgsScreen");
       return;
     }
-    // Fetch all organisations and student's organisations
-    
+    if (!allOrganisations || allOrganisations.length === 0) {
+      console.log("All organisations not loaded yet");
+      return;
+    }
+
     const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs ?? []);
 
+    let updatedAllOrganisations = allOrganisations;
+    let updatedStudentOrgs = studentOrgs;
+
+    if (location !== undefined) {
+      updatedAllOrganisations = allOrganisations.map((org) => {
+        const distance = MyMaths.haversineDistance(
+          location.coords.latitude,
+          location.coords.longitude,
+          org.orgLatitude,
+          org.orgLongitude
+        );
+        org.distance = distance.toFixed(0);
+        return org; // org is still an instance of Organisation
+      });
+  
+      if (studentOrgs && studentOrgs.length > 0) {
+        updatedStudentOrgs = studentOrgs.map((studentOrg) => {
+          const distance = MyMaths.haversineDistance(
+            location.coords.latitude,
+            location.coords.longitude,
+            studentOrg.orgLatitude,
+            studentOrg.orgLongitude
+          );
+          studentOrg.distance = distance.toFixed(0);
+          return studentOrg; // studentOrg is still an instance of Organisation
+        });
+      }
+    }
     // Set the state variables with the fetched data
     setDisplayedOrganisations(
-      allOrganisations
-        .filter((org) => org && typeof org.toJSON === "function")
-        .map((org) => org.toJSON())
-        .sort((a, b) => a.orgName.localeCompare(b.orgName))
+      updatedAllOrganisations.sort((a, b) => a.orgName.localeCompare(b.orgName))
     );
-    setStudentOrganisations(
-      studentOrgs
-        .filter((org) => org && typeof org.toJSON === "function")
-        .map((org) => org.toJSON())
-    );
+  
+    if (updatedStudentOrgs && updatedStudentOrgs.length > 0) {
+      setStudentOrganisations(updatedStudentOrgs);
+    }
     setStudentsOrgsLoaded(true);
   };
 
-  // Run the fetchData method when the screen is focused (navigated to) or when currentStudent changes
+  // Run the fetchData method when currentStudent or allOrganisations changes
   useEffect(() => {
-    if (currentStudent) {
-      fetchData();
+    if (currentStudent && allOrganisations && allOrganisations.length > 0) {
+      (async () => {
+        try {
+          await fetchData();
+        } catch (error) {
+          console.error(error);
+        }
+      })();
     }
-  }, [currentStudent]);
-
+  }, [currentStudent, allOrganisations, location]);
 
   // Fetch the location data when the component mounts
   useEffect(() => {
-    let isMounted = true; // To prevent state updates if the component unmounts
-
+    let isCancelled = false;
     (async () => {
       try {
         // Request permission to access location
         let { status } = await Location.requestForegroundPermissionsAsync();
 
-        if (status !== 'granted') {
-          Alert.alert('Permission Denied', 'Permission to access location was denied.');
+        if (status !== "granted") {
+          Alert.alert("Permission Denied", "Permission to access location was denied.");
           return;
         }
 
@@ -127,19 +154,18 @@ export default function ManageOrgsScreen() {
           accuracy: Location.Accuracy.Highest,
         });
 
-        if (isMounted) {
+        if (!isCancelled) {
           setLocation(currentLocation);
-          console.log('Location:', currentLocation);
+          console.log("Location:", currentLocation);
         }
       } catch (error) {
-        Alert.alert('Error', 'An error occurred while fetching the location.');
+        Alert.alert("Error", "An error occurred while fetching the location.");
         console.error(error);
       }
     })();
-
-    // Cleanup function to set isMounted to false if the component unmounts
+    // Cleanup function to cancel the fetch operation
     return () => {
-      isMounted = false;
+      isCancelled = true;
     };
   }, []);
 
@@ -171,13 +197,11 @@ export default function ManageOrgsScreen() {
       // Start tracking the organisation
       await startTracking(selectedOrganisation);
       setIsPopupVisible(false);
-      }
-      catch (error) {
+    } catch (error) {
       console.error("Error starting tracking:", error);
       setIsPopupVisible(false);
     }
   };
-
 
   /**
    * This function activates when the user clicks on the button for a given
@@ -185,7 +209,6 @@ export default function ManageOrgsScreen() {
    * @param org Corresponding organisation
    */
   function onAllOrgsListButtonPressed(org: OrganisationData) {
-    
     if (!currentStudent) {
       return;
     }
@@ -204,33 +227,63 @@ export default function ManageOrgsScreen() {
     updateCurrentStudent({ activeOrgs: [...currentStudent.activeOrgs, org.org_id] });
   }
 
-  function changeSortBy(value: string): void {
+  const changeSortBy = useCallback((value: string): void => {
     setSortBy(value);
-    let sortedOrgs = displayedOrganisations;
+    let sortedOrgs = [...displayedOrganisations]; // Create a copy to avoid mutating state directly
     switch (value) {
       case "name_asc": {
         sortedOrgs.sort((a, b) => a.orgName.localeCompare(b.orgName));
         break;
       }
-
       case "name_desc": {
         sortedOrgs.sort((a, b) => b.orgName.localeCompare(a.orgName));
+        break;
+      }
+      case "distance_asc": {
+        sortedOrgs.sort((a, b) => {
+          // Handle cases where distance might be undefined
+          if (a.distance == null && b.distance == null) return 0;
+          if (a.distance == null) return 1;
+          if (b.distance == null) return -1;
+          return Number(a.distance) - Number(b.distance);
+        });
+        break;
+      }
+      case "distance_desc": {
+        sortedOrgs.sort((a, b) => {
+          if (a.distance == null && b.distance == null) return 0;
+          if (a.distance == null) return 1;
+          if (b.distance == null) return -1;
+          return Number(b.distance) - Number(a.distance);
+        });
         break;
       }
       default:
         break;
     }
-  }
+    setDisplayedOrganisations(sortedOrgs); // Update the state with sorted organisations
+  }, [displayedOrganisations]);
 
   const handleBlur = (searchInput: string) => {
+    let filteredOrgs = [];
+  
     if (searchInput.trim() === "") {
-      setDisplayedOrganisations(allOrganisations);
+      if (allOrganisations && allOrganisations.length > 0) {
+        filteredOrgs = [...allOrganisations]; // Create a copy
+      } else {
+        return;
+      }
+    } else {
+      filteredOrgs = allOrganisations.filter((org) =>
+        org.orgName.toLowerCase().includes(searchInput.toLowerCase().trim())
+      );
+    }
+  
+    if (filteredOrgs.length === 0) {
+      Alert.alert("No organisations found", "Please try a different search term.");
       return;
     }
-
-    let filteredOrgs = allOrganisations.filter((org) =>
-      org.orgName.toLowerCase().includes(searchInput.toLowerCase().trim())
-    );
+  
     switch (sortBy) {
       case "name_asc": {
         filteredOrgs.sort((a, b) => a.orgName.localeCompare(b.orgName));
@@ -240,14 +293,28 @@ export default function ManageOrgsScreen() {
         filteredOrgs.sort((a, b) => b.orgName.localeCompare(a.orgName));
         break;
       }
+      case "distance_asc": {
+        filteredOrgs.sort((a, b) => {
+          if (a.distance == null && b.distance == null) return 0;
+          if (a.distance == null) return 1;
+          if (b.distance == null) return -1;
+          return  Number(a.distance) - Number(b.distance);
+        });
+        break;
+      }
+      case "distance_desc": {
+        filteredOrgs.sort((a, b) => {
+          if (a.distance == null && b.distance == null) return 0;
+          if (a.distance == null) return 1;
+          if (b.distance == null) return -1;
+          return Number(b.distance) - Number(a.distance);
+        });
+        break;
+      }
       default:
         break;
     }
-
-    if (filteredOrgs.length === 0) {
-      Alert.alert("No organisations found", "Please try a different search term.");
-      return;
-    }
+  
     setDisplayedOrganisations(filteredOrgs);
   };
 
@@ -273,30 +340,31 @@ export default function ManageOrgsScreen() {
     <View style={[styles.page, { backgroundColor: theme.background }]}>
       <Text style={[styles.pageHeading, { color: theme.fontRegular }]}>Your Organisations</Text>
 
-<View style={styles.componentWrapper}>
-      {studentOrganisations.length > 0 ? (
-        <ExpandableOrgList
-          userLocation={location}
-          items={studentOrganisations}
-          onListButtonClicked={onStudentOrgsListButtonPressed}
-          listButtonComp={
-            <CustomButton
-              onPress={() => {}}
-              title="Start Tracking"
-              textSize={18}
-              buttonColor="#A4DB51"
-              textColor={theme.fontRegular}
-              fontFamily="Rany-Bold"
-            />
-          }
-        />
-      ) : studentsOrgsLoaded ? (
-        <Text> Select up to 4 organisations list below</Text>
-      ) : (
-        <ActivityIndicator/>
-      )}
+      <View style={styles.componentWrapper}>
+        {studentOrganisations.length > 0 ? (
+          <ExpandableOrgList
+            items={studentOrganisations}
+            onListButtonClicked={onStudentOrgsListButtonPressed}
+            listButtonComp={
+              <CustomButton
+                onPress={() => {}}
+                title="Start Tracking"
+                textSize={18}
+                buttonColor="#A4DB51"
+                textColor={theme.fontRegular}
+                fontFamily="Rany-Bold"
+              />
+            }
+          />
+        ) : studentsOrgsLoaded ? (
+          <Text> Select up to 4 organisations list below</Text>
+        ) : (
+          <ActivityIndicator />
+        )}
       </View>
-      <Text style={[styles.sectionHeading, { color: theme.fontRegular }]}>Organisation Management</Text>
+      <Text style={[styles.sectionHeading, { color: theme.fontRegular }]}>
+        Organisation Management
+      </Text>
       <View style={styles.buttonWrapper}>
         <CustomButton
           onPress={handleRequestNewOrganisation}
@@ -343,6 +411,8 @@ export default function ManageOrgsScreen() {
             options={[
               { label: "Name (A-Z)", value: "name_asc" },
               { label: "Name (Z-A)", value: "name_desc" },
+              { label: "Distance (Nearest)", value: "distance_asc" },
+              { label: "Distance (Farthest)", value: "distance_desc" },
             ]}
             placeholder="Sort By"
             FGColor={theme.componentTextColour}
@@ -352,6 +422,7 @@ export default function ManageOrgsScreen() {
           />
         </View>
       </View>
+      {displayedOrganisations.length > 0 ? (
       <ExpandableOrgList
         userLocation={location}
         items={displayedOrganisations}
@@ -359,7 +430,7 @@ export default function ManageOrgsScreen() {
         listButtonComp={
           <CustomButton
             onPress={() => {}}
-            title="Add Organisation"
+            title="Add"
             textSize={14}
             buttonColor="#D9E7FF"
             textColor={theme.fontRegular}
@@ -367,12 +438,15 @@ export default function ManageOrgsScreen() {
             addFlex={true}
           />
         }
-      />
+      />) : (
+        <ActivityIndicator />
+      )}
+
     </View>
   );
 
   if (loading) {
-    return <ActivityIndicator/>;
+    return <ActivityIndicator />;
   }
 
   if (error) {
@@ -384,8 +458,8 @@ export default function ManageOrgsScreen() {
   }
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
-       {/* Tracking Popup for start/stop tracking */}
-       <TrackingPopup
+      {/* Tracking Popup for start/stop tracking */}
+      <TrackingPopup
         visible={isPopupVisible}
         onStartTracking={handleStartTracking}
         onCancel={() => setIsPopupVisible(false)}
