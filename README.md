@@ -51,11 +51,6 @@ cd Peeper-XBCAD
 ```bash
 npm install --legacy-peer-deps
 ```
-3. Start the development server:
-```bash
-npm start
-```
-
 
 ### Running the App
 
