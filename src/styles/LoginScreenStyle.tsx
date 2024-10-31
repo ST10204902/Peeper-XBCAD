@@ -11,11 +11,11 @@ const styles = StyleSheet.create({
   headingContainer: {
     alignSelf: 'flex-start', // Align to the left
     marginBottom: 15, // Add space below the heading
-    marginTop: 195, // Add space above the heading
+    marginTop: 40, // Add space above the heading
   },
   inputContainer: {
     width: '100%', // Ensure the input takes the full width
-    marginBottom: 40, // Add space below the input
+    marginBottom: 20, // Add space below the input
   },
   buttonContainer: {
     width: '80%', // Ensure the button takes the full width
@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   },
   hyperlinkContainer: {
     width: '100%', // Ensure the hyperlink takes the full width
+    marginBottom:20,
   },
 });
 

@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Modal, StyleSheet } from "react-native";
 import CustomButton from "./CustomButton"; // Assuming your CustomButton is in the same folder
+import { darkTheme, lightTheme } from "../styles/themes";
+import { useTheme } from "../styles/ThemeContext";
 
 interface TrackingPopupProps {
   visible: boolean; // Controls visibility of the popup
@@ -9,16 +11,18 @@ interface TrackingPopupProps {
 }
 
 const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking, onCancel }) => {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;  
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.modalContainer}>
-        <View style={styles.popup}>
-          <Text style={styles.title}>START TRACKING?</Text>
+        <View style={[styles.popup, { backgroundColor: theme.background }]}>
+          <Text style={[styles.title, { color: theme.componentTextColour }]}>START TRACKING?</Text>
           <View style={styles.buttonContainer}>
             <CustomButton
               title="Start Tracking"
               onPress={onStartTracking}
-              textColor="#161616"
+              textColor= {theme.componentTextColour}
               buttonColor="#A4DB51" // Green color
               fontFamily="Rany-Medium"
               textSize={16}
@@ -27,7 +31,7 @@ const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking,
             <CustomButton
               title="Cancel"
               onPress={onCancel}
-              textColor="#161616"
+              textColor={theme.componentTextColour}
               buttonColor="#EC4E4B" // Red color
               fontFamily="Rany-Medium"
               textSize={16}
