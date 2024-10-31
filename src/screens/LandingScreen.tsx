@@ -18,8 +18,8 @@ import { useLocationTracking } from "../hooks/useLocationTracking"; // Custom ho
 import { useUser } from "@clerk/clerk-expo";
 
 import { useCurrentStudent } from "../hooks/useCurrentStudent";
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
 import { useRecoilState } from "recoil";
 import { trackingState } from "../atoms/atoms";
 import CurrentTrackingBanner from "../components/CurrentTrackingBanner";
@@ -34,8 +34,9 @@ export default function LandingScreen() {
   const [organisations, setOrganisations] = useState<OrganisationData[]>([]); // State to hold organisation data
   const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
-  const { tracking, startTracking} = useLocationTracking(); // Import location tracking functions from hook
-  const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
+  const { tracking, startTracking } = useLocationTracking(); // Import location tracking functions from hook
+  const { currentStudent, error, loading, saving, updateCurrentStudent } =
+    useCurrentStudent();
   const { user } = useUser(); // Get the current authenticated user from Clerk
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<Organisation | null>(null); // State for the selected organisation
@@ -48,16 +49,22 @@ export default function LandingScreen() {
   //                          EFFECTS                          //
   //-----------------------------------------------------------//
 
- 
-
   // Method to fetch data
   const fetchStudentsOrgs = async () => {
     if (!user || !currentStudent) {
-      console.error("User or student data not found while fetching organisations");
+      console.error(
+        "User or student data not found while fetching organisations"
+      );
       return;
     }
-    const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs);
-    setOrganisations(studentOrgs.filter(org => org && typeof org.toJSON === 'function').map((org) => org.toJSON()));
+    const studentOrgs = await Organisation.getStudentsOrgs(
+      currentStudent?.activeOrgs
+    );
+    setOrganisations(
+      studentOrgs
+        .filter((org) => org && typeof org.toJSON === "function")
+        .map((org) => org.toJSON())
+    );
   };
 
   // Fetch organisation data on component mount
@@ -74,15 +81,16 @@ export default function LandingScreen() {
     }
   }, [selectedOrganisation]);
 
-
   useEffect(() => {
-    if (currentStudent?.darkMode !== null && currentStudent?.darkMode !== undefined) {
+    if (
+      currentStudent?.darkMode !== null &&
+      currentStudent?.darkMode !== undefined
+    ) {
       if (isDarkMode !== currentStudent.darkMode) {
         toggleTheme();
       }
     }
   }, [currentStudent?.darkMode]);
-  
 
   //-----------------------------------------------------------//
   //                          METHODS                          //
@@ -113,31 +121,28 @@ export default function LandingScreen() {
     }
     try {
       // Start tracking the organisation
-          console.log("Starting tracking for", selectedOrganisation.orgName);
-          await startTracking(selectedOrganisation);
-      }
-      catch (error) {
+      console.log("Starting tracking for", selectedOrganisation.orgName);
+      await startTracking(selectedOrganisation);
+    } catch (error) {
       console.error("Error starting tracking:", error);
-      }
-    finally {
+    } finally {
       setIsPopupVisible(false);
     }
   };
 
-   //-----------------------------------------------------------//
+  //-----------------------------------------------------------//
   //                      CONDITIONAL RENDERING                //
   //-----------------------------------------------------------//
 
   if (loading) {
     console.log("Loading student data...");
-    return  <ActivityIndicator/>;
+    return <ActivityIndicator />;
   }
 
   if (error) {
     console.error("Error loading student data:", error);
     return <Text>Error: {error.message}</Text>;
   }
-
 
   if (!currentStudent) {
     console.log("Student data not found");
@@ -172,20 +177,20 @@ export default function LandingScreen() {
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
       {/* Map Component displaying selected organisation */}
       <MapComponent selectedOrganisation={selectedOrganisation}   />
 
       {/* Tracking Status or Popup */}
-      {tracking.isTracking ? (
-        <CurrentTrackingBanner />
-      ) : (
-        <TrackingPopup
-          visible={isPopupVisible}
-          onStartTracking={handleStartTracking}
-          onCancel={() => setIsPopupVisible(false)}
-        />
-      )}
+
+      <TrackingPopup
+        visible={isPopupVisible}
+        onStartTracking={handleStartTracking}
+        onCancel={() => setIsPopupVisible(false)}
+      />
+
       {/* Bottom Sheet containing the organisation list */}
       <BottomSheet
         ref={sheetRef}
@@ -197,22 +202,27 @@ export default function LandingScreen() {
         enablePanDownToClose={false}
         backgroundStyle={{ backgroundColor: theme.background }}
       >
-        <View style={[styles.sheetHeader, { backgroundColor: theme.background }]}>
-          <Text style={[styles.sheetHeading, { color: theme.fontRegular }]}>Organisation List</Text>
+        <View
+          style={[styles.sheetHeader, { backgroundColor: theme.background }]}
+        >
+          <Text style={[styles.sheetHeading, { color: theme.fontRegular }]}>
+            Organisation List
+          </Text>
         </View>
         {/* Scrollable list of organisations */}
-        {(organisations.length > 0 && <BottomSheetFlatList
-        
-          data={organisations}
-          // Use organisation ID as key
-          keyExtractor={(item) => item.org_id}
-          // Render each item using renderItem function
-          renderItem={renderItem}
-          contentContainerStyle={[styles.listContentContainer, { backgroundColor: theme.background }]}
-        />
-        )
-        }
-        
+        {organisations.length > 0 && (
+          <BottomSheetFlatList
+            data={organisations}
+            // Use organisation ID as key
+            keyExtractor={(item) => item.org_id}
+            // Render each item using renderItem function
+            renderItem={renderItem}
+            contentContainerStyle={[
+              styles.listContentContainer,
+              { backgroundColor: theme.background },
+            ]}
+          />
+        )}
       </BottomSheet>
     </SafeAreaView>
   );
@@ -234,8 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: "Quittance",
   },
-  listContentContainer: {
-  },
+  listContentContainer: {},
   itemContainer: {
     paddingVertical: 10,
     borderBottomWidth: 1,
@@ -244,15 +253,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   trackingStatusContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 50,
     left: 0,
     right: 0,
-    alignItems: 'center',
+    alignItems: "center",
     zIndex: 1000,
   },
   trackingStatus: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     padding: 15,
     borderRadius: 10,
     shadowColor: "#000",
@@ -266,18 +275,18 @@ const styles = StyleSheet.create({
   },
   trackingText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   stopButton: {
-    backgroundColor: '#ff4444',
+    backgroundColor: "#ff4444",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   stopButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
 });
 //------------------------***EOF***-----------------------------//

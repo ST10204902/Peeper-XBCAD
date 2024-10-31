@@ -106,7 +106,7 @@ export function useLocationTracking() {
 
       // Start location tracking (keep at 5 seconds for location updates)
       locationSubscriptionRef.current = await ExpoLocation.watchPositionAsync(
-        { accuracy: ExpoLocation.Accuracy.High, timeInterval: 5000, distanceInterval: 0 },
+        { accuracy: ExpoLocation.Accuracy.Balanced, timeInterval: 5000, distanceInterval: 0 },
         handleLocationUpdate
       );
 
