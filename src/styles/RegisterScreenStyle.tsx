@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start", // Align to the left
     marginBottom: 15, // Add space below the heading
     marginTop: 40, // Add space above the heading
-    marginTop: 40, // Add space above the heading
   },
   inputContainer: {
     width: "100%", // Ensure the input takes the full width
