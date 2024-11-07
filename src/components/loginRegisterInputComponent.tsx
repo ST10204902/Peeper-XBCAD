@@ -4,8 +4,8 @@ import { TextInput, StyleSheet, View, Text } from 'react-native';
 interface Props {
     FGColor: string;
     onEmailChange: (email: string) => void;
-    label: string; // Add label prop
-    
+    label: string;
+    error?: string;
 }
 
 /**
@@ -17,20 +17,22 @@ interface Props {
  * @param {string} props.FGColor - The foreground color used for the input text and placeholder.
  * @param {function} props.onEmailChange - Callback function to handle changes in the email input.
  * @param {string} props.label - The label text displayed above the input field.
+ * @param {string} props.error - The error message to display below the input field.
  *
  * @example
  * <LoginRegisterInputComponent
  *   FGColor="#000000"
  *   onEmailChange={(email) => console.log(email)}
  *   label="Email Address"
+ *   error="Invalid email format"
  * />
  */
-function LoginRegisterInputComponent({ FGColor, onEmailChange, label }: Props) {
+function LoginRegisterInputComponent({ FGColor, onEmailChange, label, error }: Props) {
     const [email, setEmail] = useState('');
 
     const handleEmailChange = (text: string) => {
         setEmail(text);
-        onEmailChange(text); // Call the parent component's callback
+        onEmailChange(text);
     };
 
     return (
@@ -38,13 +40,18 @@ function LoginRegisterInputComponent({ FGColor, onEmailChange, label }: Props) {
             <Text style={styles.label}>{label}</Text>
             <View style={[styles.container, { borderColor: FGColor }]}>
                 <TextInput
-                    style={[styles.input, { color: FGColor }]} // Use FGColor for input text color
+                    style={[styles.input, { color: FGColor }]}
                     placeholder="Student Email"
                     value={email}
                     onChangeText={handleEmailChange}
-                    placeholderTextColor={FGColor} // Use FGColor for placeholder text color
+                    placeholderTextColor={FGColor}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                 />
             </View>
+            {error && (
+                <Text style={[styles.errorText, { color: '#ff4444' }]}>{error}</Text>
+            )}
         </View>
     );
 }
@@ -75,7 +82,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Rany-Medium',
 
-    }
+    },
+    errorText: {
+        fontSize: 14,
+        marginTop: 5,
+        marginStart: 5,
+    },
 });
 
 export default LoginRegisterInputComponent;
