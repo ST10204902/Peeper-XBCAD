@@ -86,9 +86,25 @@ const RegisterScreen: React.FC = () => {
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       setPendingVerification(true);
     } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      if (err.errors) {
+        const errorCode = err.errors[0]?.code;
+        switch (errorCode) {
+          case "form_identifier_exists":
+            alert("This email address is already registered. Please try another.");
+            break;
+          case "form_identifier_not_found":
+            alert("Email not found. Please register first.");
+            break;
+          default:
+            console.error("Unexpected error:", err);
+            alert("An unexpected error occurred. Please try again later.");
+        }
+      } else if (err.message === "Network Error") {
+        alert("Network error. Please check your connection and try again.");
+      } else {
+        console.error("Unexpected error:", err);
+        alert("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 

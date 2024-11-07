@@ -72,9 +72,7 @@ const LoginScreen: React.FC = () => {
   // }, [isSignedIn, navigation]);
 
   const handlePress = async () => {
-    if (!isLoaded) {
-      return;
-    }
+    if (!isLoaded) return;
 
     try {
       const { supportedFirstFactors } = await signIn?.create({
@@ -86,20 +84,36 @@ const LoginScreen: React.FC = () => {
       ): factor is EmailCodeFactor => {
         return factor.strategy === "email_code";
       };
-      const emailCodeFactor = supportedFirstFactors?.find(isEmailCodeFactor);
 
+      const emailCodeFactor = supportedFirstFactors?.find(isEmailCodeFactor);
       if (emailCodeFactor) {
         const { emailAddressId } = emailCodeFactor;
-
         await signIn?.prepareFirstFactor({
           strategy: "email_code",
           emailAddressId,
         });
       }
-
       setPendingVerification(true);
     } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
+      if (err.errors) {
+        const errorCode = err.errors[0]?.code;
+        switch (errorCode) {
+          case "form_identifier_not_found":
+            alert("Email not found. Please register first.");
+            break;
+          case "invalid_otp":
+            alert("Invalid or expired OTP. Please try again.");
+            break;
+          default:
+            console.error("Unexpected error:", err);
+            alert("An unexpected error occurred. Please try again later.");
+        }
+      } else if (err.message === "Network Error") {
+        alert("Network error. Please check your connection and try again.");
+      } else {
+        console.error("Unexpected error:", err);
+        alert("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
