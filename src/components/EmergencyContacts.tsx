@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Linking, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 /**
@@ -9,6 +9,10 @@ import { LinearGradient } from 'expo-linear-gradient';
  * @returns {JSX.Element} The rendered EmergencyContacts component.
  */
 const EmergencyContacts = () => {
+  const handlePress = (number: string) => {
+    Linking.openURL(`tel:${number}`);
+  };
+
   return (
     <LinearGradient colors={['#ea4b4b', '#fe7143']} style={styles.container}>
       <Text
@@ -20,17 +24,17 @@ const EmergencyContacts = () => {
         <Text style={styles.subHeader}>EMERGENCY CONTACTS</Text>
         <Text style={styles.description}>Know your emergency numbers!</Text>
 
-        <View style={styles.contactRow}>
+        <TouchableOpacity style={styles.contactRow} onPress={() => handlePress('112')}>
           <Text style={styles.contactText}>📱 Emergency: <Text style={styles.contactNumber}>112</Text></Text>
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.contactRow}>
+        <TouchableOpacity style={styles.contactRow} onPress={() => handlePress('10111')}>
           <Text style={styles.contactText}>🚔 Police: <Text style={styles.contactNumber}>10111</Text></Text>
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.contactRow}>
+        <TouchableOpacity style={styles.contactRow} onPress={() => handlePress('10177')}>
           <Text style={styles.contactText}>🚑 Ambulance: <Text style={styles.contactNumber}>10177</Text></Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </LinearGradient>
   );
