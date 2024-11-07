@@ -66,6 +66,7 @@ import TermsAndConditionsPopup from "../components/TermsAndConditionsPopup";
  */
 const RegisterScreen: React.FC = () => {
   const [emailAddress, setEmailAddress] = useState("");
+  const [emailError, setEmailError] = useState("");
   const { isLoaded, signUp, setActive } = useSignUp();
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
@@ -74,8 +75,15 @@ const RegisterScreen: React.FC = () => {
   const [isTermsAndConditionsShown, setIsTermsAndConditionsShown] =
     useState(false);
 
+  const validateEmail = (email: string) => {
+    return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  };
+
   const handleAccept = async () => {
-    if (!isLoaded) {
+    if (!isLoaded) return;
+
+    if (!validateEmail(emailAddress)) {
+      setEmailError("Please enter a valid email address");
       return;
     }
 
@@ -85,6 +93,7 @@ const RegisterScreen: React.FC = () => {
       });
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       setPendingVerification(true);
+      setEmailError("");
     } catch (err: any) {
       if (err.errors) {
         const errorCode = err.errors[0]?.code;
@@ -105,6 +114,9 @@ const RegisterScreen: React.FC = () => {
         console.error("Unexpected error:", err);
         alert("An unexpected error occurred. Please try again later.");
       }
+      setEmailError(err.errors?.[0]?.message || "Failed to register. Please try again.");
+      console.error(JSON.stringify(err, null, 2));
+
     }
   };
 
@@ -198,6 +210,7 @@ const RegisterScreen: React.FC = () => {
               label="Register with your Student Email:"
               FGColor="#ffffff"
               onEmailChange={handleEmailChange}
+              error={emailError}
             />
           </KeyboardAvoidingView>
           <View style={styles.inputContainer}></View>
