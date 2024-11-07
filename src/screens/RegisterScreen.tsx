@@ -92,9 +92,6 @@ const RegisterScreen: React.FC = () => {
           case "form_identifier_exists":
             alert("This email address is already registered. Please try another.");
             break;
-          case "form_identifier_not_found":
-            alert("Email not found. Please register first.");
-            break;
           default:
             console.error("Unexpected error:", err);
             alert("An unexpected error occurred. Please try again later.");
