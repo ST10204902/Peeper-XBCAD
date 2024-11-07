@@ -59,6 +59,7 @@ import { SignInFirstFactor, EmailCodeFactor } from "@clerk/types";
  */
 const LoginScreen: React.FC = () => {
   const [emailAddress, setEmailAddress] = useState("");
+  const [emailError, setEmailError] = useState("");
   const { isLoaded, signIn, setActive } = useSignIn();
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
@@ -71,8 +72,15 @@ const LoginScreen: React.FC = () => {
   //   }
   // }, [isSignedIn, navigation]);
 
+  const validateEmail = (email: string) => {
+    return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  };
+
   const handlePress = async () => {
-    if (!isLoaded) {
+    if (!isLoaded) return;
+
+    if (!validateEmail(emailAddress)) {
+      setEmailError("Please enter a valid email address");
       return;
     }
 
@@ -98,7 +106,9 @@ const LoginScreen: React.FC = () => {
       }
 
       setPendingVerification(true);
+      setEmailError("");
     } catch (err: any) {
+      setEmailError(err.errors?.[0]?.message || "Failed to login. Please try again.");
       console.error(JSON.stringify(err, null, 2));
     }
   };
@@ -160,6 +170,7 @@ const LoginScreen: React.FC = () => {
               label="Login with your Student Email:"
               FGColor="#ffffff"
               onEmailChange={handleEmailChange}
+              error={emailError}
             />
           </View>
           <View style={styles.buttonContainer}>
