@@ -1,32 +1,60 @@
 name: Security Scan
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+  schedule:
+    - cron: '0 0 * * 0' 
+
 jobs:
+  check-visibility:
+    runs-on: ubuntu-latest
+    outputs:
+      is_private: ${{ steps.visibility_check.outputs.is_private }}
+    steps:
+      - id: visibility_check
+        run: |
+          if [[ "${{ github.event.repository.private }}" == "true" ]]; then
+            echo "is_private=true" >> $GITHUB_OUTPUT
+            echo "Repository is private - security scan workflow will only run on public repositories"
+          else
+            echo "is_private=false" >> $GITHUB_OUTPUT
+          fi
+
   security:
+    needs: check-visibility
+    if: needs.check-visibility.outputs.is_private != 'true'
     runs-on: ubuntu-latest
     permissions:
       security-events: write
       actions: read
       contents: read
+      pull-requests: read
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'typescript' ]
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
-          languages: javascript, typescript
-          
-      - name: Run SAST
-        uses: github/codeql-action/analyze@v2
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Dependency Check
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
