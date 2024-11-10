@@ -1,0 +1,11 @@
+name: Security Scan
+on: [push, pull_request]
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run SAST
+        uses: github/codeql-action/analyze@v2
+      - name: Dependency Check
+        uses: snyk/actions/node@master
