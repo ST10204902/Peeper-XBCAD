@@ -146,6 +146,28 @@ const getColorBasedOnDistance = (
     .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 };
 
+const MAX_PATH_SEGMENTS = 50; // Maximum number of path segments to include
+
+const sampleLocationLogs = (locationLogs: Array<LocationLog>, maxSamples: number): Array<LocationLog> => {
+  if (locationLogs.length <= maxSamples) return locationLogs;
+  
+  const result: LocationLog[] = [];
+  const step = Math.floor(locationLogs.length / maxSamples);
+  
+  // Always include first and last points
+  result.push(locationLogs[0]);
+  
+  // Sample points at regular intervals
+  for (let i = step; i < locationLogs.length - step; i += step) {
+    result.push(locationLogs[i]);
+  }
+  
+  // Add the last point
+  result.push(locationLogs[locationLogs.length - 1]);
+  
+  return result;
+};
+
 /**
  * Generate a static Google Maps image URL based on location data.
  * @param locationLogs - An array of location logs containing latitude and longitude coordinates.
@@ -156,41 +178,32 @@ const generateStaticMapURL = (
   locationLogs: Array<LocationLog>,
   apiKey: string
 ): string => {
+  // Sample the location logs if there are too many
+  const sampledLogs = sampleLocationLogs(locationLogs, MAX_PATH_SEGMENTS);
+  
   const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
 
-  // Calculate the center of the map based on the average latitude and longitude
-  const avgLat =
-    locationLogs.reduce((sum, pin) => sum + parseFloat(pin.latitude.toString()), 0) /
-    locationLogs.length;
-  const avgLng =
-    locationLogs.reduce(
-      (sum, pin) => sum + parseFloat(pin.longitude.toString()),
-      0
-    ) / locationLogs.length;
+  // Calculate center using sampled logs
+  const avgLat = sampledLogs.reduce((sum, pin) => sum + parseFloat(pin.latitude.toString()), 0) / sampledLogs.length;
+  const avgLng = sampledLogs.reduce((sum, pin) => sum + parseFloat(pin.longitude.toString()), 0) / sampledLogs.length;
   const center = `center=${avgLat},${avgLng}`;
 
-  // Dynamically calculate zoom level based on location data spread
-  const zoom = `zoom=${calculateZoomLevel(locationLogs)}`;
+  const zoom = `zoom=${calculateZoomLevel(sampledLogs)}`;
   const size = "size=600x400";
   const mapType = "maptype=roadmap";
 
-  const { minDistance, maxDistance } = getMinAndMaxDistance(locationLogs);
+  const { minDistance, maxDistance } = getMinAndMaxDistance(sampledLogs);
 
-  // Generate polyline path to connect the pins with varying colors
+  // Generate path segments with sampled logs
   const pathSegments = [];
-  for (let i = 0; i < locationLogs.length - 1; i++) {
-    const pin1 = locationLogs[i];
-    const pin2 = locationLogs[i + 1];
-    const pin1Latitude = Number(pin1.latitude);
-    const pin1Longitude = Number(pin1.longitude);
-    const pin2Latitude = Number(pin2.latitude);
-    const pin2Longitude = Number(pin2.longitude);
-
+  for (let i = 0; i < sampledLogs.length - 1; i++) {
+    const pin1 = sampledLogs[i];
+    const pin2 = sampledLogs[i + 1];
     const distance = MyMaths.haversineDistance(
-      pin1Latitude,
-      pin1Longitude,
-      pin2Latitude,
-      pin2Longitude
+      Number(pin1.latitude),
+      Number(pin1.longitude),
+      Number(pin2.latitude),
+      Number(pin2.longitude)
     );
 
     const color = getColorBasedOnDistance(distance, minDistance, maxDistance);
@@ -200,14 +213,11 @@ const generateStaticMapURL = (
   }
   const path = pathSegments.join("&");
 
-  // Generate the markers parameter for each pin with labels showing the count
-  const markers = locationLogs.map(
-    (pin, index) =>
-      `markers=color:red%7Clabel:${index + 1}%7C${pin.latitude},${
-        pin.longitude
-      }`
+  // Generate markers for sampled logs
+  const markers = sampledLogs.map(
+    (pin, index) => `markers=color:red%7Clabel:${index + 1}%7C${pin.latitude},${pin.longitude}`
   ).join("&");
-  const fullURL = `${baseUrl}${center}&${zoom}&${size}&${mapType}&${path}&${markers}&key=${apiKey}`;
+
   return `${baseUrl}${center}&${zoom}&${size}&${mapType}&${path}&${markers}&key=${apiKey}`;
 };
 
