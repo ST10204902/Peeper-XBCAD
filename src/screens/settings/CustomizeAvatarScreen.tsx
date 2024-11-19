@@ -95,7 +95,7 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.componentBackground }]}>
-      <ScrollView 
+      <ScrollView
         style={[styles.scrollView, { backgroundColor: theme.componentBackground }]}
         contentContainerStyle={styles.scrollViewContent}
       >
@@ -220,6 +220,9 @@ const styles = StyleSheet.create({
   },
   grayscale: {
     opacity: 0.5,
+  },
+  scrollViewContent: {
+    paddingBottom: 24,
   },
 });
 export default AvatarComponent;
