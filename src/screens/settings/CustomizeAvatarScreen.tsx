@@ -7,6 +7,7 @@ import {
   Text,
   ScrollView,
   ImageSourcePropType,
+  SafeAreaView,
 } from "react-native";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { useTheme } from "../../styles/ThemeContext";
@@ -93,70 +94,79 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({
   };
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.title, { color: theme.fontRegular }]}>CUSTOMIZE PROFILE</Text>
-      <Text style={[styles.subtitle, { color: theme.fontRegular }]}>Avatar</Text>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.componentBackground }]}>
+      <ScrollView 
+        style={[styles.scrollView, { backgroundColor: theme.componentBackground }]}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        <Text style={[styles.title, { color: theme.fontRegular }]}>CUSTOMIZE PROFILE</Text>
+        <Text style={[styles.subtitle, { color: theme.fontRegular }]}>Avatar</Text>
 
-      <View style={styles.previewContainer}>
-        {selectedAvatar !== null && selectedAvatar !== 0 ? (
-          <Image
-            source={AVATARS.find(a => a.id === selectedAvatar)?.source}
-            style={styles.selectedAvatar}
-            resizeMode="contain"
-          />
-        ) : (
-          <View
-            style={[
-              styles.selectedAvatar,
-              styles.placeholderAvatar,
-              { backgroundColor: theme.componentBackground },
-            ]}
-          >
-            {currentStudent?.profilePhotoId !== null &&
-              currentStudent?.profilePhotoId !== undefined &&
-              currentStudent?.profilePhotoId !== "" && (
+        <View style={styles.previewContainer}>
+          {selectedAvatar !== null && selectedAvatar !== 0 ? (
+            <Image
+              source={AVATARS.find(a => a.id === selectedAvatar)?.source}
+              style={styles.selectedAvatar}
+              resizeMode="contain"
+            />
+          ) : (
+            <View
+              style={[
+                styles.selectedAvatar,
+                styles.placeholderAvatar,
+                { backgroundColor: theme.componentBackground },
+              ]}
+            >
+              {currentStudent?.profilePhotoId !== null &&
+                currentStudent?.profilePhotoId !== undefined &&
+                currentStudent?.profilePhotoId !== "" && (
+                  <Image
+                    source={AvatarUtility.getAvatarSource(currentStudent.profilePhotoId)}
+                    style={styles.selectedAvatar}
+                    resizeMode="contain"
+                  />
+                )}
+            </View>
+          )}
+        </View>
+
+        <View style={[styles.selectionBackground, { backgroundColor: theme.componentBackground }]}>
+          <View style={styles.gridContainer}>
+            {AVATARS.map(avatar => (
+              <TouchableOpacity
+                key={avatar.id}
+                onPress={() => handleAvatarPress(avatar.id, avatar.source)}
+                style={styles.avatarButton}
+              >
                 <Image
-                  source={AvatarUtility.getAvatarSource(currentStudent.profilePhotoId)}
-                  style={styles.selectedAvatar}
+                  source={avatar.source}
+                  style={[
+                    styles.avatarImage,
+                    ...(selectedAvatar !== null &&
+                    selectedAvatar !== 0 &&
+                    selectedAvatar === avatar.id
+                      ? [styles.grayscale]
+                      : []),
+                  ]}
                   resizeMode="contain"
                 />
-              )}
+              </TouchableOpacity>
+            ))}
           </View>
-        )}
-      </View>
-
-      <View style={[styles.selectionBackground, { backgroundColor: theme.componentBackground }]}>
-        <View style={styles.gridContainer}>
-          {AVATARS.map(avatar => (
-            <TouchableOpacity
-              key={avatar.id}
-              onPress={() => handleAvatarPress(avatar.id, avatar.source)}
-              style={styles.avatarButton}
-            >
-              <Image
-                source={avatar.source}
-                style={[
-                  styles.avatarImage,
-                  ...(selectedAvatar !== null &&
-                  selectedAvatar !== 0 &&
-                  selectedAvatar === avatar.id
-                    ? [styles.grayscale]
-                    : []),
-                ]}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          ))}
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    padding: 16,
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.pageBackground,
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 16,
   },
   title: {
     fontSize: 24,
@@ -212,5 +222,4 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 });
-
 export default AvatarComponent;
