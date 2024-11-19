@@ -1,15 +1,11 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import MapView, { Polyline, Marker, Region } from 'react-native-maps';
-import { SessionLog } from '../databaseModels/databaseClasses/SessionLog';
-
-
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import MapView, { Polyline, Marker, Region } from "react-native-maps";
+import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 
 const StudentLocationMap: React.FC<{ sessionData: SessionLog | null }> = ({ sessionData }) => {
   if (!sessionData) {
-    return (
-     null
-    );
+    return null;
   }
 
   // Mapping location logs to coordinates
@@ -23,7 +19,9 @@ const StudentLocationMap: React.FC<{ sessionData: SessionLog | null }> = ({ sess
     latitude: (sessionData.viewport.high.latitude + sessionData.viewport.low.latitude) / 2,
     longitude: (sessionData.viewport.high.longitude + sessionData.viewport.low.longitude) / 2,
     latitudeDelta: Math.abs(sessionData.viewport.high.latitude - sessionData.viewport.low.latitude),
-    longitudeDelta: Math.abs(sessionData.viewport.high.longitude - sessionData.viewport.low.longitude),
+    longitudeDelta: Math.abs(
+      sessionData.viewport.high.longitude - sessionData.viewport.low.longitude,
+    ),
   };
 
   return (
@@ -55,8 +53,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
 });
 

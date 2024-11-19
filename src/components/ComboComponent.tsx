@@ -1,32 +1,22 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Modal, 
-  FlatList,
-  Pressable
-} from 'react-native';
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, Pressable } from "react-native";
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
+import { Colors } from "../styles/colors";
 
 // Simple chevron down icon component using just View elements
-const ChevronDownIcon = ({ color, size = 15 }: { color: string, size?: number }) => (
-  <View style={{ 
-    width: size, 
-    height: size, 
-    justifyContent: 'center', 
-    alignItems: 'center' 
-  }}>
-    <View style={{
-      width: size * 0.7,
-      height: size * 0.7,
-      borderRightWidth: 2,
-      borderBottomWidth: 2,
-      borderColor: color,
-      transform: [{ rotate: '45deg' }]
-    }} />
+const ChevronDownIcon = ({ color, size = 15 }: { color: string; size?: number }) => (
+  <View style={styles.chevronContainer}>
+    <View
+      style={[
+        styles.chevronIcon,
+        {
+          width: size * 0.7,
+          height: size * 0.7,
+          borderColor: color,
+        },
+      ]}
+    />
   </View>
 );
 
@@ -44,18 +34,18 @@ interface Props {
   onValueChange: (value: string) => void;
 }
 
-function ComboBoxComponent({ 
-  FGColor, 
-  placeHolderColor, 
+function ComboBoxComponent({
+  FGColor,
+  placeHolderColor,
   placeholder = "Select an option",
   options,
   value,
-  onValueChange
+  onValueChange,
 }: Props) {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [isOpen, setIsOpen] = useState(false);
-  
+
   // Find the selected option's label
   const selectedOption = options.find(opt => opt.value === value);
 
@@ -67,16 +57,15 @@ function ComboBoxComponent({
   return (
     <View>
       <TouchableOpacity
-        style={[styles.comboBoxContainer, { borderColor: "transparent" }, {backgroundColor: theme.componentBackground}]}
+        style={[styles.comboBoxContainer, { backgroundColor: theme.componentBackground }]}
         onPress={() => setIsOpen(true)}
       >
-        <Text 
+        <Text
           style={[
-            styles.selectedText, 
-            { 
+            styles.selectedText,
+            {
               color: selectedOption ? FGColor : placeHolderColor,
-              fontFamily: 'Rany-Medium'
-            }
+            },
           ]}
         >
           {selectedOption ? selectedOption.label : placeholder}
@@ -90,30 +79,26 @@ function ComboBoxComponent({
         animationType="fade"
         onRequestClose={() => setIsOpen(false)}
       >
-        <Pressable 
-          style={styles.modalOverlay}
-          onPress={() => setIsOpen(false)}
-        >
+        <Pressable style={styles.modalOverlay} onPress={() => setIsOpen(false)}>
           <View style={[styles.modalContent, { backgroundColor: theme.componentBackground }]}>
             <FlatList
               data={options}
-              keyExtractor={(item) => item.value}
+              keyExtractor={item => item.value}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[
                     styles.optionItem,
-                    item.value === value && { backgroundColor: theme.orgListOdd }
+                    item.value === value && { backgroundColor: theme.orgListOdd },
                   ]}
                   onPress={() => handleSelect(item.value)}
                 >
-                  <Text 
+                  <Text
                     style={[
                       styles.optionText,
-                      { 
+                      {
                         color: FGColor,
-                        fontFamily: 'Rany-Medium'
                       },
-                      item.value === value && { color: theme.componentTextColour }
+                      item.value === value && { color: theme.componentTextColour },
                     ]}
                   >
                     {item.label}
@@ -135,26 +120,28 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 3,
+    borderColor: Colors.transparent,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: 'space-between',
-    height: 46, // To match search bar height (40 + vertical padding)
+    justifyContent: "space-between",
+    height: 46,
   },
   selectedText: {
     fontSize: 16,
     flex: 1,
+    fontFamily: "Rany-Medium",
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: Colors.modalBackground,
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
     borderRadius: 12,
-    width: '80%',
-    maxHeight: '70%',
+    width: "80%",
+    maxHeight: "70%",
     padding: 8,
   },
   optionItem: {
@@ -163,9 +150,18 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
+    fontFamily: "Rany-Medium",
   },
-  selectedOptionText: {
-    fontWeight: '600',
+  chevronContainer: {
+    width: 15,
+    height: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  chevronIcon: {
+    borderRightWidth: 2,
+    borderBottomWidth: 2,
+    transform: [{ rotate: "45deg" }],
   },
 });
 

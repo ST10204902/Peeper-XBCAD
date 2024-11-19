@@ -3,8 +3,8 @@ import { OrganisationData } from "../databaseModels/OrganisationData";
 import ExpandableOrgListItem from "./ExpandableOrgListItem";
 import React from "react";
 import * as Location from "expo-location";
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 /**
  * Defines the properties to be passed to the expandable Orgs List
@@ -32,6 +32,7 @@ interface Props {
 export default function ExpandableOrgList({
   items,
   listButtonComp,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   userLocation,
   onListButtonClicked,
 }: Props) {
@@ -40,23 +41,21 @@ export default function ExpandableOrgList({
   return (
     <View style={[styles.listContainer, { backgroundColor: theme.orgListOdd }]}>
       <FlatList
-  data={items}
-  renderItem={({ index, item }) => (
-    <ExpandableOrgListItem
-      orgData={item}
-      orgAddress={item.orgAddress}
-      oddOrEven={index % 2 === 0 ? "even" : "odd"}
-      listButton={React.cloneElement(
-        listButtonComp as React.ReactElement,
-        { onPress: () => onListButtonClicked(item) }
-      )}
-      // Pass index and length of the list to determine corner radius
-      index={index}
-      totalItems={items.length}
-    />
-  )}
-/>
-
+        data={items}
+        renderItem={({ index, item }) => (
+          <ExpandableOrgListItem
+            orgData={item}
+            orgAddress={item.orgAddress}
+            oddOrEven={index % 2 === 0 ? "even" : "odd"}
+            listButton={React.cloneElement(listButtonComp as React.ReactElement, {
+              onPress: () => onListButtonClicked(item),
+            })}
+            // Pass index and length of the list to determine corner radius
+            index={index}
+            totalItems={items.length}
+          />
+        )}
+      />
     </View>
   );
 }

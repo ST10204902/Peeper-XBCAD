@@ -1,34 +1,27 @@
 import { initializeApp, getApps, FirebaseApp } from "firebase/app";
-import {
-  getDatabase,
-  ref,
-  get,
-  set,
-  update,
-  remove,
-  Database,
-} from "firebase/database";
+import { getDatabase, ref, get, set, update, remove, Database } from "firebase/database";
 
 import { firebaseConfig } from "../firebase/firebaseConfig";
 
 export class DatabaseUtility {
   private static app: FirebaseApp;
-  private static database: Database;
+  private static database: Database | null = null;
 
   static initialize() {
-    if (!getApps().length) {
-      this.app = initializeApp(firebaseConfig);
+    const apps = getApps();
+    if (apps.length > 0) {
+      this.app = apps[0];
     } else {
-      this.app = getApps()[0];
+      this.app = initializeApp(firebaseConfig);
     }
     this.database = getDatabase(this.app);
   }
 
   static getRef(path: string) {
-    if (!this.database) {
+    if (this.database === null) {
       this.initialize();
     }
-    return ref(this.database, path);
+    return ref(this.database!, path);
   }
 
   static async getData<T>(path: string): Promise<T | null> {
@@ -46,7 +39,7 @@ export class DatabaseUtility {
       const snapshot = await get(this.getRef(path));
       const data: T[] = [];
       if (snapshot.exists()) {
-        snapshot.forEach((childSnapshot) => {
+        snapshot.forEach(childSnapshot => {
           data.push(childSnapshot.val());
         });
       }
@@ -85,11 +78,10 @@ export class DatabaseUtility {
   }
 
   static generateUniqueId(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        const r = Math.random() * 16 | 0,
-            v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      const r = Math.floor(Math.random() * 16);
+      const v = c === "x" ? r : Math.floor(r % 4) + 8;
+      return v.toString(16);
     });
   }
-
 }

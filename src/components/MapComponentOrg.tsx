@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 interface Props {
@@ -8,10 +8,10 @@ interface Props {
 
 const MapComponentOrg: React.FC<Props> = ({ coordinates }) => {
   return (
-    <View style={{ height: 300 }}>
+    <View style={styles.mapContainer}>
       {coordinates ? (
         <MapView
-          style={{ flex: 1 }}
+          style={styles.map}
           initialRegion={{
             latitude: coordinates.latitude,
             longitude: coordinates.longitude,
@@ -27,5 +27,14 @@ const MapComponentOrg: React.FC<Props> = ({ coordinates }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  mapContainer: {
+    height: 300,
+  },
+  map: {
+    flex: 1,
+  },
+});
 
 export default MapComponentOrg;

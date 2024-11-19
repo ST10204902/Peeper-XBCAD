@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Student } from "../databaseModels/databaseClasses/Student";
 import SearchBarComponent from "./GeneralInputComponent";
 import CustomButton from "./CustomButton";
 import { useState } from "react";
+import { Colors } from "../styles/colors";
 
 interface Props {
   studentNumber: string;
@@ -39,7 +39,7 @@ interface Props {
  * @param {function} onConfirmation - Callback executed when the student number is confirmed.
  * @param {function} onCancel - Callback executed when the user cancels the confirmation.
  *
- * @state {string} confirmationInput - Stores the user’s input for confirming the student number.
+ * @state {string} confirmationInput - Stores the user's input for confirming the student number.
  * @state {boolean} hasError - Determines if the error message indicating a mismatch in student numbers should be displayed.
  *
  * @throws Will log an error to the console if the student number is null or empty.
@@ -57,9 +57,7 @@ export default function DataDeletionConfirmationPopup({
 
   // Don't render if student number is null or empty
   if (!studentNumber) {
-    console.error(
-      "DataDeletionConfirmationPopup: Student number was null or empty"
-    );
+    console.error("DataDeletionConfirmationPopup: Student number was null or empty");
     return null;
   }
 
@@ -75,28 +73,24 @@ export default function DataDeletionConfirmationPopup({
     <View style={styles.container}>
       <View style={styles.body}>
         <Text style={styles.title}>ARE YOU SURE?</Text>
-        <Text style={styles.message}>
-          Please type your student number to confirm:
-        </Text>
+        <Text style={styles.message}>Please type your student number to confirm:</Text>
         <Text style={styles.studentNumber}>{studentNumber.toUpperCase()}</Text>
         <SearchBarComponent
-          FGColor="#000000"
+          FGColor={Colors.headerText}
           placeHolderColor="#808080"
           placeholderText="STXXXXXXXX"
           labelText=""
           onSearchInputChange={setConfirmationInput}
         />
 
-        {hasError ? (
-          <Text style={styles.error_text}>Student Numbers do not match</Text>
-        ) : null}
+        {hasError ? <Text style={styles.error_text}>Student Numbers do not match</Text> : null}
 
         <View style={styles.buttonContainer}>
           <CustomButton
             title="Confirm"
             onPress={handleConfirm}
-            textColor="#161616"
-            buttonColor="#A4DB51" // Green color
+            textColor={Colors.headerText}
+            buttonColor="#A4DB51"
             fontFamily="Rany-Medium"
             textSize={16}
             addFlex={true}
@@ -104,8 +98,8 @@ export default function DataDeletionConfirmationPopup({
           <CustomButton
             title="Cancel"
             onPress={onCancel}
-            textColor="#161616"
-            buttonColor="#EC4E4B" // Red color
+            textColor={Colors.headerText}
+            buttonColor="#EC4E4B"
             fontFamily="Rany-Medium"
             textSize={16}
             addFlex={true}
@@ -125,12 +119,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: Colors.modalBackground,
   },
   body: {
-    color: "#161616",
+    color: Colors.headerText,
     width: "95%",
-    backgroundColor: "#F9F9F9",
+    backgroundColor: Colors.termsBodyBackground,
     paddingHorizontal: 20,
     paddingVertical: 30,
     borderRadius: 20,
@@ -138,9 +132,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: "#161616",
+    color: Colors.headerText,
     marginBottom: 20,
-    fontFamily: "Quittance", // Change font if needed
+    fontFamily: "Quittance",
   },
   message: {
     fontFamily: "Rany-Regular",
@@ -149,14 +143,14 @@ const styles = StyleSheet.create({
   studentNumber: {
     fontSize: 25,
     fontFamily: "Inter-Black",
-    color: "#161616",
+    color: Colors.headerText,
     marginBottom: -24,
   },
   error_text: {
     fontFamily: "Rany-Bold",
     marginTop: 5,
     fontSize: 14,
-    color: "#EC4E4B",
+    color: Colors.termsError,
   },
   buttonContainer: {
     height: 50,
@@ -166,4 +160,3 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
 });
-// End of File

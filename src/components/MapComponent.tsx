@@ -4,8 +4,8 @@ import { View, StyleSheet } from "react-native";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 
 /*
-  * Map component for displaying the organisation location.
-  */
+ * Map component for displaying the organisation location.
+ */
 
 // Props for the MapComponent
 interface MapComponentProps {
@@ -29,20 +29,20 @@ const MapComponent: React.FC<MapComponentProps> = ({ selectedOrganisation }) => 
   // Update the map region when the selected organisation changes
   useEffect(() => {
     if (selectedOrganisation) {
-      setRegion((prevRegion) => ({
+      setRegion(prevRegion => ({
         ...prevRegion,
         latitude: selectedOrganisation.orgLatitude,
         longitude: selectedOrganisation.orgLongitude,
       }));
     } else {
       // Reset to default location when no organisation is selected
-      setRegion((prevRegion) => ({
+      setRegion(prevRegion => ({
         ...prevRegion,
         latitude: defaultLatitude,
         longitude: defaultLongitude,
       }));
     }
-  }, [selectedOrganisation]);
+  }, [selectedOrganisation, defaultLatitude, defaultLongitude]);
 
   // Render the map with a marker for the selected organisation
   return (

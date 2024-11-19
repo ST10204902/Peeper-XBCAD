@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useUser } from '@clerk/clerk-expo'; // Adjust according to your authentication library
-import { onValue } from 'firebase/database';
-import { StudentData } from '../databaseModels/StudentData';
-import { Student } from '../databaseModels/databaseClasses/Student';
-import { DatabaseUtility } from '../utils/DatabaseUtility';
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/clerk-expo";
+import { onValue } from "firebase/database";
+import { StudentData } from "../databaseModels/StudentData";
+import { Student } from "../databaseModels/databaseClasses/Student";
+import { DatabaseUtility } from "../utils/DatabaseUtility";
 
 type UseCurrentStudentResult = {
   currentStudent: Student | null;
@@ -18,11 +18,11 @@ export function useCurrentStudent(): UseCurrentStudentResult {
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
-  const { user } = useUser(); // Get the current user
+  const { user } = useUser();
 
   useEffect(() => {
     if (!user) {
-      setError(new Error('User not authenticated'));
+      setError(new Error("User not authenticated"));
       setLoading(false);
       return;
     }
@@ -32,7 +32,7 @@ export function useCurrentStudent(): UseCurrentStudentResult {
     // Set up the listener
     const unsubscribe = onValue(
       ref,
-      (snapshot) => {
+      snapshot => {
         if (snapshot.exists()) {
           const data = snapshot.val();
           const student = new Student(data);
@@ -42,10 +42,10 @@ export function useCurrentStudent(): UseCurrentStudentResult {
         }
         setLoading(false);
       },
-      (error) => {
-        setError(error);
+      dbError => {
+        setError(dbError);
         setLoading(false);
-      }
+      },
     );
 
     // Clean up the listener when the component unmounts
@@ -56,7 +56,7 @@ export function useCurrentStudent(): UseCurrentStudentResult {
 
   const updateCurrentStudent = async (updates: Partial<StudentData>) => {
     if (!currentStudent) {
-      setError(new Error('No current student to update'));
+      setError(new Error("No current student to update"));
       return;
     }
     setSaving(true);
@@ -64,8 +64,8 @@ export function useCurrentStudent(): UseCurrentStudentResult {
       await currentStudent.update(updates);
       // No need to manually update currentStudent; listener will handle it
       setSaving(false);
-    } catch (err) {
-      setError(err as Error);
+    } catch (updateError) {
+      setError(updateError as Error);
       setSaving(false);
     }
   };

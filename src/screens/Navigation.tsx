@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
 import { RootStackParamsList } from "./RootStackParamsList";
 import { useUser } from "@clerk/clerk-expo";
 import LandingIcon from "../assets/icons/LandingIcon";
@@ -118,50 +117,30 @@ function SettingsNavigator() {
   );
 }
 
-/**
- * Screen options for the Bottom Navigation Bar (Tab Navigator).
- * Defines the styles and behaviors of the bottom navigation bar, including
- * custom tab icons and color schemes for active/inactive states.
- *
- * @param {Object} route - The route object for determining the active screen.
- * @returns {Object} A set of options for styling and behavior of the bottom navigation.
- */
-const screenOptions = ({ route }: { route: any }) => {
-  const { isDarkMode } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;
-
-  return {
-    tabBarActiveTintColor: theme.navIconSelected,
-    tabBarInactiveTintColor: theme.navIconDefault,
-    tabBarStyle: {
-      backgroundColor: theme.navBackground,
-      paddingBottom: 40,
-      paddingTop: 35,
-      height: 90,
-    },
-    tabBarShowLabel: false,
-    tabBarIcon: ({ focused }: { focused: boolean }) => {
-      if (route.name === "Landing") {
-        return focused ? (
-          <LandingIcon size={44} color={theme.navIconSelected} />
-        ) : (
-          <LandingIcon size={38} color={theme.navIconDefault} />
-        );
-      } else if (route.name === "Organisations") {
-        return focused ? (
-          <OrgDetailsIcon size={44} color={theme.navIconSelected} />
-        ) : (
-          <OrgDetailsIcon size={38} color={theme.navIconDefault} />
-        );
-      } else if (route.name === "Settings") {
-        return focused ? (
-          <SettingsIcon size={44} color={theme.navIconSelected} />
-        ) : (
-          <SettingsIcon size={38} color={theme.navIconDefault} />
-        );
-      }
-    },
-  };
+// Create a function that returns the icon based on route name and state
+const getTabBarIcon = (routeName: string, focused: boolean, theme: typeof lightTheme) => {
+  switch (routeName) {
+    case "Landing":
+      return focused ? (
+        <LandingIcon size={44} color={theme.navIconSelected} />
+      ) : (
+        <LandingIcon size={38} color={theme.navIconDefault} />
+      );
+    case "Organisations":
+      return focused ? (
+        <OrgDetailsIcon size={44} color={theme.navIconSelected} />
+      ) : (
+        <OrgDetailsIcon size={38} color={theme.navIconDefault} />
+      );
+    case "Settings":
+      return focused ? (
+        <SettingsIcon size={44} color={theme.navIconSelected} />
+      ) : (
+        <SettingsIcon size={38} color={theme.navIconDefault} />
+      );
+    default:
+      return undefined;
+  }
 };
 
 /**
@@ -173,23 +152,31 @@ const screenOptions = ({ route }: { route: any }) => {
  * @returns {JSX.Element} A tab navigator for navigating between the main app sections.
  */
 function BottomNavigationBar() {
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   return (
-    <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen
-        name="Landing"
-        component={LandingScreen}
-        options={{ headerShown: false }}
-      />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: theme.navIconSelected,
+        tabBarInactiveTintColor: theme.navIconDefault,
+        tabBarStyle: {
+          backgroundColor: theme.navBackground,
+          paddingBottom: 40,
+          paddingTop: 35,
+          height: 90,
+        },
+        tabBarShowLabel: false,
+        tabBarIcon: ({ focused }) => getTabBarIcon(route.name, focused, theme),
+      })}
+    >
+      <Tab.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
       <Tab.Screen
         name="Organisations"
         component={OrganisationsNavigator}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsNavigator}
-        options={{ headerShown: false }}
-      />
+      <Tab.Screen name="Settings" component={SettingsNavigator} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -203,12 +190,13 @@ function BottomNavigationBar() {
  * @returns {JSX.Element} A stack navigator that controls app navigation flow.
  */
 export default function AppNavigator() {
-  const { isSignedIn, user } = useUser(); // Fetch Clerk user state
-  const onboardingComplete = user?.unsafeMetadata?.onboardingComplete;
+  const { isSignedIn, user } = useUser();
+  const onboardingComplete = user?.unsafeMetadata?.onboardingComplete ?? false;
+  const isAuthenticated = isSignedIn === true && onboardingComplete === true;
 
   return (
     <Stack.Navigator initialRouteName="LoadingScreen">
-      {isSignedIn && onboardingComplete ? (
+      {isAuthenticated ? (
         <>
           <Stack.Screen
             name="BottomNavigationBar"

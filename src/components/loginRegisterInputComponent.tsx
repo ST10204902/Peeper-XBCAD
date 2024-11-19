@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { TextInput, StyleSheet, View, Text } from 'react-native';
+import React, { useState } from "react";
+import { TextInput, StyleSheet, View, Text } from "react-native";
+import { Colors } from "../styles/colors";
 
 interface Props {
-    FGColor: string;
-    onEmailChange: (email: string) => void;
-    label: string;
-    error?: string;
+  FGColor: string;
+  onEmailChange: (email: string) => void;
+  label: string;
+  error?: string;
 }
 
 /**
@@ -28,66 +29,65 @@ interface Props {
  * />
  */
 function LoginRegisterInputComponent({ FGColor, onEmailChange, label, error }: Props) {
-    const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
-    const handleEmailChange = (text: string) => {
-        setEmail(text);
-        onEmailChange(text);
-    };
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    onEmailChange(text);
+  };
 
-    return (
-        <View>
-            <Text style={styles.label}>{label}</Text>
-            <View style={[styles.container, { borderColor: FGColor }]}>
-                <TextInput
-                    style={[styles.input, { color: FGColor }]}
-                    placeholder="Student Email"
-                    value={email}
-                    onChangeText={handleEmailChange}
-                    placeholderTextColor={FGColor}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-            </View>
-            {error && (
-                <Text style={[styles.errorText, { color: '#ff4444' }]}>{error}</Text>
-            )}
-        </View>
-    );
+  return (
+    <View>
+      <Text style={styles.label}>{label}</Text>
+      <View style={[styles.container, { borderColor: FGColor }]}>
+        <TextInput
+          style={[styles.input, { color: FGColor }]}
+          placeholder="Student Email"
+          value={email}
+          onChangeText={handleEmailChange}
+          placeholderTextColor={FGColor}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
+      {error !== null && error !== undefined && error !== "" && (
+        <Text style={styles.errorText}>{error}</Text>
+      )}
+    </View>
+  );
 }
 
 /**
- * Styles for the LoginRegisterInputComponent. 
+ * Styles for the LoginRegisterInputComponent.
  */
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'transparent', // Set background to transparent
-        borderRadius: 20,
-        padding: 5,
-        borderWidth: 3,
-    },
-    label: {
-        fontSize: 16,
-        color: '#ffffff',
-        marginBottom: 10,
-        backgroundColor: 'transparent', // Match the background color of the parent
-        paddingHorizontal: 4,
-        fontFamily: 'Rany-Medium',
-        marginStart: 5,
-
-    },
-    input: {
-        height: 40,
-        paddingHorizontal: 10,
-        fontSize: 16,
-        fontFamily: 'Rany-Medium',
-
-    },
-    errorText: {
-        fontSize: 14,
-        marginTop: 5,
-        marginStart: 5,
-    },
+  container: {
+    backgroundColor: Colors.transparent,
+    borderRadius: 20,
+    padding: 5,
+    borderWidth: 3,
+  },
+  label: {
+    fontSize: 16,
+    color: Colors.inputText,
+    marginBottom: 10,
+    backgroundColor: Colors.transparent,
+    paddingHorizontal: 4,
+    fontFamily: "Rany-Medium",
+    marginStart: 5,
+  },
+  input: {
+    height: 40,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    fontFamily: "Rany-Medium",
+  },
+  errorText: {
+    fontSize: 14,
+    marginTop: 5,
+    marginStart: 5,
+    color: Colors.errorText,
+  },
 });
 
 export default LoginRegisterInputComponent;

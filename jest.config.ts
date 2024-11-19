@@ -4,11 +4,9 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest",
-    "^.+\\.(js|jsx)$": "ts-jest", 
+    "^.+\\.(js|jsx)$": "ts-jest",
   },
-  transformIgnorePatterns: [
-    "node_modules/(?!(firebase|@react-native|@react-navigation|@clerk)/)",
-  ],
+  transformIgnorePatterns: ["node_modules/(?!(firebase|@react-native|@react-navigation|@clerk)/)"],
   testMatch: ["**/?(*.)+(spec|test).[tj]s?(x)"],
   globals: {
     "ts-jest": {

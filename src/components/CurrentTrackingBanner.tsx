@@ -1,25 +1,14 @@
-import {
-  Button,
-  Image,
-  ImageBackground,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"; // Using only setState for elapsedTime
-import {
-  elapsed_time,
-  trackingStartTimeState,
-  trackingState,
-} from "../atoms/atoms";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { elapsed_time, trackingStartTimeState, trackingState } from "../atoms/atoms";
 import { useEffect } from "react";
 import { clearTrackingNotification } from "../services/trackingNotification";
 import { useTheme } from "../styles/ThemeContext";
 import { darkTheme, lightTheme } from "../styles/themes";
+import { Colors } from "../styles/colors";
+import stopTrackingIcon from "../assets/stop_tracking_button.png";
 
 /**
  * Component responsible for displaying the current tracking session to the user.
@@ -30,7 +19,7 @@ import { darkTheme, lightTheme } from "../styles/themes";
 const CurrentTrackingBanner = () => {
   const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
   const startTime = useRecoilValue(trackingStartTimeState);
-  const setElapsedTime = useSetRecoilState(elapsed_time); // Only setElapsedTime is needed here
+  const setElapsedTime = useSetRecoilState(elapsed_time);
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -42,7 +31,7 @@ const CurrentTrackingBanner = () => {
 
   // Start or stop the timer when tracking starts or stops
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: NodeJS.Timeout | null = null;
 
     if (trackingAtom.isTracking && startTime > 0) {
       intervalId = setInterval(() => {
@@ -53,7 +42,7 @@ const CurrentTrackingBanner = () => {
     }
 
     return () => {
-      if (intervalId) {
+      if (intervalId !== null) {
         clearInterval(intervalId);
       }
     };
@@ -67,9 +56,7 @@ const CurrentTrackingBanner = () => {
     <SafeAreaView style={styles.root_container}>
       <TrackingBackground />
       <View style={styles.text_container}>
-        <Text style={[styles.header, { color: theme.fontRegular }]}>
-          Tracking Your Location
-        </Text>
+        <Text style={[styles.header, { color: theme.fontRegular }]}>Tracking Your Location</Text>
         <View style={styles.details_container}>
           <Text
             style={[styles.org_name, { color: theme.fontRegular }]}
@@ -82,10 +69,7 @@ const CurrentTrackingBanner = () => {
         </View>
       </View>
       <Pressable style={styles.stop_button} onPress={handleStopTracking}>
-        <Image
-          source={require("../assets/stop_tracking_button.png")}
-          style={styles.button_image}
-        />
+        <Image source={stopTrackingIcon} style={styles.button_image} />
       </Pressable>
     </SafeAreaView>
   );
@@ -103,9 +87,7 @@ const ElapsedTimeDisplay = () => {
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(
-      remainingSeconds
-    ).padStart(2, "0")}`;
+    return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
   };
 
   return (
@@ -121,7 +103,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    color: "f9f9f9",
+    color: Colors.pageBackground,
     zIndex: 1000,
     paddingHorizontal: 20,
     paddingTop: Platform.OS === "ios" ? 50 : 0,
@@ -144,13 +126,11 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 19,
     fontWeight: "600",
-    color: "#000000",
     fontFamily: "Quittance",
     marginBottom: Platform.OS === "ios" ? 4 : 2,
   },
   org_name: {
     fontSize: 17,
-    color: "#000000",
     fontFamily: "Rany-Medium",
   },
   stop_button: {},
@@ -162,7 +142,6 @@ const styles = StyleSheet.create({
   },
   elapsed_time: {
     fontSize: 17,
-    color: "#000000",
     fontFamily: "Rany-Medium",
   },
 });

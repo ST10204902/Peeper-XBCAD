@@ -1,13 +1,8 @@
-import { View, ScrollView, StyleSheet, Text, Switch } from "react-native";
+import { View, StyleSheet, Text, Switch, Alert } from "react-native";
 import { SettingsSection } from "../../components/SettingsSection";
 import CustomButton from "../../components/CustomButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import CustomizeAvatarScreen from "./CustomizeAvatarScreen";
-import TermsAndConditionsScreen from "./TermsAndConditionsScreen";
-import PrivacyPolicyScreen from "./PrivacyPolicyScreen";
-import LessonsScreen from "./LessonsScreen";
-import ExportReportScreen from "./ExportReportScreen";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
@@ -18,34 +13,33 @@ import PDFShareComponent from "../../components/PDFShareComponent";
 import { useRecoilState } from "recoil";
 import { trackingState } from "../../atoms/atoms";
 
+// Define navigation type
+type SettingsNavigationType = {
+  navigate: (screen: string) => void;
+};
+
 export default function SettingsScreen() {
   const { isDarkMode, toggleTheme } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
-  const { signOut } = useAuth(); // used to sign the Clerk user out
-  const { user } = useUser(); // Clerk user for deleting the user's account
-  const navigation = useNavigation<any>();
+  const { signOut } = useAuth();
+  const { user } = useUser();
+  const navigation = useNavigation<SettingsNavigationType>();
   const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
 
-  const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false); // Visibility of DataDeletionConfirmationPopup shown when a user requests to delete their data
-  const { currentStudent, updateCurrentStudent } = useCurrentStudent(); // Getting student in the database
+  const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
+  const { currentStudent, updateCurrentStudent } = useCurrentStudent();
 
-  // Error if the student number can't be obtained.
   if (currentStudent && !currentStudent.studentNumber) {
-    console.error(
-      "Settings Screen: Failed to get student's student number. Was null or empty"
-    );
+    console.error("Settings Screen: Failed to get student's student number. Was null or empty");
   }
 
   useEffect(() => {
-    if (
-      currentStudent?.darkMode !== null &&
-      currentStudent?.darkMode !== undefined
-    ) {
+    if (currentStudent?.darkMode !== null && currentStudent?.darkMode !== undefined) {
       if (isDarkMode !== currentStudent.darkMode) {
         toggleTheme();
       }
     }
-  }, [currentStudent?.darkMode]);
+  }, [currentStudent?.darkMode, isDarkMode, toggleTheme]);
 
   const settingsSections: SettingsSection[] = [
     {
@@ -86,7 +80,8 @@ export default function SettingsScreen() {
       setTrackingAtom({ isTracking: false, organizationName: "" });
     }
     user?.delete();
-    alert("User successfully deleted");
+    Alert.alert("User successfully deleted");
+    navigation.navigate("Login");
   };
 
   const handleSignOut = async () => {
@@ -95,29 +90,21 @@ export default function SettingsScreen() {
         setTrackingAtom({ isTracking: false, organizationName: "" });
       }
       await signOut();
-      console.log("User logged out successfully");
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView
-        style={[styles.container, { backgroundColor: theme.background }]}
-      >
-        {/* Header Section with Dark Mode Toggle */}
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
         <View style={styles.headerContainer}>
-          <Text style={[styles.title, { color: theme.fontRegular }]}>
-            SETTINGS
-          </Text>
+          <Text style={[styles.title, { color: theme.fontRegular }]}>SETTINGS</Text>
           <View style={styles.darkModeContainer}>
-            <Text style={[styles.darkModeText, { color: theme.fontRegular }]}>
-              Dark Mode
-            </Text>
+            <Text style={[styles.darkModeText, { color: theme.fontRegular }]}>Dark Mode</Text>
             <Switch
               value={isDarkMode}
-              onValueChange={(x) => {
+              onValueChange={x => {
                 updateCurrentStudent({ darkMode: x });
                 toggleTheme();
               }}
@@ -130,17 +117,12 @@ export default function SettingsScreen() {
         </View>
 
         <View style={[styles.content, { backgroundColor: theme.background }]}>
-          {settingsSections.map((section) => (
-            <SettingsSection
-              key={section.header}
-              header={section.header}
-              items={section.items}
-            />
+          {settingsSections.map(section => (
+            <SettingsSection key={section.header} header={section.header} items={section.items} />
           ))}
 
           <View style={styles.buttonContainer}>
-            {/** PDF Share Component is only shown when the user is not tracking */}
-           {!trackingAtom.isTracking && <PDFShareComponent />}
+            {!trackingAtom.isTracking && <PDFShareComponent />}
             <CustomButton
               title="REQUEST DATA DELETION"
               fontFamily="Quittance"
@@ -161,19 +143,25 @@ export default function SettingsScreen() {
             />
           </View>
         </View>
-      </ScrollView>
-      {isDeletionPopupShown ? (
-        <DataDeletionConfirmationPopup
-          studentNumber={currentStudent?.studentNumber!}
-          onConfirmation={handleDataDeletion}
-          onCancel={() => setIsDeletionPopupShown(false)}
-        />
-      ) : null}
+      </View>
+      {isDeletionPopupShown &&
+        currentStudent?.studentNumber !== "" &&
+        currentStudent?.studentNumber !== null &&
+        currentStudent && (
+          <DataDeletionConfirmationPopup
+            studentNumber={currentStudent.studentNumber}
+            onConfirmation={handleDataDeletion}
+            onCancel={() => setIsDeletionPopupShown(false)}
+          />
+        )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
   },
@@ -186,9 +174,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
-  },
-  sectionContainer: {
-    marginBottom: 24,
+    flex: 1,
   },
   title: {
     fontSize: 30,

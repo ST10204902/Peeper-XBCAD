@@ -2,12 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import AvatarComponent from "../components/AvatarComponent";
 import CustomButton from "../components/CustomButton";
 import { useState } from "react";
-import {
-  NavigationProp,
-  RouteProp,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamsList } from "./RootStackParamsList";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@clerk/clerk-expo";
@@ -47,7 +42,22 @@ import { useUser } from "@clerk/clerk-expo";
  * @state {string} avatarURI - Stores the selected avatar's URI.
  *
  * @throws Will log errors to the console if there is an issue saving the avatar.
+ *
+ * @returns {JSX.Element} A functional component that renders the avatar selection screen during registration.
  */
+
+interface ErrorWithMessage {
+  message: string;
+}
+
+function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof (error as Record<string, unknown>).message === "string"
+  );
+}
 
 function RegisterProfilePhotoScreen() {
   const [avatarURI, setAvatarURI] = useState("");
@@ -59,8 +69,14 @@ function RegisterProfilePhotoScreen() {
   } = useRoute<RouteProp<RootStackParamsList, "RegisterProfilePhotoScreen">>();
 
   // Error logging helper
-  const logError = (message: string, error?: any) =>
-    console.error(message, error);
+  const logError = (message: string, error?: unknown) => {
+    if (error !== null && error !== undefined) {
+      const errorMessage = isErrorWithMessage(error) ? error.message : "Unknown error occurred";
+      console.error(message, errorMessage);
+    } else {
+      console.error(message);
+    }
+  };
 
   // handle the user clicking the submit button
   const handleSubmit = async () => {
@@ -90,7 +106,7 @@ function RegisterProfilePhotoScreen() {
       <Text style={styles.label_choose_avatar}>Choose Avatar:</Text>
       <AvatarComponent
         onAvatarSelected={(uri: string) => setAvatarURI(uri)}
-        selectedAvatarURI={avatarURI} // Pass the selected avatar URI
+        selectedAvatarURI={avatarURI}
       />
       <View style={styles.submit_button_container}>
         <CustomButton
