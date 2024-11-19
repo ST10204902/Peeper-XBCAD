@@ -1,28 +1,29 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "./colors";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#334FD7",
+    backgroundColor: Colors.registerPrimary,
     padding: 20,
   },
   headingContainer: {
-    alignSelf: "flex-start", // Align to the left
-    marginBottom: 15, // Add space below the heading
-    marginTop: 40, // Add space above the heading
+    alignSelf: "flex-start",
+    marginBottom: 15,
+    marginTop: 40,
   },
   inputContainer: {
-    width: "100%", // Ensure the input takes the full width
-    marginBottom: 20, // Add space below the input
+    width: "100%",
+    marginBottom: 20,
   },
   buttonContainer: {
-    width: "80%", // Ensure the button takes the full width
-    marginBottom: 10, // Add space below the button
+    width: "80%",
+    marginBottom: 10,
   },
   hyperlinkContainer: {
-    width: "100%", // Ensure the hyperlink takes the full width
+    width: "100%",
     marginBottom: 20,
   },
 });

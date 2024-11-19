@@ -1,9 +1,9 @@
 // OrgRequest.ts
-import { DatabaseUtility } from '../../utils/DatabaseUtility';
-import { OrgRequestData } from '../OrgRequestData';
-import { OrgAddress } from './OrgAddress';
-import { ApprovalStatus } from '../enums';
-import { equalTo, onValue, orderByChild, query } from 'firebase/database';
+import { DatabaseUtility } from "../../utils/DatabaseUtility";
+import { OrgRequestData } from "../OrgRequestData";
+import { OrgAddress } from "./OrgAddress";
+import { ApprovalStatus } from "../enums";
+import { onValue } from "firebase/database";
 
 export class OrgRequest implements OrgRequestData {
   request_id: string;
@@ -63,19 +63,19 @@ export class OrgRequest implements OrgRequestData {
   }
 
   static async getAllOrgRequests(): Promise<OrgRequest[]> {
-    const data = await DatabaseUtility.getAllData<OrgRequestData>('orgRequests');
-    return data.map((org) => new OrgRequest(org));
+    const data = await DatabaseUtility.getAllData<OrgRequestData>("orgRequests");
+    return data.map(org => new OrgRequest(org));
   }
 
   static listenToRequestsByStudentId(
     studentNumber: string,
-    callback: (requests: OrgRequest[]) => void
+    callback: (requests: OrgRequest[]) => void,
   ): () => void {
-    const dbRef = DatabaseUtility.getRef('orgRequests');
-  
-    const unsubscribe = onValue(dbRef, (snapshot) => {
+    const dbRef = DatabaseUtility.getRef("orgRequests");
+
+    const unsubscribe = onValue(dbRef, snapshot => {
       const requests: OrgRequest[] = [];
-      snapshot.forEach((childSnapshot) => {
+      snapshot.forEach(childSnapshot => {
         const data = childSnapshot.val() as OrgRequestData;
         if (Array.isArray(data.studentIDs) && data.studentIDs.includes(studentNumber)) {
           requests.push(new OrgRequest(data));
@@ -83,7 +83,7 @@ export class OrgRequest implements OrgRequestData {
       });
       callback(requests);
     });
-  
+
     // Return the unsubscribe function
     return () => unsubscribe();
   }

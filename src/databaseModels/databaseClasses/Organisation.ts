@@ -1,8 +1,8 @@
 // Organisation.ts
-import { DatabaseUtility } from '../../utils/DatabaseUtility';
-import { OrganisationData } from '../OrganisationData';
-import { OrgAddress } from './OrgAddress';
-import { onValue } from 'firebase/database';
+import { DatabaseUtility } from "../../utils/DatabaseUtility";
+import { OrganisationData } from "../OrganisationData";
+import { OrgAddress } from "./OrgAddress";
+import { onValue } from "firebase/database";
 
 export class Organisation implements OrganisationData {
   org_id: string;
@@ -42,33 +42,31 @@ export class Organisation implements OrganisationData {
   }
 
   static async getAllOrganisations(): Promise<Organisation[]> {
-    const data = await DatabaseUtility.getAllData<OrganisationData>('organisations');
-    return data.map((org) => new Organisation(org));
+    const data = await DatabaseUtility.getAllData<OrganisationData>("organisations");
+    return data.map(org => new Organisation(org));
   }
 
   static async getStudentsOrgs(orgIDs: string[]): Promise<Organisation[]> {
-    const orgs = await Promise.all(orgIDs.map((org_id) => Organisation.fetchById(org_id)));
-    return orgs.filter((org) => org !== null) as Organisation[];
+    const orgs = await Promise.all(orgIDs.map(org_id => Organisation.fetchById(org_id)));
+    return orgs.filter(org => org !== null) as Organisation[];
   }
 
-  static listenToAllOrganisations(
-    callback: (organisations: Organisation[]) => void
-  ): () => void {
-    const ref = DatabaseUtility.getRef('organisations');
+  static listenToAllOrganisations(callback: (organisations: Organisation[]) => void): () => void {
+    const ref = DatabaseUtility.getRef("organisations");
 
     const unsubscribe = onValue(
       ref,
-      (snapshot) => {
+      snapshot => {
         const orgs: Organisation[] = [];
-        snapshot.forEach((childSnapshot) => {
+        snapshot.forEach(childSnapshot => {
           const data = childSnapshot.val() as OrganisationData;
           orgs.push(new Organisation(data));
         });
         callback(orgs);
       },
-      (error) => {
-        console.error('Error listening to organisations:', error);
-      }
+      error => {
+        console.error("Error listening to organisations:", error);
+      },
     );
 
     // Return the unsubscribe function

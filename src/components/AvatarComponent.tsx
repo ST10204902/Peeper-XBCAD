@@ -1,92 +1,47 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  FlatList,
-  Image,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { View, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import AvatarArrowRight from "../assets/icons/AvatarArrowRight";
 import AvatarArrowLeft from "../assets/icons/AvatarArrowLeft";
+import { Colors } from "../styles/colors";
+import A1 from "../assets/Avatars/A1.png";
+import A2 from "../assets/Avatars/A2.png";
+import A3 from "../assets/Avatars/A3.png";
+import A4 from "../assets/Avatars/A4.png";
+import A5 from "../assets/Avatars/A5.png";
+import A6 from "../assets/Avatars/A6.png";
+import A7 from "../assets/Avatars/A7.png";
+import A8 from "../assets/Avatars/A8.png";
+import A9 from "../assets/Avatars/A9.png";
 
-const avatars = [
-  {
-    id: 1,
-    src: require("../assets/Avatars/A1.png"),
-    avatarId: "avatar_1",
-  },
-  {
-    id: 2,
-    src: require("../assets/Avatars/A2.png"),
-    avatarId: "avatar_2",
-  },
-  {
-    id: 3,
-    src: require("../assets/Avatars/A3.png"),
-    avatarId: "avatar_3",
-  },
-  {
-    id: 4,
-    src: require("../assets/Avatars/A4.png"),
-    avatarId: "avatar_4",
-  },
-  {
-    id: 5,
-    src: require("../assets/Avatars/A5.png"),
-    avatarId: "avatar_5",
-  },
-  {
-    id: 6,
-    src: require("../assets/Avatars/A6.png"),
-    avatarId: "avatar_6",
-  },
-  {
-    id: 7,
-    src: require("../assets/Avatars/A7.png"),
-    avatarId: "avatar_7",
-  },
-  {
-    id: 8,
-    src: require("../assets/Avatars/A8.png"),
-    avatarId: "avatar_8",
-  },
-  {
-    id: 9,
-    src: require("../assets/Avatars/A9.png"),
-    avatarId: "avatar_9",
-  },
+interface AvatarSource {
+  id: number;
+  source: number;
+  avatarId: string;
+}
+
+const avatars: AvatarSource[] = [
+  { id: 1, source: A1, avatarId: "avatar_1" },
+  { id: 2, source: A2, avatarId: "avatar_2" },
+  { id: 3, source: A3, avatarId: "avatar_3" },
+  { id: 4, source: A4, avatarId: "avatar_4" },
+  { id: 5, source: A5, avatarId: "avatar_5" },
+  { id: 6, source: A6, avatarId: "avatar_6" },
+  { id: 7, source: A7, avatarId: "avatar_7" },
+  { id: 8, source: A8, avatarId: "avatar_8" },
+  { id: 9, source: A9, avatarId: "avatar_9" },
 ];
 
 const { width } = Dimensions.get("window");
 
-/**
- * AvatarComponent is a React functional component that allows users to select an avatar from a horizontal list.
- * It provides left and right arrows to navigate through the avatars and calls a callback function when an avatar is selected.
- *
- * @param {Object} props - The component props.
- * @param {(uri: string) => void} props.onAvatarSelected - Callback function that is called with the URI of the selected avatar.
- *
- * @returns {JSX.Element} The rendered component.
- *
- * @component
- * @example
- * const handleAvatarSelected = (uri) => {
- *   console.log("Selected avatar URI:", uri);
- * };
- *
- * <AvatarComponent onAvatarSelected={handleAvatarSelected} />
- */
-
-
-
-const AvatarComponent = ({
-  onAvatarSelected,
-}: {
+interface AvatarComponentProps {
   onAvatarSelected: (uri: string) => void;
   selectedAvatarURI: string;
+}
 
+const AvatarComponent: React.FC<AvatarComponentProps> = ({
+  onAvatarSelected,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  selectedAvatarURI,
 }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<number>(0);
   const flatListRef = React.useRef<FlatList>(null);
@@ -99,12 +54,12 @@ const AvatarComponent = ({
   useEffect(() => {
     // Call the callback function with the URI of the selected avatar
     onAvatarSelected(avatars[selectedAvatar].avatarId);
-  }, [selectedAvatar]);
+  }, [selectedAvatar, onAvatarSelected]);
 
-  const renderItem = ({ item }: { item: { id: string; src: any } }) => {
+  const renderItem = ({ item }: { item: { id: string; source: number } }) => {
     return (
       <View style={styles.avatarContainer}>
-        <Image source={item.src} style={styles.avatar} />
+        <Image source={item.source} style={styles.avatar} />
       </View>
     );
   };
@@ -126,22 +81,22 @@ const AvatarComponent = ({
       {/* Left Arrow */}
       {selectedAvatar > 0 && (
         <TouchableOpacity style={styles.arrowLeft} onPress={goPrev}>
-          <AvatarArrowLeft size={50} color={"#CFCFCF"} />
+          <AvatarArrowLeft size={50} color={Colors.textGray} />
         </TouchableOpacity>
       )}
 
       <FlatList
         data={avatars.map(avatar => ({
           id: avatar.id.toString(),
-          src: avatar.src
+          source: avatar.source,
         }))}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         renderItem={renderItem}
-        keyExtractor={(item: { id: string; src: any }) => item.id}
+        keyExtractor={(item: { id: string; source: number }) => item.id}
         ref={flatListRef}
-        onMomentumScrollEnd={(event) => {
+        onMomentumScrollEnd={event => {
           const index = Math.floor(event.nativeEvent.contentOffset.x / width);
           setSelectedAvatar(index);
         }}
@@ -150,7 +105,7 @@ const AvatarComponent = ({
       {/* Right Arrow */}
       {selectedAvatar < avatars.length - 1 && (
         <TouchableOpacity style={styles.arrowRight} onPress={goNext}>
-          <AvatarArrowRight size={50} color={"#CFCFCF"} />
+          <AvatarArrowRight size={50} color={Colors.textGray} />
         </TouchableOpacity>
       )}
     </View>
@@ -181,7 +136,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -20 }],
     zIndex: 1,
     padding: 10,
-    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundColor: Colors.transparent,
     borderRadius: 20,
   },
   arrowRight: {
@@ -191,12 +146,8 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -20 }],
     zIndex: 1,
     padding: 10,
-    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundColor: Colors.transparent,
     borderRadius: 20,
-  },
-  arrowText: {
-    fontSize: 40,
-    color: "#D3D3D3",
   },
 });
 

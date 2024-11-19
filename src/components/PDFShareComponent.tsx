@@ -1,22 +1,16 @@
 import * as React from "react";
-import {
-  View,
-  Text,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, Alert, ActivityIndicator } from "react-native";
 import * as Print from "expo-print";
 import { shareAsync } from "expo-sharing";
 import { logoBase64 } from "../assets/logoBase64";
-import { useUser } from "@clerk/clerk-expo";
 import { Student } from "../databaseModels/databaseClasses/Student";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import CustomButton from "./CustomButton";
 import memoizeOne from "memoize-one";
 import { useCurrentStudent } from "../hooks/useCurrentStudent";
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
 import MyMaths from "../utils/MyMaths";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
@@ -27,8 +21,8 @@ const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
  * @returns Calculated zoom level for the static map image. Between 10 and 16.
  */
 const calculateZoomLevel = (locationLogs: Array<LocationLog>) => {
-  const latitudes = locationLogs.map((pin) => parseFloat(pin.latitude.toString()));
-  const longitudes = locationLogs.map((pin) => parseFloat(pin.longitude.toString()));
+  const latitudes = locationLogs.map(pin => parseFloat(pin.latitude.toString()));
+  const longitudes = locationLogs.map(pin => parseFloat(pin.longitude.toString()));
 
   const maxLat = Math.max(...latitudes);
   const minLat = Math.min(...latitudes);
@@ -69,11 +63,11 @@ const getMinAndMaxDistance = (locationLogs: Array<LocationLog>) => {
     const pin2Latitude = pin2.latitude;
     const pin2Longitude = pin2.longitude;
 
-    let currentDistance = MyMaths.haversineDistance(
+    const currentDistance = MyMaths.haversineDistance(
       pin1Latitude,
       pin1Longitude,
       pin2Latitude,
-      pin2Longitude
+      pin2Longitude,
     );
 
     if (currentDistance < minDistance) {
@@ -134,7 +128,7 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 const getColorBasedOnDistance = (
   distance: number,
   minDistance: number,
-  maxDistance: number
+  maxDistance: number,
 ): string => {
   distance = distance * 1000; // Convert distance to meters
   const ratio: number = (distance - minDistance) / (maxDistance - minDistance);
@@ -148,23 +142,26 @@ const getColorBasedOnDistance = (
 
 const MAX_PATH_SEGMENTS = 50; // Maximum number of path segments to include
 
-const sampleLocationLogs = (locationLogs: Array<LocationLog>, maxSamples: number): Array<LocationLog> => {
+const sampleLocationLogs = (
+  locationLogs: Array<LocationLog>,
+  maxSamples: number,
+): Array<LocationLog> => {
   if (locationLogs.length <= maxSamples) return locationLogs;
-  
+
   const result: LocationLog[] = [];
   const step = Math.floor(locationLogs.length / maxSamples);
-  
+
   // Always include first and last points
   result.push(locationLogs[0]);
-  
+
   // Sample points at regular intervals
   for (let i = step; i < locationLogs.length - step; i += step) {
     result.push(locationLogs[i]);
   }
-  
+
   // Add the last point
   result.push(locationLogs[locationLogs.length - 1]);
-  
+
   return result;
 };
 
@@ -174,18 +171,19 @@ const sampleLocationLogs = (locationLogs: Array<LocationLog>, maxSamples: number
  * @param apiKey - Google Maps API key.
  * @returns URL for the static Google Maps image.
  */
-const generateStaticMapURL = (
-  locationLogs: Array<LocationLog>,
-  apiKey: string
-): string => {
+const generateStaticMapURL = (locationLogs: Array<LocationLog>, apiKey: string): string => {
   // Sample the location logs if there are too many
   const sampledLogs = sampleLocationLogs(locationLogs, MAX_PATH_SEGMENTS);
-  
+
   const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
 
   // Calculate center using sampled logs
-  const avgLat = sampledLogs.reduce((sum, pin) => sum + parseFloat(pin.latitude.toString()), 0) / sampledLogs.length;
-  const avgLng = sampledLogs.reduce((sum, pin) => sum + parseFloat(pin.longitude.toString()), 0) / sampledLogs.length;
+  const avgLat =
+    sampledLogs.reduce((sum, pin) => sum + parseFloat(pin.latitude.toString()), 0) /
+    sampledLogs.length;
+  const avgLng =
+    sampledLogs.reduce((sum, pin) => sum + parseFloat(pin.longitude.toString()), 0) /
+    sampledLogs.length;
   const center = `center=${avgLat},${avgLng}`;
 
   const zoom = `zoom=${calculateZoomLevel(sampledLogs)}`;
@@ -203,20 +201,22 @@ const generateStaticMapURL = (
       Number(pin1.latitude),
       Number(pin1.longitude),
       Number(pin2.latitude),
-      Number(pin2.longitude)
+      Number(pin2.longitude),
     );
 
     const color = getColorBasedOnDistance(distance, minDistance, maxDistance);
     pathSegments.push(
-      `path=color:${color}|weight:2|${pin1.latitude},${pin1.longitude}|${pin2.latitude},${pin2.longitude}`
+      `path=color:${color}|weight:2|${pin1.latitude},${pin1.longitude}|${pin2.latitude},${pin2.longitude}`,
     );
   }
   const path = pathSegments.join("&");
 
   // Generate markers for sampled logs
-  const markers = sampledLogs.map(
-    (pin, index) => `markers=color:red%7Clabel:${index + 1}%7C${pin.latitude},${pin.longitude}`
-  ).join("&");
+  const markers = sampledLogs
+    .map(
+      (pin, index) => `markers=color:red%7Clabel:${index + 1}%7C${pin.latitude},${pin.longitude}`,
+    )
+    .join("&");
 
   return `${baseUrl}${center}&${zoom}&${size}&${mapType}&${path}&${markers}&key=${apiKey}`;
 };
@@ -241,14 +241,13 @@ const calculateAverageSpeed = memoizeOne((locationLogs: Array<LocationLog>): num
       parseFloat(prevLog.latitude.toString()),
       parseFloat(prevLog.longitude.toString()),
       parseFloat(currLog.latitude.toString()),
-      parseFloat(currLog.longitude.toString())
+      parseFloat(currLog.longitude.toString()),
     );
     totalDistance += distance;
 
     // Calculate time difference in hours
     const timeDiffMs =
-      new Date(currLog.timestamp).getTime() -
-      new Date(prevLog.timestamp).getTime();
+      new Date(currLog.timestamp).getTime() - new Date(prevLog.timestamp).getTime();
     const timeDiffHours = timeDiffMs / (1000 * 60 * 60);
     totalTime += timeDiffHours;
   }
@@ -264,7 +263,7 @@ const calculateAverageSpeed = memoizeOne((locationLogs: Array<LocationLog>): num
  * @param logoBase64 - Base64 encoded logo image.
  * @returns HTML content for the report.
  */
-async function testHTML(student: Student, logoBase64: string): Promise<string> {
+async function testHTML(student: Student, base64Logo: string): Promise<string> {
   let htmlContent = `
     <html>
       <head>
@@ -372,21 +371,17 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
             <div class="report-title"> ${student.studentNumber} Report </div>
             <div class="date-generated"> Date Generated: ${new Date().toLocaleDateString()} </div>
           </div>
-          <img src="${logoBase64}" class="logo" />
+          <img src="${base64Logo}" class="logo" />
         </header>
     `;
 
   // Iterate over the sessions and create a new page for each one (up to 4)
-  if (student.locationData && typeof student.locationData === "object") {
+  if (student.locationData !== null && student.locationData !== undefined) {
     const sessions = Object.values(student.locationData).slice(0, 4);
 
     // Fetch all organization data in parallel
-    const orgPromises = sessions.map((session) =>
-      Organisation.fetchById(session.orgID)
-    );
-    const orgObjects = await Promise.all(
-      orgPromises.map((p) => p.catch((e) => null))
-    );
+    const orgPromises = sessions.map(session => Organisation.fetchById(session.orgID));
+    const orgObjects = await Promise.all(orgPromises.map(p => p.catch(_error => null)));
 
     for (let index = 0; index < Math.min(4, sessions.length); index++) {
       const session = sessions[index];
@@ -398,18 +393,13 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
 
       const durationMs = endTime.getTime() - startTime.getTime();
       const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
-      const durationMinutes = Math.floor(
-        (durationMs % (1000 * 60 * 60)) / (1000 * 60)
-      );
+      const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
       const durationString = `${durationHours} hours, ${durationMinutes} minutes`;
 
       const numPins = session.locationLogs.length;
       const avgSpeed = calculateAverageSpeed(session.locationLogs);
 
-      const mapURL = generateStaticMapURL(
-        session.locationLogs,
-        GOOGLE_MAPS_API_KEY
-      );
+      const mapURL = generateStaticMapURL(session.locationLogs, GOOGLE_MAPS_API_KEY);
 
       // Concatenate HTML content
       htmlContent += `
@@ -456,14 +446,11 @@ async function testHTML(student: Student, logoBase64: string): Promise<string> {
  * @returns React component
  */
 export default function PDFShareComponent() {
-  const user = useUser() ?? null;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const {currentStudent} = useCurrentStudent();
+  const { currentStudent } = useCurrentStudent();
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
-
-
 
   /**
    * Print the student's location data to a PDF file and share it.
@@ -477,7 +464,10 @@ export default function PDFShareComponent() {
       if (!currentStudent) {
         setError("Current student data is not available.");
         Alert.alert("Error", "Current student data is not available.");
-      } else if (!currentStudent.locationData) {
+      } else if (
+        currentStudent.locationData === null ||
+        currentStudent.locationData === undefined
+      ) {
         setError("No location data available.");
         Alert.alert("Error", "No location data available.");
       } else {
@@ -488,8 +478,8 @@ export default function PDFShareComponent() {
         const { uri } = await Print.printToFileAsync({ html: htmlContent });
         await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
       }
-    } catch (error) {
-      console.error("Failed to print to file", error);
+    } catch (printError) {
+      console.error("Failed to print to file", printError);
       setError("Failed to print to file.");
       Alert.alert("Error", "Failed to print to file.");
     } finally {
@@ -500,17 +490,19 @@ export default function PDFShareComponent() {
   return (
     <View>
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      {error && <Text>{error}</Text>}
-      {currentStudent && <CustomButton
-        title="EXPORT TRACKING INFORMATION"
-        fontFamily="Quittance"
-        textColor={theme.fontRegular}
-        buttonColor="#A4DB51"
-        textSize={20}
-        onPress={printToFile}
-        disabled={loading}
-        lineHeight={22}
-      />}
+      {error !== null && error !== "" && <Text>{error}</Text>}
+      {currentStudent && (
+        <CustomButton
+          title="EXPORT TRACKING INFORMATION"
+          fontFamily="Quittance"
+          textColor={theme.fontRegular}
+          buttonColor="#A4DB51"
+          textSize={20}
+          onPress={printToFile}
+          disabled={loading}
+          lineHeight={22}
+        />
+      )}
     </View>
   );
 }

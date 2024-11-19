@@ -1,15 +1,12 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { OrgAddressData } from "../databaseModels/OrgAddressData";
 import * as Location from "expo-location";
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
-import { DatabaseUtility } from "../utils/DatabaseUtility";
-import { OrganisationData } from "../databaseModels/OrganisationData";
-import { Linking } from 'react-native';
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
+import { Linking } from "react-native";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
-
-
+import locationIcon from "../assets/icons/location.png";
 
 /**
  * @orgName name of the organisation
@@ -21,10 +18,10 @@ interface Props {
   orgData: Organisation;
   orgAddress: OrgAddressData;
   oddOrEven: "odd" | "even";
-  listButton: ReactNode;
-  userLocation?: Location.LocationObject;
-  index: number; // Add the index of the item
-  totalItems: number; // Add the total number of items
+  listButton: React.ReactNode;
+  _userLocation?: Location.LocationObject;
+  index: number;
+  totalItems: number;
 }
 
 /**
@@ -40,7 +37,7 @@ export default function ExpandableOrgListItem({
   orgAddress,
   oddOrEven,
   listButton,
-  userLocation,
+  _userLocation,
   index,
   totalItems,
 }: Props) {
@@ -64,34 +61,38 @@ export default function ExpandableOrgListItem({
   const expandedContainerStyle = [
     oddOrEven === "odd" ? expandedStyles.itemContainerOdd : expandedStyles.itemContainerEven,
     { backgroundColor: oddOrEven === "odd" ? theme.orgListOdd : theme.orgListeven },
-    borderRadiusStyle
+    borderRadiusStyle,
   ];
 
   // Hook for setting the expanded state of the item
   const [expanded, setExpanded] = useState(false);
 
-  // Function to format the address for the API
-  function formatAddress(orgAddress: OrgAddressData): string {
-    const { streetAddress, suburb, city, province, postalCode } = orgAddress;
-    return `${streetAddress}, ${suburb}, ${city}, ${province}, ${postalCode}`;
-  }
-
   const openMaps = () => {
     const { orgLatitude, orgLongitude } = orgData;
     const url = `https://www.google.com/maps/search/?api=1&query=${orgLatitude},${orgLongitude}`;
-    Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+    Linking.openURL(url).catch(err => console.error("An error occurred", err));
   };
 
   return !expanded ? (
     <View style={containerStyle} onTouchEnd={() => setExpanded(true)}>
       <Text style={[styles.orgName, { color: theme.fontRegular }]}>{orgData.orgName}</Text>
-      {orgData.distance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{orgData.distance}km</Text>}
+      {orgData.distance !== null && orgData.distance !== undefined && orgData.distance !== "" && (
+        <Text style={[styles.distance, { color: theme.componentTextColour }]}>
+          {orgData.distance}km
+        </Text>
+      )}
     </View>
   ) : (
     <View style={expandedContainerStyle} onTouchEnd={() => setExpanded(false)}>
       <View style={expandedStyles.firstRow}>
-        <Text style={[expandedStyles.orgName, { color: theme.fontRegular }]}>{orgData.orgName}</Text>
-        {orgData.distance && <Text style={[styles.distance, { color: theme.componentTextColour }]}>{orgData.distance}km</Text>}
+        <Text style={[expandedStyles.orgName, { color: theme.fontRegular }]}>
+          {orgData.orgName}
+        </Text>
+        {orgData.distance !== null && orgData.distance !== undefined && orgData.distance !== "" && (
+          <Text style={[styles.distance, { color: theme.componentTextColour }]}>
+            {orgData.distance}km
+          </Text>
+        )}
       </View>
 
       <Text style={[expandedStyles.addressRow, { color: theme.componentTextColour }]}>
@@ -101,7 +102,7 @@ export default function ExpandableOrgListItem({
       <View style={expandedStyles.buttonContainer}>
         {listButton}
         <TouchableOpacity onPress={openMaps}>
-          <Image style={expandedStyles.location_icon} source={require("../assets/icons/location.png")} />
+          <Image style={expandedStyles.location_icon} source={locationIcon} />
         </TouchableOpacity>
       </View>
     </View>
@@ -190,5 +191,5 @@ const expandedStyles = StyleSheet.create({
     height: 46,
     width: 56,
     resizeMode: "contain",
-  }
+  },
 });

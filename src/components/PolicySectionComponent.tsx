@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
+import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
 
 interface PolicySectionProps {
   heading: string;
@@ -8,8 +8,8 @@ interface PolicySectionProps {
 }
 
 export const PolicySectionComponent = ({ heading, content }: PolicySectionProps) => {
-  const { isDarkMode, toggleTheme } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
   return (
     <View style={[styles.sectionContainer, { backgroundColor: theme.sectionBackground }]}>
       <Text style={[styles.sectionHeading, { color: theme.fontRegular }]}>{heading}</Text>
@@ -27,11 +27,11 @@ const styles = StyleSheet.create({
   sectionHeading: {
     fontSize: 26,
     marginBottom: 8,
-    fontFamily: 'Rany-Bold',
+    fontFamily: "Rany-Bold",
   },
   sectionContent: {
     fontSize: 20,
     lineHeight: 26,
-    fontFamily: 'Rany-Regular',
+    fontFamily: "Rany-Regular",
   },
 });

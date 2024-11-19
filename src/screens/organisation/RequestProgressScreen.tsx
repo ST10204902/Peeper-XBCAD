@@ -3,8 +3,9 @@ import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import useOrgRequests from "../../hooks/useOrgRequests";
 import { ApprovalStatus } from "../../databaseModels/enums";
 import { ScrollView } from "react-native-gesture-handler";
-import { useTheme } from '../../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../../styles/themes';
+import { useTheme } from "../../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../../styles/themes";
+import { Colors } from "../../styles/colors";
 
 /**
  * RequestProgressScreen component renders the progress of the user's organisation approval requests.
@@ -44,16 +45,16 @@ import { lightTheme, darkTheme } from '../../styles/themes';
 
 export default function RequestProgressScreen() {
   const { currentStudent } = useCurrentStudent();
-  const orgRequests = useOrgRequests(currentStudent?.student_id.toLocaleLowerCase() || "");
+  const studentId = currentStudent?.student_id?.toLowerCase() ?? "";
+  const orgRequests = useOrgRequests(studentId);
 
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
-  // Render Loading component if still loading
+
   if (!currentStudent) {
     return <Text>Loading student data...</Text>;
   }
 
-  // Function to get the approval status view for the corresponding approval status
   const getApprovalStatus = (status: number): React.ReactElement => {
     switch (status) {
       case ApprovalStatus.Pending:
@@ -88,8 +89,11 @@ export default function RequestProgressScreen() {
       <Text style={[styles.header, { color: theme.fontRegular }]}>REQUEST PROGRESS</Text>
       <ScrollView contentContainerStyle={styles.scroll_view}>
         <View style={styles.requests_container}>
-          {orgRequests.map((request, i) => (
-            <View key={request.request_id} style={[styles.itemContainerEven, { backgroundColor: theme.componentBackground }]}>
+          {orgRequests.map(request => (
+            <View
+              key={request.request_id}
+              style={[styles.itemContainerEven, { backgroundColor: theme.componentBackground }]}
+            >
               <View style={styles.firstRow}>
                 <Text
                   style={[styles.orgName, { color: theme.fontRegular }]}
@@ -123,7 +127,7 @@ const styles = StyleSheet.create({
   page_container: {
     paddingTop: 50,
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.pageBackground,
     alignItems: "center",
   },
   header: {
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
   },
   itemContainerEven: {
     paddingVertical: 20,
-    backgroundColor: "#F3F3F3",
+    backgroundColor: Colors.itemBackground,
     borderRadius: 25,
     marginBottom: 20,
   },
@@ -150,14 +154,14 @@ const styles = StyleSheet.create({
     paddingStart: 30,
     fontFamily: "Rany-Bold",
     letterSpacing: 1,
-    color: "#5A5A5A",
+    color: Colors.textGray,
     fontSize: 20,
     flexShrink: 1,
     flexWrap: "wrap",
     textAlign: "left",
   },
   addressRow: {
-    color: "#5A5A5A",
+    color: Colors.textGray,
     fontFamily: "Rany-Medium",
     marginVertical: 10,
     marginHorizontal: 40,
@@ -175,21 +179,21 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: "center",
     borderRadius: 14,
-    backgroundColor: "#FE7143",
+    backgroundColor: Colors.statusPending,
   },
   status_approved: {
     width: "100%",
     paddingVertical: 10,
     alignItems: "center",
     borderRadius: 14,
-    backgroundColor: "#A4DB51",
+    backgroundColor: Colors.statusApproved,
   },
   status_denied: {
     width: "100%",
     paddingVertical: 10,
     borderRadius: 14,
     alignItems: "center",
-    backgroundColor: "#EA4B4B",
+    backgroundColor: Colors.statusDenied,
   },
   status_message: {
     fontFamily: "Rany-Bold",

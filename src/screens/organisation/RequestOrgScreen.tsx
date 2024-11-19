@@ -13,12 +13,11 @@ import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "../RootStackParamsList";
 import SearchLocation from "../../components/SearchLocation";
-import { set } from "firebase/database";
 import { useTheme } from "../../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../../styles/themes";
-import useOrgRequests from "../../hooks/useOrgRequests";
 import DuplicateRequestPopup from "../../components/DuplicateRequestPopup";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
+import { Colors } from "../../styles/colors";
 
 /**
  * SearchLocation component provides a location search and selection interface.
@@ -67,10 +66,7 @@ export default function RequestOrgScreen() {
   const [allOrganisations, setAllOrganisations] = useState<Organisation[]>([]);
   const [lng, setLng] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
-  const navigation =
-    useNavigation<
-      NavigationProp<RootStackParamsList, "RequestProgressScreen">
-    >();
+  const navigation = useNavigation<NavigationProp<RootStackParamsList, "RequestProgressScreen">>();
   const [duplicate, setDuplicate] = useState<{
     location: string;
     orgName: string;
@@ -92,21 +88,18 @@ export default function RequestOrgScreen() {
   const handleSubmit = async () => {
     // Basic validation
     if (!currentStudent) {
-      console.log("No student data found while submitting request");
+      Alert.alert("Error", "No student data found");
       return;
     }
     if (!orgName || !location || !phoneNum || !email) {
       Alert.alert("Error", "Please fill in all fields.");
-      console.log(
-        `org name: ${orgName} location: ${location} phone number: ${!phoneNum} email: ${!email}`
-      );
       return;
     }
 
     try {
       // Temporary location data input for development
       const locationData = location.split(",");
-      const requestStudentNumber = [currentStudent.studentNumber] ;
+      const requestStudentNumber = [currentStudent.studentNumber];
       // Create OrgRequestData object
       const requestData: OrgRequestData = {
         request_id: DatabaseUtility.generateUniqueId(),
@@ -132,34 +125,32 @@ export default function RequestOrgScreen() {
 
       let isDuplicate = false;
 
-
       for (const org of allOrganisations) {
-        if (
-          org.orgLatitude === lat && org.orgLongitude === lng
-        ) {
-         return Alert.alert("Error", "Organisation already exists at this location.");
+        if (org.orgLatitude === lat && org.orgLongitude === lng) {
+          return Alert.alert("Error", "Organisation already exists at this location.");
         }
       }
 
       for (const existingRequest of orgRequests) {
-        if (
-          existingRequest.orgLatitude === lat && existingRequest.orgLongitude === lng
-        ) {
+        if (existingRequest.orgLatitude === lat && existingRequest.orgLongitude === lng) {
           isDuplicate = true;
-          let updatedRequest = existingRequest;
-          updatedRequest.studentIDs = [...existingRequest.studentIDs, currentStudent.studentNumber.toLocaleLowerCase()];
+          const updatedRequest = existingRequest;
+          updatedRequest.studentIDs = [
+            ...existingRequest.studentIDs,
+            currentStudent.studentNumber.toLocaleLowerCase(),
+          ];
           setDuplicate({
             location: existingRequest.orgAddress.toString(),
-          orgName: existingRequest.name,
+            orgName: existingRequest.name,
             phoneNo: existingRequest.phoneNo ?? "",
             email: existingRequest.email ?? "",
           });
-  
 
           existingRequest.update(updatedRequest);
         }
       }
       if (!isDuplicate) {
+        // eslint-disable-next-line no-console
         console.log("New request:", newRequest);
         await newRequest.save();
         // Success message
@@ -182,8 +173,9 @@ export default function RequestOrgScreen() {
 
   const handlePlaceUpdated = (
     place: string,
-    coordinate: { latitude: number; longitude: number }
+    coordinate: { latitude: number; longitude: number },
   ) => {
+    // eslint-disable-next-line no-console
     console.log("Place updated:", place, coordinate);
     setLocation(place);
     setLat(coordinate.latitude);
@@ -195,9 +187,7 @@ export default function RequestOrgScreen() {
       style={[styles.screenLayout, { backgroundColor: theme.background }]}
       keyboardShouldPersistTaps="handled"
     >
-      <Text style={[styles.headerText, { color: theme.fontRegular }]}>
-        Request an Organisation
-      </Text>
+      <Text style={[styles.headerText, { color: theme.fontRegular }]}>Request an Organisation</Text>
 
       <View style={styles.map_container}>
         <SearchLocation handlePlaceUpdated={handlePlaceUpdated} />
@@ -245,7 +235,6 @@ export default function RequestOrgScreen() {
         <DuplicateRequestPopup
           request={duplicate}
           onOk={() => {
-
             setDuplicate(null);
             navigation.navigate("RequestProgressScreen");
           }}
@@ -257,7 +246,7 @@ export default function RequestOrgScreen() {
 const styles = StyleSheet.create({
   screenLayout: {
     flex: 1,
-    backgroundColor: "#F9F9F9",
+    backgroundColor: Colors.screenBackground,
   },
   headerText: {
     marginHorizontal: 16,
@@ -265,7 +254,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 32,
     fontFamily: "Quittance",
-    color: "#161616",
+    color: Colors.headerText,
   },
   inputSpacing: {
     marginBottom: 15,

@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { SettingsListItem } from './SettingsListItem';
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes'; // Import themes
+import { View, Text, StyleSheet } from "react-native";
+import { SettingsListItem } from "./SettingsListItem";
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes"; // Import themes
 
 interface SettingsSectionProps {
   header: string;
@@ -26,11 +26,7 @@ export const SettingsSection = ({ header, items }: SettingsSectionProps) => {
       <Text style={[styles.sectionHeader, { color: theme.fontRegular }]}>{header}</Text>
       <View style={[styles.sectionContent, { backgroundColor: theme.background }]}>
         {items.map((item, index) => (
-          <SettingsListItem
-            key={item.title}
-            {...item}
-            isLast={index === items.length - 1}
-          />
+          <SettingsListItem key={item.title} {...item} isLast={index === items.length - 1} />
         ))}
       </View>
     </View>
@@ -44,10 +40,10 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 26,
     marginBottom: 8,
-    fontFamily: "Quittance"
+    fontFamily: "Quittance",
   },
   sectionContent: {
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
 });

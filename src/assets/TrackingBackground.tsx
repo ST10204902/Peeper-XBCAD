@@ -6,7 +6,7 @@ import { lightTheme, darkTheme } from "../styles/themes";
 
 export default function TrackingBackground() {
   const { isDarkMode } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   return (
     <View style={styles.container}>

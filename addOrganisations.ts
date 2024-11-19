@@ -3,15 +3,13 @@
 
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
-import { OrgAddressData } from "./src/databaseModels/OrgAddressData";
 import { OrganisationData } from "./src/databaseModels/OrganisationData";
 
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyC79dLUv5wmpvYmreVMDS0KMFcmw-RUEMk",
   authDomain: "peeper-xbcad.firebaseapp.com",
-  databaseURL:
-    "https://peeper-xbcad-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://peeper-xbcad-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "peeper-xbcad",
   storageBucket: "peeper-xbcad.appspot.com",
   messagingSenderId: "761357003841",
@@ -335,6 +333,7 @@ const addOrganisationsData = async () => {
       const orgRef = ref(database, `organisations/${organisation.org_id}`); // Use a unique ID for each organization
       await set(orgRef, organisation);
     }
+    // eslint-disable-next-line no-console
     console.log("All organization data added successfully");
   } catch (e) {
     console.error("Error adding organization data: ", e);

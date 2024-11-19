@@ -6,23 +6,34 @@ import {
   Image,
   Text,
   ScrollView,
+  ImageSourcePropType,
 } from "react-native";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
 import { useTheme } from "../../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../../styles/themes";
 import { AvatarUtility } from "../../utils/AvatarUtility";
+import { Colors } from "../../styles/colors";
+import A1 from "../../assets/Avatars/A1.png";
+import A2 from "../../assets/Avatars/A2.png";
+import A3 from "../../assets/Avatars/A3.png";
+import A4 from "../../assets/Avatars/A4.png";
+import A5 from "../../assets/Avatars/A5.png";
+import A6 from "../../assets/Avatars/A6.png";
+import A7 from "../../assets/Avatars/A7.png";
+import A8 from "../../assets/Avatars/A8.png";
+import A9 from "../../assets/Avatars/A9.png";
 
 const AVATARS = [
-  { id: 1, source: require("../../assets/Avatars/A1.png") },
-  { id: 2, source: require("../../assets/Avatars/A2.png") },
-  { id: 3, source: require("../../assets/Avatars/A3.png") },
-  { id: 4, source: require("../../assets/Avatars/A4.png") },
-  { id: 5, source: require("../../assets/Avatars/A5.png") },
-  { id: 6, source: require("../../assets/Avatars/A6.png") },
-  { id: 7, source: require("../../assets/Avatars/A7.png") },
-  { id: 8, source: require("../../assets/Avatars/A8.png") },
-  { id: 9, source: require("../../assets/Avatars/A9.png") },
-];
+  { id: 1, source: A1 },
+  { id: 2, source: A2 },
+  { id: 3, source: A3 },
+  { id: 4, source: A4 },
+  { id: 5, source: A5 },
+  { id: 6, source: A6 },
+  { id: 7, source: A7 },
+  { id: 8, source: A8 },
+  { id: 9, source: A9 },
+] as const;
 
 const valuePairs = {
   1: "avatar_1",
@@ -37,8 +48,8 @@ const valuePairs = {
 };
 
 interface AvatarComponentProps {
-  onAvatarSelected?: (uri: string) => void; // Make the prop optional
-  selectedAvatarURI?: string; // Add the selectedAvatarURI prop
+  onAvatarSelected?: (uri: string) => void;
+  selectedAvatarURI?: string;
 }
 
 const AvatarComponent: React.FC<AvatarComponentProps> = ({
@@ -51,17 +62,20 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   useEffect(() => {
-    if (selectedAvatarURI) {
+    if (selectedAvatarURI !== null && selectedAvatarURI !== undefined && selectedAvatarURI !== "") {
+      // eslint-disable-next-line no-console
       console.log(selectedAvatarURI);
     }
   }, [selectedAvatarURI, currentStudent?.profilePhotoId]);
 
   useEffect(() => {
-    if (currentStudent?.profilePhotoId) {
+    if (
+      currentStudent?.profilePhotoId !== null &&
+      currentStudent?.profilePhotoId !== undefined &&
+      currentStudent?.profilePhotoId !== ""
+    ) {
       const avatar = AVATARS.find(
-        (a) =>
-          valuePairs[a.id as keyof typeof valuePairs] ===
-          currentStudent.profilePhotoId
+        a => valuePairs[a.id as keyof typeof valuePairs] === currentStudent.profilePhotoId,
       );
       if (avatar) {
         setSelectedAvatar(avatar.id);
@@ -69,35 +83,24 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({
     }
   }, [currentStudent]);
 
-  const handleAvatarPress = async (id: number, source: any) => {
+  const handleAvatarPress = async (id: number, _source: ImageSourcePropType) => {
     setSelectedAvatar(id);
     const avatarId = `avatar_${id}`;
-    if (typeof onAvatarSelected === 'function') {
+    if (typeof onAvatarSelected === "function") {
       onAvatarSelected(avatarId);
     }
     await updateCurrentStudent({ profilePhotoId: avatarId });
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        { backgroundColor: theme.background },
-      ]}
-    >
-      {/* Title */}
-      <Text style={[styles.title, { color: theme.fontRegular }]}>
-        CUSTOMIZE PROFILE
-      </Text>
-      <Text style={[styles.subtitle, { color: theme.fontRegular }]}>
-        Avatar
-      </Text>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.fontRegular }]}>CUSTOMIZE PROFILE</Text>
+      <Text style={[styles.subtitle, { color: theme.fontRegular }]}>Avatar</Text>
 
-      {/* Selected Avatar Preview */}
       <View style={styles.previewContainer}>
-        {selectedAvatar ? (
+        {selectedAvatar !== null && selectedAvatar !== 0 ? (
           <Image
-            source={AVATARS.find((a) => a.id === selectedAvatar)?.source}
+            source={AVATARS.find(a => a.id === selectedAvatar)?.source}
             style={styles.selectedAvatar}
             resizeMode="contain"
           />
@@ -109,27 +112,22 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({
               { backgroundColor: theme.componentBackground },
             ]}
           >
-            {currentStudent?.profilePhotoId && (
-              <Image
-                source={AvatarUtility.getAvatarSource(currentStudent.profilePhotoId)}
-                style={styles.selectedAvatar}
-                resizeMode="contain"
-              />
-            )}
+            {currentStudent?.profilePhotoId !== null &&
+              currentStudent?.profilePhotoId !== undefined &&
+              currentStudent?.profilePhotoId !== "" && (
+                <Image
+                  source={AvatarUtility.getAvatarSource(currentStudent.profilePhotoId)}
+                  style={styles.selectedAvatar}
+                  resizeMode="contain"
+                />
+              )}
           </View>
         )}
       </View>
 
-      {/* Avatar Selection Background */}
-      <View
-        style={[
-          styles.selectionBackground,
-          { backgroundColor: theme.componentBackground },
-        ]}
-      >
-        {/* Avatar Grid */}
+      <View style={[styles.selectionBackground, { backgroundColor: theme.componentBackground }]}>
         <View style={styles.gridContainer}>
-          {AVATARS.map((avatar) => (
+          {AVATARS.map(avatar => (
             <TouchableOpacity
               key={avatar.id}
               onPress={() => handleAvatarPress(avatar.id, avatar.source)}
@@ -139,7 +137,9 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({
                 source={avatar.source}
                 style={[
                   styles.avatarImage,
-                  ...(selectedAvatar && selectedAvatar === avatar.id
+                  ...(selectedAvatar !== null &&
+                  selectedAvatar !== 0 &&
+                  selectedAvatar === avatar.id
                     ? [styles.grayscale]
                     : []),
                 ]}
@@ -183,10 +183,10 @@ const styles = StyleSheet.create({
     borderRadius: 100, // Ensure the border radius matches the size for a circular avatar
   },
   placeholderAvatar: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: Colors.placeholderBackground,
   },
   selectionBackground: {
-    backgroundColor: "#F3F3F3",
+    backgroundColor: Colors.selectionBackground,
     borderRadius: 20,
     padding: 16,
     width: "100%",

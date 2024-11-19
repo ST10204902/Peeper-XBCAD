@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import * as ExpoLocation from "expo-location";
 import { SessionLog } from "../databaseModels/databaseClasses/SessionLog";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
@@ -7,84 +7,141 @@ import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import { Viewport } from "../databaseModels/databaseClasses/Viewport";
 import { useCurrentStudent } from "./useCurrentStudent";
 import { DatabaseUtility } from "../utils/DatabaseUtility";
-import { clearTrackingNotification, requestNotificationPermissions, showOrUpdateTrackingNotification } from "../services/trackingNotification";
+import {
+  clearTrackingNotification,
+  requestNotificationPermissions,
+  showOrUpdateTrackingNotification,
+} from "../services/trackingNotification";
 import { trackingState, trackingStartTimeState } from "../atoms/atoms";
 import { useRecoilState, useSetRecoilState } from "recoil";
+
+type LocationSubscription = {
+  remove: () => void;
+};
 
 export function useLocationTracking() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [tracking, setTracking] = useRecoilState(trackingState);
   const setStartTime = useSetRecoilState(trackingStartTimeState);
-  const { currentStudent, error, updateCurrentStudent } = useCurrentStudent();
+  const { currentStudent: student, updateCurrentStudent } = useCurrentStudent();
 
-  const locationSubscriptionRef = useRef<any>(null);
+  const locationSubscriptionRef = useRef<LocationSubscription | null>(null);
   const sessionLogRef = useRef<SessionLog | null>(null);
   const studentRef = useRef<Student | null>(null);
   const orgNameRef = useRef<string>("");
   const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const elapsedTimeRef = useRef<number>(0); // To keep track of elapsed time in seconds
+  const elapsedTimeRef = useRef<number>(0);
 
-  function handleLocationUpdate(location: ExpoLocation.LocationObject) {
-    console.log("handleLocationUpdate was called");
+  const handleLocationUpdate = useCallback(
+    (location: ExpoLocation.LocationObject) => {
+      // eslint-disable-next-line no-console
+      console.log("handleLocationUpdate was called");
 
-    const currentSessionLog = sessionLogRef.current;
-    const currentStudent = studentRef.current;
+      const currentSessionLog = sessionLogRef.current;
+      const currentStudent = studentRef.current;
 
-    if (!currentSessionLog || !currentStudent) {
-      setErrorMsg("No session log or student found while updating location");
-      return;
+      if (!currentSessionLog || !currentStudent) {
+        setErrorMsg("No session log or student found while updating location");
+        return;
+      }
+
+      const ISOTimeStamp = new Date(location.timestamp).toISOString();
+      const newLocationLog = new LocationLog({
+        timestamp: ISOTimeStamp,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        accuracy: location.coords.accuracy ?? 0,
+        altitude: location.coords.altitude ?? 0,
+      });
+
+      currentSessionLog.locationLogs.push(newLocationLog);
+      currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
+
+      // Save to database
+      updateCurrentStudent({ locationData: currentStudent.locationData }).then(() => {
+        // eslint-disable-next-line no-console
+        console.log("New location log saved to student");
+      });
+    },
+    [updateCurrentStudent],
+  );
+
+  const stopTracking = useCallback(async () => {
+    // eslint-disable-next-line no-console
+    console.log("Stopping tracking called");
+
+    try {
+      const currentSessionLog = sessionLogRef.current;
+      const currentStudent = studentRef.current;
+
+      if (!currentSessionLog || !currentStudent) {
+        return;
+      }
+
+      currentSessionLog.sessionEndTime = new Date().toISOString();
+      const boundingBox = Viewport.calculateBoundingBox(currentSessionLog.locationLogs);
+      currentSessionLog.viewport.high = boundingBox.high;
+      currentSessionLog.viewport.low = boundingBox.low;
+
+      currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
+
+      await updateCurrentStudent({ locationData: currentStudent.locationData });
+      // eslint-disable-next-line no-console
+      console.log("Session log saved to student while stopping tracking");
+
+      if (locationSubscriptionRef.current !== null) {
+        locationSubscriptionRef.current.remove();
+        locationSubscriptionRef.current = null;
+      }
+
+      await clearTrackingNotification();
+
+      if (notificationTimerRef.current !== null) {
+        clearInterval(notificationTimerRef.current);
+        notificationTimerRef.current = null;
+      }
+
+      sessionLogRef.current = null;
+      setTracking({ isTracking: false, organizationName: "" });
+    } catch (trackingError) {
+      setErrorMsg(`Error stopping tracking: ${trackingError}`);
+      console.error(trackingError);
     }
 
-    const ISOTimeStamp = new Date(location.timestamp).toISOString();
-    const newLocationLog = new LocationLog({
-      timestamp: ISOTimeStamp,
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      accuracy: location.coords.accuracy || 0,
-      altitude: location.coords.altitude || 0,
-    });
-
-    currentSessionLog.locationLogs.push(newLocationLog);
-    currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
-
-    // Save to database
-    updateCurrentStudent({ locationData: currentStudent.locationData }).then(() => {
-      console.log("New location log saved to student");
-    });
-  }
+    setTracking({ isTracking: false, organizationName: "" });
+  }, [setTracking, updateCurrentStudent]);
 
   const startTracking = async (organisation: Organisation) => {
+    // eslint-disable-next-line no-console
     console.log("Starting tracking called");
+    // eslint-disable-next-line no-console
     console.log("organisation being tracked: ", organisation.orgName);
     if (tracking.isTracking) {
       setErrorMsg("Tracking already in progress");
       return;
     }
 
-    if (!currentStudent) {
+    if (!student) {
       setErrorMsg("No student data found while starting tracking");
       return;
     }
 
     try {
-      // Request permissions
-      let { status: foregroundStatus } = await ExpoLocation.requestForegroundPermissionsAsync();
+      const { status: foregroundStatus } = await ExpoLocation.requestForegroundPermissionsAsync();
       if (foregroundStatus !== "granted") {
         setErrorMsg("Permission to access location was denied");
         return;
       }
 
-      let { status: backgroundStatus } = await ExpoLocation.requestBackgroundPermissionsAsync();
+      const { status: backgroundStatus } = await ExpoLocation.requestBackgroundPermissionsAsync();
       if (backgroundStatus !== "granted") {
         setErrorMsg("Permission to access background location was denied");
         return;
       }
 
-      // Set tracking status
       setTracking({ isTracking: true, organizationName: organisation.orgName });
       orgNameRef.current = organisation.orgName;
 
-      // Create session log
       const newSessionID = DatabaseUtility.generateUniqueId();
       const newSessionLog = new SessionLog({
         sessionLog_id: newSessionID,
@@ -95,125 +152,68 @@ export function useLocationTracking() {
         viewport: { low: { latitude: 0, longitude: 0 }, high: { latitude: 0, longitude: 0 } },
       });
 
-      // Update student's location data
-      currentStudent.locationData[newSessionID] = newSessionLog;
+      student.locationData[newSessionID] = newSessionLog;
       sessionLogRef.current = newSessionLog;
-      studentRef.current = currentStudent;
+      studentRef.current = student;
 
-      // Save to database
-      await updateCurrentStudent({ locationData: currentStudent.locationData });
+      await updateCurrentStudent({ locationData: student.locationData });
+      // eslint-disable-next-line no-console
       console.log("Session log saved to student");
 
-      // Start location tracking (keep at 5 seconds for location updates)
       locationSubscriptionRef.current = await ExpoLocation.watchPositionAsync(
         { accuracy: ExpoLocation.Accuracy.Balanced, timeInterval: 5000, distanceInterval: 0 },
-        handleLocationUpdate
+        handleLocationUpdate,
       );
 
-      // Request notification permissions
       const hasPermission = await requestNotificationPermissions();
       if (!hasPermission) {
+        // eslint-disable-next-line no-console
         console.log("Notification permissions not granted");
       }
 
-      // Reset elapsed time
       elapsedTimeRef.current = 0;
       const now = Date.now();
       setStartTime(now);
-      // Show initial notification
+
       await showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
 
-      // Start notification timer (update every second)
       notificationTimerRef.current = setInterval(() => {
         elapsedTimeRef.current += 1;
         showOrUpdateTrackingNotification(organisation.orgName, elapsedTimeRef.current);
       }, 1000);
-
-    } catch (error) {
-      // If anything fails, make sure tracking state is false
+    } catch (startError) {
       setStartTime(0);
       setTracking({ isTracking: false, organizationName: "" });
-      setErrorMsg(`Error starting tracking: ${error}`);
-      console.error(error);
+      setErrorMsg(`Error starting tracking: ${startError}`);
+      console.error(startError);
     }
   };
 
-  const stopTracking = async () => {
-    console.log("Stopping tracking called");
-    
-    try {
-      // Finalize session log
-      const currentSessionLog = sessionLogRef.current;
-      const currentStudent = studentRef.current;
-
-      if (!currentSessionLog || !currentStudent) {
-        return;
-      }
-
-      // Finalize session log
-      currentSessionLog.sessionEndTime = new Date().toISOString();
-      const boundingBox = Viewport.calculateBoundingBox(currentSessionLog.locationLogs);
-      currentSessionLog.viewport.high = boundingBox.high;
-      currentSessionLog.viewport.low = boundingBox.low;
-
-      // Update student's location data
-      currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
-
-      // Save to database
-      await updateCurrentStudent({ locationData: currentStudent.locationData });
-      console.log("Session log saved to student while stopping tracking");
-
-      // Clean up location subscription
-      if (locationSubscriptionRef.current) {
-        locationSubscriptionRef.current.remove();
-        locationSubscriptionRef.current = null;
-      }
-
-      // Clear notification
-      await clearTrackingNotification();
-
-      // Clear notification timer
-      if (notificationTimerRef.current) {
-        clearInterval(notificationTimerRef.current);
-        notificationTimerRef.current = null;
-      }
-
-      sessionLogRef.current = null; // Reset session log reference
-      setTracking({ isTracking: false, organizationName: "" });
-    } catch (error) {
-      setErrorMsg(`Error stopping tracking: ${error}`);
-      console.error(error);
+  useEffect(() => {
+    if (
+      !tracking.isTracking &&
+      (locationSubscriptionRef.current !== null || sessionLogRef.current !== null)
+    ) {
+      stopTracking();
     }
-
-    // Move this AFTER cleanup is successful
-    setTracking({ isTracking: false, organizationName: "" });
-  };
+  }, [tracking.isTracking, stopTracking]);
 
   useEffect(() => {
-    if (!tracking.isTracking) {
-      if (locationSubscriptionRef.current || sessionLogRef.current) {
-        stopTracking();
-      }
-    }
-  }, [tracking.isTracking]);
-
-  useEffect(() => {
-    if (errorMsg) {
+    if (errorMsg !== null && errorMsg !== "") {
       console.error(`Error during tracking: ${errorMsg}`);
-      setErrorMsg(null); // Reset error message
+      setErrorMsg(null);
     }
 
-    // Clean up when component unmounts
     return () => {
-      if (locationSubscriptionRef.current) {
+      if (locationSubscriptionRef.current !== null) {
         locationSubscriptionRef.current.remove();
       }
-      if (notificationTimerRef.current) {
+      if (notificationTimerRef.current !== null) {
         clearInterval(notificationTimerRef.current);
       }
       clearTrackingNotification();
     };
-  }, []);
+  }, [errorMsg]);
 
   return { tracking, startTracking };
 }

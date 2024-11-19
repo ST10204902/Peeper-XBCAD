@@ -1,76 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { KeyboardAvoidingView, Platform, SafeAreaView, View } from "react-native";
-import CustomButton from "../components/CustomButton"; // Ensure the path is correct
-import styles from "../styles/LoginScreenStyle"; // Ensure the path is correct
-import registerStyles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
-import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
+import React, { useState } from "react";
+import { Alert, KeyboardAvoidingView, Platform, View } from "react-native";
+import CustomButton from "../components/CustomButton";
+import styles from "../styles/LoginScreenStyle";
+import registerStyles from "../styles/RegisterScreenStyle";
+import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink";
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
-import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent"; // Import the heading component
-import { useAuth, useClerk, useSignIn } from "@clerk/clerk-expo";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack"; // Ensure the path is correct
+import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent";
+import { useSignIn } from "@clerk/clerk-expo";
 import ConfirmationInputComponent from "../components/ConfirmationInputComponent";
 import { SignInFirstFactor, EmailCodeFactor } from "@clerk/types";
 
-/**
- * LoginScreen component handles the user login process.
- *
- * This component allows users to log in using their email address. It supports
- * email-based authentication and handles the verification process using a
- * one-time password (OTP) sent to the user's email.
- *
- * @component
- * @returns {React.FC} A functional component representing the login screen.
- *
- * @example
- * // Usage example:
- * <LoginScreen />
- *
- * @remarks
- * - If the user is already signed in, they are redirected to the 'LandingScreen'.
- * - The component manages the state for email address, verification code, and
- *   pending verification status.
- * - It uses the `useSignIn` hook to handle the sign-in process and the `useAuth`
- *   hook to check the authentication status.
- *
- * @function handlePress
- * Initiates the sign-in process by creating a sign-in attempt with the provided
- * email address. If an email code factor is supported, it prepares the first
- * factor for email code verification.
- *
- * @function onPressVerify
- * Attempts to verify the email code entered by the user. If the verification is
- * successful, it sets the active session and navigates to the 'LandingScreen'.
- *
- * @function handleEmailChange
- * Updates the email address state when the user changes the input.
- *
- * @hook useState
- * Manages the state for email address, verification code, and pending verification status.
- *
- * @hook useSignIn
- * Provides methods for handling the sign-in process.
- *
- * @hook useAuth
- * Provides the authentication status of the user.
- *
- * @hook useNavigation
- * Provides navigation methods for navigating between screens.
- */
+interface ClerkError {
+  errors?: Array<{ code?: string; message?: string }>;
+  message?: string;
+}
+
 const LoginScreen: React.FC = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const [emailError, setEmailError] = useState("");
   const { isLoaded, signIn, setActive } = useSignIn();
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
-  const navigation = useNavigation<StackNavigationProp<any>>();
-  const { isSignedIn } = useAuth();
-
-  // useEffect(() => {
-  //   if (isSignedIn) {
-  //     navigation.navigate('BottomNavigationBar');
-  //   }
-  // }, [isSignedIn, navigation]);
 
   const validateEmail = (email: string) => {
     return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
@@ -85,13 +35,17 @@ const LoginScreen: React.FC = () => {
     }
 
     try {
-      const { supportedFirstFactors } = await signIn?.create({
+      const signInResult = await signIn?.create({
         identifier: emailAddress,
       });
 
-      const isEmailCodeFactor = (
-        factor: SignInFirstFactor
-      ): factor is EmailCodeFactor => {
+      if (signInResult === null || signInResult === undefined) {
+        throw new Error("Failed to create sign in attempt");
+      }
+
+      const { supportedFirstFactors } = signInResult;
+
+      const isEmailCodeFactor = (factor: SignInFirstFactor): factor is EmailCodeFactor => {
         return factor.strategy === "email_code";
       };
 
@@ -105,30 +59,31 @@ const LoginScreen: React.FC = () => {
       }
       setPendingVerification(true);
       setEmailError("");
-    } catch (err: any) {
-      if (err.errors) {
-        const errorCode = err.errors[0]?.code;
+    } catch (err: unknown) {
+      const error = err as ClerkError;
+      if (error.errors && error.errors.length > 0) {
+        const errorCode = error.errors[0]?.code;
         switch (errorCode) {
           case "form_identifier_not_found":
-            alert("Email not found. Please register first.");
+            Alert.alert("Email not found. Please register first.");
             break;
           case "invalid_otp":
-            alert("Invalid or expired OTP. Please try again.");
+            Alert.alert("Invalid or expired OTP. Please try again.");
             break;
           default:
-            console.error("Unexpected error:", err);
-            alert("An unexpected error occurred. Please try again later.");
+            console.error("Unexpected error:", error);
+            Alert.alert("An unexpected error occurred. Please try again later.");
         }
-      } else if (err.message === "Network Error") {
-        alert("Network error. Please check your connection and try again.");
+      } else if (error.message === "Network Error") {
+        Alert.alert("Network error. Please check your connection and try again.");
       } else {
-        console.error("Unexpected error:", err);
-        alert("An unexpected error occurred. Please try again later.");
+        console.error("Unexpected error:", error);
+        Alert.alert("An unexpected error occurred. Please try again later.");
       }
 
-      setEmailError(err.errors?.[0]?.message || "Failed to login. Please try again.");
-      console.error(JSON.stringify(err, null, 2));
-
+      const errorMessage = error.errors?.[0]?.message;
+      setEmailError(errorMessage ?? "Failed to login. Please try again.");
+      console.error(JSON.stringify(error, null, 2));
     }
   };
 
@@ -143,41 +98,29 @@ const LoginScreen: React.FC = () => {
         code,
       });
 
-      if (signInAttempt.status === "complete") {
+      if (signInAttempt?.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(JSON.stringify(err, null, 2));
     }
   };
 
-  const handleEmailChange = (emailAddress: string) => {
-    setEmailAddress(emailAddress);
+  const handleEmailChange = (newEmail: string) => {
+    setEmailAddress(newEmail);
   };
 
-  /**
-   * The LoginScreen component renders the login screen for the application.
-   */
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios'? 'padding' : 'height'}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[
         pendingVerification ? registerStyles.container : styles.container,
         { backgroundColor: styles.container.backgroundColor },
       ]}
     >
-      <View
-        style={
-          pendingVerification
-            ? registerStyles.headingContainer
-            : styles.headingContainer
-        }
-      >
+      <View style={pendingVerification ? registerStyles.headingContainer : styles.headingContainer}>
         <LoginRegisterHeadingComponent
-          text={
-            pendingVerification
-              ? "Your OTP Awaits! Enter It Below!"
-              : "Keep Making Change"
-          }
+          text={pendingVerification ? "Your OTP Awaits! Enter It Below!" : "Keep Making Change"}
           color="#ffffff"
           fontSize={65}
         />
@@ -208,27 +151,23 @@ const LoginScreen: React.FC = () => {
         <>
           <View style={registerStyles.inputContainer}>
             <ConfirmationInputComponent
-              style={registerStyles.inputContainer}
+              _style={registerStyles.inputContainer}
               label="Enter 6-digit code"
               FGColor="#ffffff"
               onEmailChange={setCode}
               value={code}
-              keyboardType="numeric"
-              maxLength={6}
+              _keyboardType="numeric"
+              _maxLength={6}
             />
           </View>
           <View style={registerStyles.buttonContainer}>
-            <CustomButton
-              title="Verify Email"
-              onPress={onPressVerify}
-              textColor="#A4DB51"
-            />
+            <CustomButton title="Verify Email" onPress={onPressVerify} textColor="#A4DB51" />
           </View>
         </>
       )}
       <View style={styles.hyperlinkContainer}>
         <LoginRegisterHyperlink toLogin={false}>
-          Don't have an account? Register
+          Don&apos;t have an account? Register
         </LoginRegisterHyperlink>
       </View>
     </KeyboardAvoidingView>

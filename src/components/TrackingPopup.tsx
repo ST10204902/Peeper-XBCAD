@@ -1,18 +1,19 @@
 import React from "react";
 import { View, Text, Modal, StyleSheet } from "react-native";
-import CustomButton from "./CustomButton"; // Assuming your CustomButton is in the same folder
+import CustomButton from "./CustomButton";
 import { darkTheme, lightTheme } from "../styles/themes";
 import { useTheme } from "../styles/ThemeContext";
+import { Colors } from "../styles/colors";
 
 interface TrackingPopupProps {
-  visible: boolean; // Controls visibility of the popup
-  onStartTracking: () => void; // Callback for the "Start Tracking" button
-  onCancel: () => void; // Callback for the "Cancel" button
+  visible: boolean;
+  onStartTracking: () => void;
+  onCancel: () => void;
 }
 
 const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking, onCancel }) => {
   const { isDarkMode } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const theme = isDarkMode ? darkTheme : lightTheme;
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.modalContainer}>
@@ -22,8 +23,8 @@ const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking,
             <CustomButton
               title="Start Tracking"
               onPress={onStartTracking}
-              textColor= {theme.componentTextColour}
-              buttonColor="#A4DB51" // Green color
+              textColor={theme.componentTextColour}
+              buttonColor="#A4DB51"
               fontFamily="Rany-Medium"
               textSize={16}
               addFlex={true}
@@ -32,7 +33,7 @@ const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking,
               title="Cancel"
               onPress={onCancel}
               textColor={theme.componentTextColour}
-              buttonColor="#EC4E4B" // Red color
+              buttonColor="#EC4E4B"
               fontFamily="Rany-Medium"
               textSize={16}
               addFlex={true}
@@ -49,15 +50,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
+    backgroundColor: Colors.modalBackground,
   },
   popup: {
     width: "95%",
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.popupBackground,
     borderRadius: 20,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: Colors.popupShadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -66,9 +67,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#161616",
+    color: Colors.popupText,
     marginBottom: 20,
-    fontFamily: "Quittance", // Change font if needed
+    fontFamily: "Quittance",
   },
   buttonContainer: {
     flexDirection: "row",

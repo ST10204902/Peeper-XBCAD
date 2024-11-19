@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, SafeAreaView, View } from "react-native";
-import CustomButton from "../components/CustomButton"; // Ensure the path is correct
-import styles from "../styles/RegisterScreenStyle"; // Ensure the path is correct
-import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink"; // Ensure the path is correct
+import React, { useState } from "react";
+import { Alert, KeyboardAvoidingView, Platform, View } from "react-native";
+import CustomButton from "../components/CustomButton";
+import styles from "../styles/RegisterScreenStyle";
+import LoginRegisterHyperlink from "../components/LoginRegisterHyperlink";
 import LoginRegisterInputComponent from "../components/loginRegisterInputComponent";
 import { Student } from "../databaseModels/databaseClasses/Student";
-
-//----------Code---------//
-//Demonstrating where to implement pressing the button.
-import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent"; // Import the heading component
-import { useAuth, useSignUp } from "@clerk/clerk-expo";
+import LoginRegisterHeadingComponent from "../components/LoginRegisterHeadingComponent";
+import { useSignUp } from "@clerk/clerk-expo";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack"; // Ensure the path is correct
 import { StudentData } from "../databaseModels/StudentData";
 import ConfirmationInputComponent from "../components/ConfirmationInputComponent";
 import { RootStackParamsList } from "./RootStackParamsList";
@@ -64,16 +60,20 @@ import TermsAndConditionsPopup from "../components/TermsAndConditionsPopup";
  *
  * @throws Will log errors to the console if any step in the sign-up or verification process fails.
  */
+
+interface ClerkError {
+  errors?: Array<{ code?: string; message?: string }>;
+  message?: string;
+}
+
 const RegisterScreen: React.FC = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const [emailError, setEmailError] = useState("");
   const { isLoaded, signUp, setActive } = useSignUp();
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
-  const navigation =
-    useNavigation<NavigationProp<RootStackParamsList, "RegisterScreen">>();
-  const [isTermsAndConditionsShown, setIsTermsAndConditionsShown] =
-    useState(false);
+  const navigation = useNavigation<NavigationProp<RootStackParamsList, "RegisterScreen">>();
+  const [isTermsAndConditionsShown, setIsTermsAndConditionsShown] = useState(false);
 
   const validateEmail = (email: string) => {
     return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
@@ -94,26 +94,27 @@ const RegisterScreen: React.FC = () => {
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       setPendingVerification(true);
       setEmailError("");
-    } catch (err: any) {
-      if (err.errors) {
-        const errorCode = err.errors[0]?.code;
+    } catch (err: unknown) {
+      const error = err as ClerkError;
+      if (error.errors && error.errors.length > 0) {
+        const errorCode = error.errors[0]?.code;
         switch (errorCode) {
           case "form_identifier_exists":
-            alert("This email address is already registered. Please try another.");
+            Alert.alert("Error", "This email address is already registered. Please try another.");
             break;
           default:
-            console.error("Unexpected error:", err);
-            alert("An unexpected error occurred. Please try again later.");
+            console.error("Unexpected error:", error);
+            Alert.alert("Error", "An unexpected error occurred. Please try again later.");
         }
-      } else if (err.message === "Network Error") {
-        alert("Network error. Please check your connection and try again.");
+      } else if (error.message === "Network Error") {
+        Alert.alert("Error", "Network error. Please check your connection and try again.");
       } else {
-        console.error("Unexpected error:", err);
-        alert("An unexpected error occurred. Please try again later.");
+        console.error("Unexpected error:", error);
+        Alert.alert("Error", "An unexpected error occurred. Please try again later.");
       }
-      setEmailError(err.errors?.[0]?.message || "Failed to register. Please try again.");
-      console.error(JSON.stringify(err, null, 2));
-
+      const errorMessage = error.errors?.[0]?.message;
+      setEmailError(errorMessage ?? "Failed to register. Please try again.");
+      console.error(JSON.stringify(error, null, 2));
     }
   };
 
@@ -130,25 +131,21 @@ const RegisterScreen: React.FC = () => {
       if (completeSignUp.status === "complete") {
         try {
           await setActive({ session: completeSignUp.createdSessionId });
+          await new Promise(resolve => setTimeout(resolve, 1000));
 
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          const uid = completeSignUp.createdUserId || "";
-
-          console.log("Clerk User ID:", uid); // Log Clerk User ID
-
-          if (!uid) {
+          const uid = completeSignUp.createdUserId ?? "";
+          if (uid === "") {
             throw new Error("No Clerk User ID found");
           }
 
-          // const to save the user once their profile photo has been added
           const handleSaveStudent = async (avatarId: string) => {
+            const studentEmail = signUp.emailAddress ?? "";
+            const studentNumber = studentEmail !== "" ? studentEmail.split("@")[0] : "";
+
             const newStudentData: StudentData = {
               student_id: uid,
-              studentNumber: signUp.emailAddress
-                ? signUp.emailAddress.split("@")[0]
-                : "",
-              email: signUp.emailAddress || "",
+              studentNumber,
+              email: studentEmail,
               activeOrgs: [],
               locationData: {},
               profilePhotoId: avatarId,
@@ -156,11 +153,10 @@ const RegisterScreen: React.FC = () => {
             };
 
             const newStudent = new Student(newStudentData);
-            console.log("New Student Data:", newStudentData); // Log new student data
+            console.error("New Student Data:", newStudentData);
 
-            // Save to Firebase
-            await newStudent.save().catch((error) => {
-              console.error(`Error saving new student: ${newStudent}`, error); // Log error if save fails
+            await newStudent.save().catch(saveError => {
+              console.error(`Error saving new student: ${newStudent}`, saveError);
             });
           };
 
@@ -168,27 +164,28 @@ const RegisterScreen: React.FC = () => {
             handleSaveStudent,
           });
         } catch (error) {
-          console.error("Error during sign-up process:", error); // Log any caught errors
+          console.error("Error during sign-up process:", error);
         }
       } else {
-        console.error("Sign-up status is not complete:", completeSignUp.status); // Log if status is not complete
+        console.error("Sign-up status is not complete:", completeSignUp.status);
       }
-    } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
+    } catch (err: unknown) {
       console.error(JSON.stringify(err, null, 2));
     }
   };
 
-  const handleEmailChange = (emailAddress: string) => {
-    setEmailAddress(emailAddress);
+  const handleEmailChange = (newEmail: string) => {
+    setEmailAddress(newEmail);
   };
 
   /**
    * The RegisterScreen component renders the registration screen.
    */
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios'? 'padding' : 'height'} style={styles.container} >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <View style={styles.headingContainer}>
         <LoginRegisterHeadingComponent
           text={
@@ -202,7 +199,10 @@ const RegisterScreen: React.FC = () => {
       </View>
       {!pendingVerification && (
         <>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios'? 'padding' : 'height'} style={styles.inputContainer}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.inputContainer}
+          >
             <LoginRegisterInputComponent
               label="Register with your Student Email:"
               FGColor="#ffffff"
@@ -210,7 +210,7 @@ const RegisterScreen: React.FC = () => {
               error={emailError}
             />
           </KeyboardAvoidingView>
-          <View style={styles.inputContainer}></View>
+          <View style={styles.inputContainer} />
           <View style={styles.buttonContainer}>
             <CustomButton
               onPress={() => {
@@ -229,13 +229,13 @@ const RegisterScreen: React.FC = () => {
         <>
           <View style={styles.inputContainer}>
             <ConfirmationInputComponent
-              style={styles.inputContainer}
+              _style={styles.inputContainer}
               label="Enter 6-digit code"
               FGColor="#ffffff"
               onEmailChange={setCode}
               value={code}
-              keyboardType="numeric"
-              maxLength={6}
+              _keyboardType="numeric"
+              _maxLength={6}
             />
           </View>
           <View style={styles.buttonContainer}>
@@ -248,15 +248,14 @@ const RegisterScreen: React.FC = () => {
           Already have an account? Log in
         </LoginRegisterHyperlink>
       </View>
-      {isTermsAndConditionsShown ? (
+      {isTermsAndConditionsShown && (
         <TermsAndConditionsPopup
           onAccept={() => {
             setIsTermsAndConditionsShown(false);
-            // Proccede to OTP authentication
             handleAccept();
           }}
         />
-      ) : null}
+      )}
     </KeyboardAvoidingView>
   );
 };

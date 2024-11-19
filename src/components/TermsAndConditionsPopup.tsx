@@ -1,14 +1,9 @@
 import { useState } from "react";
-import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { NativeScrollEvent, NativeSyntheticEvent, StyleSheet, Text, View } from "react-native";
 import CustomButton from "./CustomButton";
 import TermsAndConditionsScreen from "../screens/settings/TermsAndConditionsScreen";
 import { ScrollView } from "react-native-gesture-handler";
+import { Colors } from "../styles/colors";
 
 interface Props {
   onAccept: () => void;
@@ -46,8 +41,7 @@ export default function TermsAndConditionsPopup({ onAccept }: Props) {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const isAtBottom =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
 
     if (isAtBottom && !isAccepted) {
       setIsAccepted(true);
@@ -72,15 +66,13 @@ export default function TermsAndConditionsPopup({ onAccept }: Props) {
           <CustomButton
             onPress={isAccepted ? onAccept : handleAcceptFailed}
             title="Accept"
-            textColor="#161616"
+            textColor={Colors.termsText}
             buttonColor={isAccepted ? "#A4DB51" : "#C8E2A1"}
             fontFamily="Quittance"
             textSize={20}
           />
           {hasError ? (
-            <Text style={styles.error_text}>
-              Read to the bottom of our Ts & Cs to Accept
-            </Text>
+            <Text style={styles.error_text}>Read to the bottom of our Ts & Cs to Accept</Text>
           ) : null}
         </View>
       </View>
@@ -97,13 +89,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: Colors.termsModalBackground,
     zIndex: 1000,
   },
   body: {
-    color: "#161616",
+    color: Colors.termsText,
     width: "95%",
-    backgroundColor: "#F9F9F9",
+    backgroundColor: Colors.termsBodyBackground,
     paddingHorizontal: 10,
     paddingTop: 5,
     paddingBottom: 26,
@@ -125,7 +117,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     fontFamily: "Rany-Bold",
     fontSize: 14,
-    color: "#EC4E4B",
+    color: Colors.termsError,
     textAlign: "center",
   },
 });

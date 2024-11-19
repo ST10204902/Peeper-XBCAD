@@ -1,8 +1,8 @@
 // OrganisationListItem.tsx
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
+import { Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
 
 // Props for the OrganisationListItem component
 interface OrganisationListItemProps {
@@ -26,11 +26,16 @@ const OrganisationListItem: React.FC<OrganisationListItemProps> = ({
 
   // Render the organisation list item
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
-      containerStyle, 
-      { backgroundColor: oddOrEven === "odd" ? theme.landingListBackgroundOverall : theme.landingListItemBackground }
-      ]} 
+        containerStyle,
+        {
+          backgroundColor:
+            oddOrEven === "odd"
+              ? theme.landingListBackgroundOverall
+              : theme.landingListItemBackground,
+        },
+      ]}
       onPress={onPress}
     >
       <Text style={[styles.itemText, { color: theme.landingListFont }]}>{orgName}</Text>

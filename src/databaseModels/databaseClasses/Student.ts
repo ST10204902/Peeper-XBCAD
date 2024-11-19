@@ -25,7 +25,7 @@ export class Student implements StudentData {
     this.darkMode = data.darkMode ?? false;
 
     for (const key in data.locationData) {
-      if (data.locationData.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(data.locationData, key)) {
         const sessionLogData = data.locationData[key];
         this.locationData[key] = new SessionLog(sessionLogData);
       }
@@ -33,9 +33,7 @@ export class Student implements StudentData {
   }
 
   static async fetchById(student_id: string): Promise<Student | null> {
-    const data = await DatabaseUtility.getData<StudentData>(
-      `students/${student_id}`
-    );
+    const data = await DatabaseUtility.getData<StudentData>(`students/${student_id}`);
     return data ? new Student(data) : null;
   }
 
@@ -55,7 +53,7 @@ export class Student implements StudentData {
   toJSON(): StudentData {
     const locationDataJSON: { [sessionLog_id: string]: SessionLogData } = {};
     for (const key in this.locationData) {
-      if (this.locationData.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(this.locationData, key)) {
         locationDataJSON[key] = this.locationData[key].toJSON();
       }
     }

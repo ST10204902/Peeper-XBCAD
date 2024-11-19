@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import SearchBarComponent from "./GeneralInputComponent";
 import CustomButton from "./CustomButton";
-import { OrgRequestData } from "../databaseModels/OrgRequestData";
+import { Colors } from "../styles/colors";
 
 interface Props {
   request: {
@@ -36,8 +34,8 @@ interface Props {
  * - If the request is null or empty, the component logs an error and does not render.
  */
 export default function DuplicateRequestPopup({ request, onOk }: Props) {
-  // Don't render if request is null or empty
-  if (!request) {
+  // Don't render if request is null or undefined
+  if (request === null || request === undefined) {
     console.error("DuplicateRequestPopup: request was null or empty");
     return null;
   }
@@ -47,8 +45,8 @@ export default function DuplicateRequestPopup({ request, onOk }: Props) {
       <View style={styles.body}>
         <Text style={styles.title}>OOPS!</Text>
         <Text style={styles.explanation}>
-          It looks like another student has already requested for this
-          organisation to be added. you will be notified once the request approval status changes.
+          It looks like another student has already requested for this organisation to be added. you
+          will be notified once the request approval status changes.
         </Text>
         <Text style={styles.explanation_p2}>Are these details correct?</Text>
         <View style={styles.details_container}>
@@ -69,14 +67,14 @@ export default function DuplicateRequestPopup({ request, onOk }: Props) {
             {request.location}
           </Text>
           <Text style={styles.warning_message}>
-            Your request will be linked to the above details. If they are
-            incorrect, contact your lecturer.
+            Your request will be linked to the above details. If they are incorrect, contact your
+            lecturer.
           </Text>
           <View style={styles.button_container}>
             <CustomButton
               onPress={onOk}
               title="OK"
-              textColor="#161616"
+              textColor={Colors.headerText}
               buttonColor="#A4DB51"
               fontFamily="Quittance"
               textSize={20}
@@ -98,13 +96,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: Colors.modalBackground,
     zIndex: 1000,
   },
   body: {
-    color: "#161616",
+    color: Colors.headerText,
     width: "95%",
-    backgroundColor: "#F9F9F9",
+    backgroundColor: Colors.termsBodyBackground,
     paddingHorizontal: 20,
     paddingVertical: 30,
     borderRadius: 20,
@@ -112,17 +110,13 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontSize: 35,
-    color: "#161616",
+    color: Colors.headerText,
     marginBottom: 15,
-    fontFamily: "Quittance", // Change font if needed
+    fontFamily: "Quittance",
   },
   explanation: {
     fontFamily: "Rany-Medium",
     fontSize: 16,
-  },
-  explanation_emphasis: {
-    fontFamily: "Inter-Black",
-    fontSize: 24,
   },
   explanation_p2: {
     marginTop: 20,

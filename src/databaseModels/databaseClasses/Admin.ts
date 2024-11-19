@@ -1,7 +1,7 @@
 // Admin.ts
-import { DatabaseUtility } from '../../utils/DatabaseUtility';
-import { AdminData } from '../AdminData';
-import { AdminType } from '../enums';
+import { DatabaseUtility } from "../../utils/DatabaseUtility";
+import { AdminData } from "../AdminData";
+import { AdminType } from "../enums";
 
 export class Admin implements AdminData {
   admin_id: string;
