@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        check: ['codeql-js', 'codeql-ts', 'npm-audit', 'dependency-check']
+        check: ["codeql-js", "codeql-ts", "npm-audit", "dependency-check"]
       fail-fast: false
 
     steps:
@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: |
@@ -57,10 +57,10 @@ jobs:
         run: |
           echo "Running production dependencies audit..."
           npm audit --production --audit-level=critical || echo "Production audit found issues"
-          
+
           echo "Running development dependencies audit..."
           npm audit --audit-level=critical || echo "Development audit found issues"
-          
+
           # Create audit report
           npm audit --json > npm-audit.json || true
 

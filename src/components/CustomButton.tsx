@@ -27,6 +27,7 @@ import { Colors } from "../styles/colors";
  * @property {number} [verticalPadding] - Optional vertical padding for the button.
  * @property {number} [cornerRadius] - Optional corner radius for the button.
  * @property {number} [lineHeight] - Optional line height for the button text.
+ * @property {string} [testID] - Optional testID for accessibility purposes.
  */
 interface CustomButtonProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -41,6 +42,7 @@ interface CustomButtonProps {
   verticalPadding?: number;
   cornerRadius?: number;
   lineHeight?: number;
+  testID?: string;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -56,6 +58,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   verticalPadding = 15,
   cornerRadius,
   lineHeight,
+  testID,
 }) => {
   const [buttonHeight, setButtonHeight] = useState<number>(0);
 
@@ -103,7 +106,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   const containerStyle = addFlex ? localStyles.flexContainer : localStyles.container;
 
   return (
-    <View style={containerStyle}>
+    <View style={containerStyle} testID={testID}>
       {label !== null && label !== undefined && label !== "" && (
         <Text style={labelTextStyle}>{label}</Text>
       )}

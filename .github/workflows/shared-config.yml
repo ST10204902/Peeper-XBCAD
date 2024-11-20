@@ -23,14 +23,14 @@ jobs:
       cache-hit: ${{ steps.npm-cache.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         id: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'npm'
-      
+          cache: "npm"
+
       - name: Cache dependencies
         id: npm-cache
         uses: actions/cache@v4

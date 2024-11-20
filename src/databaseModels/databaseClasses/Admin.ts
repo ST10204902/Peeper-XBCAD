@@ -18,6 +18,10 @@ export class Admin implements AdminData {
   }
 
   private validateEmail(email: string): void {
+    if (email === null || email === undefined || email.trim() === "") {
+      throw new Error("Email cannot be empty");
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       throw new Error("Invalid email format");
@@ -26,7 +30,7 @@ export class Admin implements AdminData {
 
   static async fetchById(admin_id: string): Promise<Admin | null> {
     const data = await DatabaseUtility.getData<AdminData>(`admins/${admin_id}`);
-    return data ? new Admin(data) : null;
+    return data !== null ? new Admin(data) : null;
   }
 
   async save(): Promise<void> {
@@ -34,7 +38,7 @@ export class Admin implements AdminData {
   }
 
   async update(updates: Partial<AdminData>): Promise<void> {
-    if (updates.email) {
+    if (updates.email !== undefined) {
       this.validateEmail(updates.email);
     }
     await DatabaseUtility.updateData(`admins/${this.admin_id}`, updates);

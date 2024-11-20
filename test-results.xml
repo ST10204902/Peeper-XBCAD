@@ -1,13 +1,277 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="3" failures="0" errors="0" time="8.966">
-  <testsuite name="DatabaseUtility.getAllData" errors="0" failures="0" skipped="0" timestamp="2024-10-24T14:31:36" time="7.913" tests="2">
-    <testcase classname="DatabaseUtility.getAllData should return an array of data when data exists" name="DatabaseUtility.getAllData should return an array of data when data exists" time="0.013">
+<testsuites name="jest tests" tests="122" failures="0" errors="0" time="1.531">
+  <testsuite name="src/tests/components/LoginRegisterHeadingComponent.test.tsx" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:42" time="0.986" tests="8">
+    <testcase classname="LoginRegisterHeadingComponent" name="renders with default props correctly" time="0.149">
     </testcase>
-    <testcase classname="DatabaseUtility.getAllData should return an empty array when there is an error fetching data" name="DatabaseUtility.getAllData should return an empty array when there is an error fetching data" time="0.026">
+    <testcase classname="LoginRegisterHeadingComponent" name="applies custom color when provided" time="0.002">
+    </testcase>
+    <testcase classname="LoginRegisterHeadingComponent" name="applies custom font size when provided" time="0.001">
+    </testcase>
+    <testcase classname="LoginRegisterHeadingComponent" name="handles long text correctly" time="0">
+    </testcase>
+    <testcase classname="LoginRegisterHeadingComponent" name="handles special characters" time="0">
+    </testcase>
+    <testcase classname="LoginRegisterHeadingComponent" name="maintains consistent styling with different text lengths" time="0.001">
+    </testcase>
+    <testcase classname="LoginRegisterHeadingComponent" name="maintains consistent override styling when present" time="0.002">
+    </testcase>
+    <testcase classname="LoginRegisterHeadingComponent" name="applies all style properties correctly with overrides" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="Admin Class" errors="0" failures="0" skipped="0" timestamp="2024-10-24T14:31:36" time="7.968" tests="1">
-    <testcase classname="Admin Class should initialize properties correctly" name="Admin Class should initialize properties correctly" time="0.021">
+  <testsuite name="src/tests/components/SearchBarComponent.test.tsx" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.094" tests="8">
+    <testcase classname="SearchBarComponent" name="renders correctly with default props" time="0.024">
+    </testcase>
+    <testcase classname="SearchBarComponent" name="handles text input changes" time="0.002">
+    </testcase>
+    <testcase classname="SearchBarComponent" name="handles focus event" time="0.001">
+    </testcase>
+    <testcase classname="SearchBarComponent" name="handles blur event" time="0.002">
+    </testcase>
+    <testcase classname="SearchBarComponent" name="maintains placeholder text when empty on blur" time="0.002">
+    </testcase>
+    <testcase classname="SearchBarComponent" name="saves search text as placeholder on blur" time="0.002">
+    </testcase>
+    <testcase classname="SearchBarComponent" name="applies theme styles correctly" time="0.001">
+    </testcase>
+    <testcase classname="SearchBarComponent" name="handles dark mode theme" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/components/CustomButton.test.tsx" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.057" tests="6">
+    <testcase classname="CustomButton" name="renders with default props correctly" time="0.024">
+    </testcase>
+    <testcase classname="CustomButton" name="handles press events" time="0.001">
+    </testcase>
+    <testcase classname="CustomButton" name="applies custom styles correctly" time="0.003">
+    </testcase>
+    <testcase classname="CustomButton" name="handles disabled state" time="0.001">
+    </testcase>
+    <testcase classname="CustomButton" name="renders label when provided" time="0">
+    </testcase>
+    <testcase classname="CustomButton" name="applies flex styling when addFlex is true" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/MyMaths.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.046" tests="6">
+    <testcase classname="MyMaths › calculateTotalLoggedHours" name="should calculate total hours correctly for multiple sessions" time="0">
+    </testcase>
+    <testcase classname="MyMaths › calculateTotalLoggedHours" name="should return 0 for student with no sessions" time="0">
+    </testcase>
+    <testcase classname="MyMaths › calculateTotalLoggedHours" name="should handle sessions with missing end time" time="0.001">
+    </testcase>
+    <testcase classname="MyMaths › haversineDistance" name="should calculate distance between two points correctly" time="0">
+    </testcase>
+    <testcase classname="MyMaths › haversineDistance" name="should return 0 for same coordinates" time="0">
+    </testcase>
+    <testcase classname="MyMaths › haversineDistance" name="should handle antipodal points" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/Admin.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.027" tests="11">
+    <testcase classname="Admin Class › Constructor" name="should initialize properties correctly" time="0">
+    </testcase>
+    <testcase classname="Admin Class › Constructor" name="should handle empty viewableStudents array" time="0.001">
+    </testcase>
+    <testcase classname="Admin Class › Constructor" name="should validate email format" time="0.002">
+    </testcase>
+    <testcase classname="Admin Class › Constructor" name="should accept valid email formats" time="0.001">
+    </testcase>
+    <testcase classname="Admin Class › CRUD Operations" name="should fetch admin by ID" time="0">
+    </testcase>
+    <testcase classname="Admin Class › CRUD Operations" name="should return null when fetching non-existent admin" time="0">
+    </testcase>
+    <testcase classname="Admin Class › CRUD Operations" name="should save admin data" time="0">
+    </testcase>
+    <testcase classname="Admin Class › CRUD Operations" name="should update admin data" time="0">
+    </testcase>
+    <testcase classname="Admin Class › CRUD Operations" name="should validate email during update" time="0">
+    </testcase>
+    <testcase classname="Admin Class › CRUD Operations" name="should delete admin data" time="0.001">
+    </testcase>
+    <testcase classname="Admin Class › Data Conversion" name="should correctly convert to JSON" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/DatabaseUtility.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.019" tests="2">
+    <testcase classname="DatabaseUtility.getAllData" name="should return an array of data when data exists" time="0.001">
+    </testcase>
+    <testcase classname="DatabaseUtility.getAllData" name="should return an empty array when there is an error fetching data" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/components/ConfirmationInputComponent.test.tsx" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.05" tests="7">
+    <testcase classname="ConfirmationInputComponent" name="renders with required props correctly" time="0.02">
+    </testcase>
+    <testcase classname="ConfirmationInputComponent" name="handles text input changes" time="0">
+    </testcase>
+    <testcase classname="ConfirmationInputComponent" name="enforces maxLength of 6 digits" time="0.001">
+    </testcase>
+    <testcase classname="ConfirmationInputComponent" name="uses numeric keyboard" time="0">
+    </testcase>
+    <testcase classname="ConfirmationInputComponent" name="applies custom foreground color" time="0.002">
+    </testcase>
+    <testcase classname="ConfirmationInputComponent" name="displays initial value when provided" time="0.001">
+    </testcase>
+    <testcase classname="ConfirmationInputComponent" name="maintains styles when value changes" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/Organisation.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.049" tests="11">
+    <testcase classname="Organisation Class › Constructor" name="should initialize with valid data" time="0.002">
+    </testcase>
+    <testcase classname="Organisation Class › Constructor" name="should properly initialize OrgAddress instance" time="0">
+    </testcase>
+    <testcase classname="Organisation Class › CRUD Operations" name="should fetch organisation by ID" time="0">
+    </testcase>
+    <testcase classname="Organisation Class › CRUD Operations" name="should return null when fetching non-existent organisation" time="0.001">
+    </testcase>
+    <testcase classname="Organisation Class › CRUD Operations" name="should save organisation data" time="0">
+    </testcase>
+    <testcase classname="Organisation Class › CRUD Operations" name="should update organisation data" time="0.001">
+    </testcase>
+    <testcase classname="Organisation Class › CRUD Operations" name="should delete organisation data" time="0">
+    </testcase>
+    <testcase classname="Organisation Class › Static Methods" name="should get all organisations" time="0.005">
+    </testcase>
+    <testcase classname="Organisation Class › Static Methods" name="should get student&apos;s organisations" time="0.001">
+    </testcase>
+    <testcase classname="Organisation Class › Static Methods" name="should set up listener for all organisations" time="0.001">
+    </testcase>
+    <testcase classname="Organisation Class › Data Conversion" name="should correctly convert to JSON" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/OrgRequest.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.04" tests="10">
+    <testcase classname="OrgRequest Class › Constructor" name="should initialize with valid data" time="0">
+    </testcase>
+    <testcase classname="OrgRequest Class › Constructor" name="should properly initialize OrgAddress instance" time="0">
+    </testcase>
+    <testcase classname="OrgRequest Class › CRUD Operations" name="should fetch request by ID" time="0">
+    </testcase>
+    <testcase classname="OrgRequest Class › CRUD Operations" name="should return null when fetching non-existent request" time="0">
+    </testcase>
+    <testcase classname="OrgRequest Class › CRUD Operations" name="should save request data" time="0.001">
+    </testcase>
+    <testcase classname="OrgRequest Class › CRUD Operations" name="should update request data" time="0">
+    </testcase>
+    <testcase classname="OrgRequest Class › CRUD Operations" name="should delete request data" time="0">
+    </testcase>
+    <testcase classname="OrgRequest Class › Static Methods" name="should get all org requests" time="0.001">
+    </testcase>
+    <testcase classname="OrgRequest Class › Static Methods" name="should set up listener for student&apos;s requests" time="0">
+    </testcase>
+    <testcase classname="OrgRequest Class › Data Conversion" name="should correctly convert to JSON" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/Student.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.021" tests="12">
+    <testcase classname="Student Class › Constructor" name="should initialize with complete valid data" time="0">
+    </testcase>
+    <testcase classname="Student Class › Constructor" name="should initialize SessionLog instances for location data" time="0.001">
+    </testcase>
+    <testcase classname="Student Class › Constructor" name="should handle missing optional fields" time="0">
+    </testcase>
+    <testcase classname="Student Class › Constructor" name="should handle empty location data" time="0">
+    </testcase>
+    <testcase classname="Student Class › CRUD Operations" name="should fetch student by ID" time="0">
+    </testcase>
+    <testcase classname="Student Class › CRUD Operations" name="should return null when fetching non-existent student" time="0">
+    </testcase>
+    <testcase classname="Student Class › CRUD Operations" name="should save student data" time="0.001">
+    </testcase>
+    <testcase classname="Student Class › CRUD Operations" name="should update student data" time="0">
+    </testcase>
+    <testcase classname="Student Class › CRUD Operations" name="should delete student data" time="0">
+    </testcase>
+    <testcase classname="Student Class › Data Conversion" name="should correctly convert to JSON" time="0">
+    </testcase>
+    <testcase classname="Student Class › Data Conversion" name="should properly convert nested SessionLog objects" time="0.001">
+    </testcase>
+    <testcase classname="Student Class › Data Conversion" name="should maintain correct data types in JSON output" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/AvatarUtility.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.018" tests="8">
+    <testcase classname="AvatarUtility › getAvatarSource" name="should return correct avatar for valid avatar_1" time="0.001">
+    </testcase>
+    <testcase classname="AvatarUtility › getAvatarSource" name="should return correct avatar for valid avatar_9" time="0">
+    </testcase>
+    <testcase classname="AvatarUtility › getAvatarSource" name="should return default avatar (A1) for invalid avatar ID" time="0">
+    </testcase>
+    <testcase classname="AvatarUtility › getAvatarSource" name="should return default avatar (A1) for empty string" time="0">
+    </testcase>
+    <testcase classname="AvatarUtility › getAvatarSource" name="should handle all valid avatar IDs" time="0">
+    </testcase>
+    <testcase classname="AvatarUtility › getAvatarSource" name="should be case sensitive for avatar IDs" time="0.001">
+    </testcase>
+    <testcase classname="AvatarUtility › getAvatarSource" name="should handle undefined input" time="0">
+    </testcase>
+    <testcase classname="AvatarUtility › getAvatarSource" name="should handle null input" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/Viewport.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.018" tests="7">
+    <testcase classname="Viewport Class › Constructor" name="should initialize with provided coordinates" time="0.001">
+    </testcase>
+    <testcase classname="Viewport Class › Constructor" name="should initialize with default values when no data provided" time="0">
+    </testcase>
+    <testcase classname="Viewport Class › toJSON" name="should correctly convert viewport to JSON" time="0">
+    </testcase>
+    <testcase classname="Viewport Class › calculateBoundingBox" name="should calculate correct bounding box for multiple location logs" time="0">
+    </testcase>
+    <testcase classname="Viewport Class › calculateBoundingBox" name="should handle single location log" time="0.001">
+    </testcase>
+    <testcase classname="Viewport Class › calculateBoundingBox" name="should handle empty location logs array" time="0">
+    </testcase>
+    <testcase classname="Viewport Class › calculateBoundingBox" name="should handle location logs across the 180th meridian" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/SessionLog.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.019" tests="10">
+    <testcase classname="SessionLog Class › Constructor" name="should initialize with complete valid data" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Constructor" name="should handle missing orgID with default value" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Constructor" name="should handle empty location logs array" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Constructor" name="should handle missing location logs with empty array" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Constructor" name="should initialize viewport with default values when missing" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Data Conversion" name="should correctly convert complete session log to JSON" time="0.001">
+    </testcase>
+    <testcase classname="SessionLog Class › Data Conversion" name="should include empty arrays in JSON output" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Data Conversion" name="should properly convert nested LocationLog objects" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Data Conversion" name="should properly convert nested Viewport object" time="0">
+    </testcase>
+    <testcase classname="SessionLog Class › Data Conversion" name="should maintain correct data types in JSON output" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/LocationLog.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.018" tests="8">
+    <testcase classname="LocationLog Class › Constructor" name="should initialize with complete valid data" time="0.001">
+    </testcase>
+    <testcase classname="LocationLog Class › Constructor" name="should handle missing timestamp by using current time" time="0">
+    </testcase>
+    <testcase classname="LocationLog Class › Constructor" name="should handle empty timestamp string" time="0">
+    </testcase>
+    <testcase classname="LocationLog Class › Constructor" name="should handle null or undefined coordinates with defaults" time="0.001">
+    </testcase>
+    <testcase classname="LocationLog Class › Constructor" name="should handle NaN values in coordinates" time="0">
+    </testcase>
+    <testcase classname="LocationLog Class › toJSON" name="should correctly convert complete location log to JSON" time="0">
+    </testcase>
+    <testcase classname="LocationLog Class › toJSON" name="should include default values in JSON output" time="0">
+    </testcase>
+    <testcase classname="LocationLog Class › toJSON" name="should maintain data types in JSON output" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src/tests/OrgAddress.test.ts" errors="0" failures="0" skipped="0" timestamp="2024-11-20T18:54:43" time="0.018" tests="8">
+    <testcase classname="OrgAddress Class › Constructor" name="should initialize with complete valid data" time="0">
+    </testcase>
+    <testcase classname="OrgAddress Class › Constructor" name="should handle empty strings" time="0">
+    </testcase>
+    <testcase classname="OrgAddress Class › Constructor" name="should handle whitespace strings" time="0">
+    </testcase>
+    <testcase classname="OrgAddress Class › Constructor" name="should handle special characters in address fields" time="0">
+    </testcase>
+    <testcase classname="OrgAddress Class › Data Conversion" name="should correctly convert to JSON" time="0.001">
+    </testcase>
+    <testcase classname="OrgAddress Class › Data Conversion" name="should maintain data types in JSON output" time="0">
+    </testcase>
+    <testcase classname="OrgAddress Class › Data Conversion" name="should handle empty data in JSON conversion" time="0">
+    </testcase>
+    <testcase classname="OrgAddress Class › Data Conversion" name="should preserve whitespace in JSON conversion" time="0">
     </testcase>
   </testsuite>
 </testsuites>

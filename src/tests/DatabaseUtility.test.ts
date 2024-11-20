@@ -94,6 +94,13 @@ describe("DatabaseUtility.getAllData", () => {
   // Reset all mocks before each test
   beforeEach(() => {
     jest.resetAllMocks();
+    // Spy on console.error and suppress its output
+    jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    // Restore console.error after each test
+    jest.restoreAllMocks();
   });
 
   // Test case to check if getAllData returns an array of data when data exists
@@ -152,5 +159,7 @@ describe("DatabaseUtility.getAllData", () => {
     // Assert that the result is an empty array
     console.info("GetAllData should print an error");
     expect(result).toEqual([]);
+    // Optionally verify that console.error was called
+    expect(console.error).toHaveBeenCalled();
   });
 });

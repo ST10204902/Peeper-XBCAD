@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        check: ['eslint', 'prettier', 'typescript']
+        check: ["eslint", "prettier", "typescript", "jest"]
       fail-fast: false
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,12 +45,26 @@ jobs:
         if: matrix.check == 'typescript'
         run: npx tsc --noEmit
 
+      - name: Run Jest Tests
+        if: matrix.check == 'jest'
+        run: |
+          npm test -- --coverage
+          npm test -- --updateSnapshot
+
       - name: Upload ESLint report
         if: matrix.check == 'eslint'
         uses: actions/upload-artifact@v4
         with:
           name: eslint-report
           path: eslint-report.json
+          retention-days: 5
+
+      - name: Upload Coverage report
+        if: matrix.check == 'jest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
           retention-days: 5
 
       - name: Quality Check Notice

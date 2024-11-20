@@ -26,21 +26,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: 'npm'
-      
+          cache: "npm"
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-      
+
       - name: Set up Expo
         run: npm install -g expo-cli
 
+      - name: Setup React Native environment
+        run: |
+          npm install -g react-native-cli
+          npm install -g react-native
+
       - name: Run tests
-        run: npm test
+        run: |
+          npm test -- --coverage --maxWorkers=2
+          npm test -- --updateSnapshot
+
+      - name: Upload test coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
+          retention-days: 5
 
       - name: Upload test results
         if: always()
