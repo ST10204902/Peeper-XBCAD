@@ -10,10 +10,18 @@ export class Admin implements AdminData {
   viewableStudents: string[];
 
   constructor(data: AdminData) {
+    this.validateEmail(data.email);
     this.admin_id = data.admin_id;
     this.email = data.email;
     this.adminType = data.adminType;
-    this.viewableStudents = data.viewableStudents;
+    this.viewableStudents = data.viewableStudents ?? [];
+  }
+
+  private validateEmail(email: string): void {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error("Invalid email format");
+    }
   }
 
   static async fetchById(admin_id: string): Promise<Admin | null> {
@@ -26,6 +34,9 @@ export class Admin implements AdminData {
   }
 
   async update(updates: Partial<AdminData>): Promise<void> {
+    if (updates.email) {
+      this.validateEmail(updates.email);
+    }
     await DatabaseUtility.updateData(`admins/${this.admin_id}`, updates);
   }
 
