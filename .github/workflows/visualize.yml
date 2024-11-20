@@ -1,5 +1,9 @@
 name: Visualize Workflows
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/**'
 
 jobs:
   visualize:
