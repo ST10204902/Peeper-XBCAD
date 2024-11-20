@@ -5,13 +5,21 @@ on:
     paths:
       - '.github/workflows/**'
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   visualize:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
       - name: Generate workflow visualization
         uses: githubocto/repo-visualizer@main
         with:
           output_file: "workflow-diagram.svg"
           root_path: ".github/workflows"
+          commit_message: "docs: update workflow diagram"
