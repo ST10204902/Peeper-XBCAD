@@ -1,6 +1,7 @@
 # PEEPER - Student Community Service Tracking System
 
 [![CI](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ST10204902_Peeper-XBCAD&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ST10204902_Peeper-XBCAD)
 ## Project Summary
 
 The PEEPER project aims to develop a zero-cost app and web portal to track and verify community service completed by Bachelor of Education students, ensuring transparency and preventing fraud. The mobile app will be available on both iOS and Android platforms, while the web portal will be accessible across Windows, macOS, and mobile devices. The portal will provide administrators and faculty with tools to manage, track, and export student data, with a strong emphasis on ease of use and a user-friendly interface.
