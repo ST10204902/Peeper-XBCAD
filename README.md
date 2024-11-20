@@ -10,7 +10,7 @@ The PEEPER project aims to develop a zero-cost app and web portal to track and v
 
 PEEPER is a comprehensive tracking system designed to monitor and verify community service completed by Bachelor of Education students. The system consists of two main components:
 - A mobile application (iOS & Android)
-- A [web portal](https://peeper-portal.vercel.app/)
+- A [web portal](https://herenow-portal.vercel.app/)
 
 ## Features
 
