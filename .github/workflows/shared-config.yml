@@ -1,0 +1,60 @@
+name: Shared Configuration
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: string
+        default: "20"
+      artifact-name:
+        required: false
+        type: string
+        default: "workflow-artifacts"
+      retention-days:
+        required: false
+        type: number
+        default: 5
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.npm-cache.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: 'npm'
+      
+      - name: Cache dependencies
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+            ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: |
+          npm ci --prefer-offline --no-audit
+          npm cache verify
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: |
+            **/dist
+            **/build
+            **/coverage
+          retention-days: ${{ inputs.retention-days }}

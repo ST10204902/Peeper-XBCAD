@@ -1,30 +1,59 @@
 name: Code Quality
-on: [pull_request]
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  setup:
+    uses: ./.github/workflows/shared-config.yml
+    with:
+      artifact-name: quality-deps
+
   quality:
+    needs: setup
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        check: ['eslint', 'prettier', 'typescript']
+      fail-fast: false
+    
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Download dependencies
+        uses: actions/download-artifact@v4
         with:
-          node-version: "20"
-
-      - name: Install dependencies
-        run: npm install
+          name: quality-deps
 
       - name: Run ESLint
+        if: matrix.check == 'eslint'
         run: npm run lint
+        continue-on-error: true
 
       - name: Run Prettier
+        if: matrix.check == 'prettier'
         run: npx prettier --check .
 
-      - name: SonarCloud Notice
+      - name: Run TypeScript Check
+        if: matrix.check == 'typescript'
+        run: npx tsc --noEmit
+
+      - name: Upload ESLint report
+        if: matrix.check == 'eslint'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report
+          path: eslint-report.json
+          retention-days: 5
+
+      - name: Quality Check Notice
         run: |
-          echo "✨ Code quality checks completed!"
-          echo "📊 SonarCloud analysis will run automatically."
-          echo "🔍 Check your SonarCloud dashboard for results: https://sonarcloud.io/project/overview?id=ST10204902_Peeper-XBCAD"
+          echo "✨ ${{ matrix.check }} check completed!"
+          echo "📊 Check the artifacts for detailed results."

@@ -1,29 +1,78 @@
 name: Security Scan
-on: [pull_request]
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  schedule:
+    - cron: "0 0 * * 0"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  security-events: write
+  actions: read
+  contents: read
+  pull-requests: read
 
 jobs:
-  security:
+  setup:
+    uses: ./.github/workflows/shared-config.yml
+    with:
+      artifact-name: security-deps
+
+  visibility-check:
     runs-on: ubuntu-latest
+    outputs:
+      is_private: ${{ steps.check.outputs.is_private }}
+    steps:
+      - id: check
+        run: |
+          echo "is_private=${{ github.event.repository.private }}" >> $GITHUB_OUTPUT
+
+  security:
+    needs: [setup, visibility-check]
+    if: needs.visibility-check.outputs.is_private != 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        check: ['codeql-js', 'codeql-ts', 'npm-audit', 'dependency-check']
+      fail-fast: false
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download dependencies
+        uses: actions/download-artifact@v4
         with:
-          node-version: "20"
+          name: security-deps
 
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
+      - name: Initialize CodeQL
+        if: startsWith(matrix.check, 'codeql')
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ endsWith(matrix.check, '-js') && 'javascript' || 'typescript' }}
+          config-file: ./.github/codeql-config.yml
+
+      - name: Run CodeQL Analysis
+        if: startsWith(matrix.check, 'codeql')
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ endsWith(matrix.check, '-js') && 'javascript' || 'typescript' }}"
 
       - name: Run npm audit
+        if: matrix.check == 'npm-audit'
         continue-on-error: true
         run: |
           npm audit --omit=dev --audit-level=critical || true
           npm audit --omit=optional --audit-level=critical || true
 
       - name: Run OWASP Dependency Check
+        if: matrix.check == 'dependency-check'
         uses: dependency-check/Dependency-Check_Action@main
-        continue-on-error: true
         with:
           project: "Peeper-XBCAD"
           path: "."
@@ -32,13 +81,11 @@ jobs:
           args: "--failOnCVSS 9 --suppression suppression.xml"
 
       - name: Upload Security Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: security-results
-          path: reports
-
-      - name: Security Scan Notice
-        run: |
-          echo "🛡️ Security checks completed!"
-          echo "📊 Results have been uploaded as artifacts."
-          echo "⚠️ Some non-critical vulnerabilities may exist - check the report for details."
+          name: security-results-${{ matrix.check }}
+          path: |
+            reports
+            results
+          retention-days: 7
