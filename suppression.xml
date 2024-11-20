@@ -6,7 +6,12 @@
         <vulnerabilityName>CVE-2021-3807</vulnerabilityName>
     </suppress>
     <suppress>
-        <notes>False positive in cross-spawn</notes>
+        <notes>False positive in cross-spawn, development dependency</notes>
+        <packageUrl regex="true">^pkg:npm/cross-spawn@.*$</packageUrl>
+        <vulnerabilityName>GHSA-3xgq-45jj-v275</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes>False positive in cross-spawn, development dependency</notes>
         <packageUrl regex="true">^pkg:npm/cross-spawn@.*$</packageUrl>
         <cve>CVE-2020-8203</cve>
     </suppress>
