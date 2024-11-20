@@ -3,3 +3,8 @@ harveyTODO.md
 package-lock.json
 ios
 android
+
+# Environment variables
+.env
+.env.*
+!.env.example
