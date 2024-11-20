@@ -6,21 +6,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          
+          node-version: "20"
+
       - name: Install dependencies
         run: npm install
-        
+
       - name: Run ESLint
         run: npm run lint
-        
+
       - name: Run Prettier
         run: npx prettier --check .
-        
+
       - name: Run SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

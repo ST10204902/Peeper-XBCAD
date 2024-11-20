@@ -11,7 +11,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:json": "eslint . --ext .js,.jsx,.ts,.tsx -f json -o ./eslint-report.json",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml}\""
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.2.20",
