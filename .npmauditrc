@@ -1,0 +1,12 @@
+{
+  "advisories": {
+    "ignore": {
+      "1094335": {
+        "active": true,
+        "notes": "False positive in ansi-regex, fixed in newer React Native versions"
+      }
+    }
+  },
+  "auditLevel": "critical",
+  "production": true
+}

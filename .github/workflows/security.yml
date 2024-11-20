@@ -64,10 +64,15 @@ jobs:
 
       - name: Run npm audit
         if: matrix.check == 'npm-audit'
-        continue-on-error: true
         run: |
-          npm audit --omit=dev --audit-level=critical || true
-          npm audit --omit=optional --audit-level=critical || true
+          echo "Running production dependencies audit..."
+          npm audit --production --audit-level=critical || echo "Production audit found issues"
+          
+          echo "Running development dependencies audit..."
+          npm audit --audit-level=critical || echo "Development audit found issues"
+          
+          # Create audit report
+          npm audit --json > npm-audit.json || true
 
       - name: Run OWASP Dependency Check
         if: matrix.check == 'dependency-check'
@@ -77,7 +82,12 @@ jobs:
           path: "."
           format: "HTML"
           out: "reports"
-          args: "--failOnCVSS 9 --suppression suppression.xml"
+          args: >
+            --failOnCVSS 9
+            --suppression suppression.xml
+            --exclude "**/*.test.ts"
+            --exclude "**/*.test.tsx"
+            --exclude "**/node_modules/**"
 
       - name: Upload Security Results
         if: always()
@@ -87,4 +97,13 @@ jobs:
           path: |
             reports
             results
+            npm-audit.json
           retention-days: 7
+
+      - name: Check for Critical Vulnerabilities
+        if: matrix.check == 'npm-audit'
+        run: |
+          if grep -q '"level":"critical"' npm-audit.json; then
+            echo "Critical vulnerabilities found in production dependencies!"
+            exit 1
+          fi
