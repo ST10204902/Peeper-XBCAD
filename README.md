@@ -71,3 +71,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 This repository is currently under development and is intended for use by the project's development team only.
 
+Copyright © 2024
