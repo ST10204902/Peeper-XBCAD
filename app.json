@@ -20,8 +20,8 @@
         "NSLocationAlwaysUsageDescription": "This app requires access to your location when open."
       },
       "config": {
-        "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "AIzaSyAMxETQMwdm4qOObLVEaC-9HGEDbFvekMA",
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_b3JnYW5pYy1ncnVid29ybS00NS5jbGVyay5hY2NvdW50cy5kZXYk"
+        "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "What are you doing, there is no API Key here",
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "Nah dude, there is no key here"
       },
       "supportsTablet": true,
       "bundleIdentifier": "za.co.ST10204902.PeeperXBCAD"
@@ -29,10 +29,10 @@
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyAMxETQMwdm4qOObLVEaC-9HGEDbFvekMA"
+          "apiKey": "What are you doing, there is no API Key here"
         },
         "clerk": {
-          "publishableKey": "pk_test_b3JnYW5pYy1ncnVid29ybS00NS5jbGVyay5hY2NvdW50cy5kZXYk"
+          "publishableKey": "Nah dude, there is no key here"
         }
       },
       "adaptiveIcon": {
