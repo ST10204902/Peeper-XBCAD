@@ -28,9 +28,8 @@ jobs:
           project: "Peeper-XBCAD"
           path: "."
           format: "HTML"
-          args: >
-            --failOnCVSS 9
-            --suppression suppression.xml
+          out: "reports"
+          args: "--failOnCVSS 9 --suppression suppression.xml"
 
       - name: Upload Security Results
         uses: actions/upload-artifact@v4
