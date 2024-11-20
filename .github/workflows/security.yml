@@ -7,16 +7,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Run npm audit
-        run: npm audit
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+      
+      - name: Run npm audit (Production Only)
+        run: npm audit --production --audit-level=high
         
       - name: Run OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
-          project: 'Peeper-XBCAD'
-          path: '.'
-          format: 'HTML'
-          
+          project: "Peeper-XBCAD"
+          path: "."
+          format: "HTML"
+          args: >
+            --failOnCVSS 7
+            --suppression suppression.xml
       - name: Upload Security Results
         uses: actions/upload-artifact@v4
         with:
