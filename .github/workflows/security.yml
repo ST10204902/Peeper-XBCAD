@@ -104,6 +104,6 @@ jobs:
         if: matrix.check == 'npm-audit'
         run: |
           if grep -q '"level":"critical"' npm-audit.json; then
-            echo "Critical vulnerabilities found in production dependencies!"
+            echo "Critical vulnerabilities found in production dependencies!!!"
             exit 1
           fi
