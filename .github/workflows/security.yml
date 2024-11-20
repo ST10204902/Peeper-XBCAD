@@ -55,7 +55,6 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ endsWith(matrix.check, '-js') && 'javascript' || 'typescript' }}
-          config-file: ./.github/codeql-config.yml
 
       - name: Run CodeQL Analysis
         if: startsWith(matrix.check, 'codeql')
