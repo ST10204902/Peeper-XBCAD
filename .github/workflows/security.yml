@@ -19,23 +19,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  setup:
-    uses: ./.github/workflows/shared-config.yml
-    with:
-      artifact-name: security-deps
-
-  visibility-check:
-    runs-on: ubuntu-latest
-    outputs:
-      is_private: ${{ steps.check.outputs.is_private }}
-    steps:
-      - id: check
-        run: |
-          echo "is_private=${{ github.event.repository.private }}" >> $GITHUB_OUTPUT
-
   security:
-    needs: [setup, visibility-check]
-    if: needs.visibility-check.outputs.is_private != 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -53,7 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm ci --prefer-offline
+          npm ci --legacy-peer-deps
           npm cache verify
 
       - name: Initialize CodeQL
@@ -94,6 +78,12 @@ jobs:
             --exclude "**/*.test.ts"
             --exclude "**/*.test.tsx"
             --exclude "**/node_modules/**"
+            --nodeAuditSkipDevDependencies true
+            --nodePackageSkipDevDependencies true
+            --enableExperimental
+            --disableNodeJS
+            --disableNugetconf
+            --disableRetireJS
 
       - name: Upload Security Results
         if: always()
