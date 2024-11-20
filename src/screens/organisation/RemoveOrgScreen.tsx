@@ -12,6 +12,7 @@ import { lightTheme, darkTheme } from "../../styles/themes";
 import { useRecoilState } from "recoil";
 import { trackingState } from "../../atoms/atoms";
 import { Spacing } from "../../styles/colors";
+import { SessionLogData } from "../../databaseModels/SessionLogData";
 
 // Create a separate component for the list separator
 const ListSeparator = () => <View style={styles.separator} />;
@@ -88,10 +89,19 @@ export default function RemoveOrgScreen() {
 
     try {
       const newOrgs = currentStudent.activeOrgs.filter(orgId => orgId !== selectedOrg.org_id);
-      await updateCurrentStudent({ activeOrgs: newOrgs });
 
-      const newLocationData = { ...currentStudent.locationData };
-      Object.values(newLocationData).filter(sessionLog => sessionLog.orgID !== selectedOrg.org_id);
+      // Create new locationData object with filtered sessions
+      const newLocationData: { [sessionLog_id: string]: SessionLogData } = {};
+      Object.entries(currentStudent.locationData).forEach(([sessionId, sessionLog]) => {
+        if (sessionLog.orgID !== selectedOrg.org_id) {
+          newLocationData[sessionId] = sessionLog;
+        }
+      });
+
+      await updateCurrentStudent({
+        activeOrgs: newOrgs,
+        locationData: newLocationData,
+      });
 
       setIsDeletionPopupShown(false);
       setSelectedOrg(null);
