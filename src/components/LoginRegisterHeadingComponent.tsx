@@ -1,11 +1,11 @@
-import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import React from "react";
+import { Text, StyleSheet } from "react-native";
+import { Colors } from "../styles/colors";
 
 interface LoginRegisterHeadingProps {
   text: string;
   color?: string; // Optional prop for font color
   fontSize?: number; // Optional prop for font size
- 
 }
 
 /**
@@ -18,7 +18,11 @@ interface LoginRegisterHeadingProps {
  * @param {number} [props.fontSize=75] - The font size of the heading text. Defaults to 75.
  * @returns {JSX.Element} The rendered heading text component.
  */
-const LoginRegisterHeadingComponent: React.FC<LoginRegisterHeadingProps> = ({ text, color = '#333', fontSize = 75 }) => {
+const LoginRegisterHeadingComponent: React.FC<LoginRegisterHeadingProps> = ({
+  text,
+  color = "#333",
+  fontSize = 75,
+}) => {
   return <Text style={[styles.heading, { color, fontSize }]}>{text}</Text>;
 };
 
@@ -28,10 +32,10 @@ const LoginRegisterHeadingComponent: React.FC<LoginRegisterHeadingProps> = ({ te
 const styles = StyleSheet.create({
   heading: {
     fontSize: 75, // Default font size
-    fontFamily: 'Quittance',
-    textAlign: 'left',
+    fontFamily: "Quittance",
+    textAlign: "left",
     marginTop: 20,
-    color: '#ffffff',
+    color: Colors.hyperlinkText,
   },
 });
 

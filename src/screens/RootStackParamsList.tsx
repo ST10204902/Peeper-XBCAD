@@ -32,5 +32,4 @@ export type RootStackParamsList = {
   TermsAndConditionsScreen: undefined;
   OrgDetailsScreen: undefined;
   LessonScreen: undefined;
-
 };

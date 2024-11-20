@@ -5,6 +5,7 @@
 ## Team: **CTRL+ALT+Innovate**
 
 Team members:
+
 - **Anneme Holzhausen (PM)** - ST10144453
 - **Jasper Van Niekerk** - ST10071737
 - **Joshua Harvey** - ST10180919
@@ -19,4 +20,3 @@ The PEEPER project aims to develop a zero-cost app and web portal to track and v
 ## Download Instructions
 
 This repository is currently under development and is intended for use by the project’s development team only.
-

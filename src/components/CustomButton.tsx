@@ -7,7 +7,9 @@ import {
   ViewStyle,
   TextStyle,
   StyleSheet,
+  LayoutChangeEvent,
 } from "react-native";
+import { Colors } from "../styles/colors";
 
 /**
  * Props for the CustomButton component.
@@ -51,45 +53,60 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   label,
   addFlex = false,
   disabled = false,
-  verticalPadding = 15, // Default vertical padding
-  cornerRadius, // Optional corner radius
-  lineHeight, // Optional line height
+  verticalPadding = 15,
+  cornerRadius,
+  lineHeight,
 }) => {
   const [buttonHeight, setButtonHeight] = useState<number>(0);
 
-  const handleLayout = (event: any) => {
+  const handleLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
     setButtonHeight(height);
   };
 
   const dynamicButtonStyle: ViewStyle = {
-    backgroundColor: buttonColor || "#fff",
-    borderRadius: cornerRadius !== undefined ? cornerRadius : buttonHeight / 3,
+    backgroundColor:
+      buttonColor !== null && buttonColor !== undefined && buttonColor !== ""
+        ? buttonColor
+        : Colors.pageBackground,
+    borderRadius:
+      cornerRadius !== null && cornerRadius !== undefined ? cornerRadius : buttonHeight / 3,
     paddingVertical: verticalPadding,
   };
 
   const dynamicTextStyle: TextStyle = {
-    color: textColor || "#334FD7",
-    fontFamily: fontFamily || "Rany-Medium",
-    fontSize: textSize || 25,
-    textAlign: 'center', // Center text horizontally
-    textAlignVertical: 'center', // Center text vertically
-    lineHeight: lineHeight, // Apply line height if provided
+    color:
+      textColor !== null && textColor !== undefined && textColor !== ""
+        ? textColor
+        : Colors.registerPrimary,
+    fontFamily:
+      fontFamily !== null && fontFamily !== undefined && fontFamily !== ""
+        ? fontFamily
+        : "Rany-Medium",
+    fontSize:
+      textSize !== null && textSize !== undefined && !Number.isNaN(textSize) ? textSize : 25,
+    textAlign: "center",
+    textAlignVertical: "center",
+    lineHeight: lineHeight,
   };
 
   const labelTextStyle: TextStyle = {
-    marginBottom: 5, // Add some spacing between the label and the button
-    fontSize: textSize || 20, // Optional: Match label text size with button text size
-    fontFamily: fontFamily || "Rany-Medium",
+    marginBottom: 5,
+    fontSize:
+      textSize !== null && textSize !== undefined && !Number.isNaN(textSize) ? textSize : 20,
+    fontFamily:
+      fontFamily !== null && fontFamily !== undefined && fontFamily !== ""
+        ? fontFamily
+        : "Rany-Medium",
   };
 
-  const containerStyle = addFlex
-    ? localStyles.flexContainer
-    : localStyles.container;
+  const containerStyle = addFlex ? localStyles.flexContainer : localStyles.container;
 
   return (
     <View style={containerStyle}>
-      {label && <Text style={labelTextStyle}>{label}</Text>}
+      {label !== null && label !== undefined && label !== "" && (
+        <Text style={labelTextStyle}>{label}</Text>
+      )}
       <TouchableOpacity
         style={[localStyles.button, dynamicButtonStyle]}
         onLayout={handleLayout}

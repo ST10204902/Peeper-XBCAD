@@ -1,8 +1,10 @@
 // src/components/LoginRegisterHyperlink.tsx
-import React from 'react';
-import { Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import React from "react";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamsList } from "../screens/RootStackParamsList";
+import { Colors } from "../styles/colors";
 
 interface LoginRegisterHyperlinkProps {
   toLogin: boolean;
@@ -21,13 +23,13 @@ interface LoginRegisterHyperlinkProps {
  * @returns {JSX.Element} The rendered hyperlink component.
  */
 const LoginRegisterHyperlink: React.FC<LoginRegisterHyperlinkProps> = ({ toLogin, children }) => {
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamsList>>();
 
   const handlePress = () => {
     if (toLogin) {
-      navigation.navigate('LoginScreen');
+      navigation.navigate("LoginScreen");
     } else {
-      navigation.navigate('RegisterScreen');
+      navigation.navigate("RegisterScreen");
     }
   };
 
@@ -44,12 +46,12 @@ const LoginRegisterHyperlink: React.FC<LoginRegisterHyperlinkProps> = ({ toLogin
 const styles = StyleSheet.create({
   hyperlinkText: {
     fontSize: 20,
-    textAlign: 'center',
-    color: '#FFFFFF',
-    backgroundColor: 'transparent',
-    textDecorationLine: 'underline',
+    textAlign: "center",
+    color: Colors.hyperlinkText,
+    backgroundColor: Colors.transparent,
+    textDecorationLine: "underline",
     marginTop: 20,
-    fontFamily: 'Rany-Medium',
+    fontFamily: "Rany-Medium",
   },
 });
 

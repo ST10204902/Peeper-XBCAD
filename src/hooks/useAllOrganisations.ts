@@ -1,14 +1,14 @@
 // useOrganisations.ts
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 
 function useAllOrganisations() {
   const [allOrganisations, setAllOrganisations] = useState<Organisation[]>([]);
-  const [error, setError] = useState<Error | null>(null);
+  const [_error, _setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  
+
   useEffect(() => {
-    const unsubscribe = Organisation.listenToAllOrganisations((orgs) => {
+    const unsubscribe = Organisation.listenToAllOrganisations(orgs => {
       setAllOrganisations(orgs);
       setLoading(false);
     });
@@ -19,7 +19,7 @@ function useAllOrganisations() {
     };
   }, []);
 
-  return { allOrganisations, error, loading };
+  return { allOrganisations, loading };
 }
 
 export default useAllOrganisations;

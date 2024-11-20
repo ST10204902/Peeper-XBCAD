@@ -4,13 +4,18 @@ import ExpandableOrgList from "../../components/ExpandableOrgList";
 import { OrganisationData } from "../../databaseModels/OrganisationData";
 import { Organisation } from "../../databaseModels/databaseClasses/Organisation";
 import { useCurrentStudent } from "../../hooks/useCurrentStudent";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useUser } from "@clerk/clerk-expo";
 import DataDeletionConfirmationPopup from "../../components/DataDeletionConfirmationPopup";
-import { useTheme } from '../../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../../styles/themes';
+import { useTheme } from "../../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../../styles/themes";
 import { useRecoilState } from "recoil";
 import { trackingState } from "../../atoms/atoms";
+import { Spacing } from "../../styles/colors";
+import { SessionLogData } from "../../databaseModels/SessionLogData";
+
+// Create a separate component for the list separator
+const ListSeparator = () => <View style={styles.separator} />;
 
 /**
  * Screen Component where the user can Remove an Org
@@ -18,20 +23,26 @@ import { trackingState } from "../../atoms/atoms";
  */
 export default function RemoveOrgScreen() {
   const { user: clerkUser } = useUser();
-  const { currentStudent, error, loading, saving, updateCurrentStudent } = useCurrentStudent();
+  const {
+    currentStudent,
+    error: studentError,
+    loading,
+    updateCurrentStudent,
+  } = useCurrentStudent();
   const [studentOrganisations, setStudentOrganisations] = useState<OrganisationData[]>([]);
   const [trackingAtom] = useRecoilState(trackingState);
   const [isDeletionPopupShown, setIsDeletionPopupShown] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<OrganisationData | null>(null);
-  const { isDarkMode, toggleTheme } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;  
+  const { isDarkMode } = useTheme();
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   // Method to fetch data
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!clerkUser) {
       console.error("Clerk user not found in ManageOrgsScreen");
       return;
     }
-    
+
     if (!currentStudent?.activeOrgs) {
       console.error("No active orgs found for current student");
       return;
@@ -39,27 +50,25 @@ export default function RemoveOrgScreen() {
 
     try {
       const studentOrgs = await Organisation.getStudentsOrgs(currentStudent.activeOrgs);
-      
+
       const validOrgs = studentOrgs
         .filter((org): org is Organisation => org !== null && typeof org.toJSON === "function")
         .map(org => org.toJSON());
-      
-      setStudentOrganisations(validOrgs);
-    } catch (error) {
-      console.error("Error fetching student organizations:", error);
-    }
-  };
 
-  // Run the fetchData method when the screen is focused or when currentStudent changes
+      setStudentOrganisations(validOrgs);
+    } catch (fetchError) {
+      console.error("Error fetching student organizations:", fetchError);
+    }
+  }, [clerkUser, currentStudent?.activeOrgs]);
+
   useEffect(() => {
     if (currentStudent) {
       fetchData();
     }
-  }, [currentStudent]);
+  }, [currentStudent, fetchData]);
 
   const handleOrgSelection = (org: OrganisationData) => {
-    if ( trackingAtom.isTracking && trackingAtom.organizationName === org.orgName)
-    {
+    if (trackingAtom.isTracking && trackingAtom.organizationName === org.orgName) {
       Alert.alert("Error", "You cannot remove an organisation that you are currently tracking");
       return;
     }
@@ -79,23 +88,25 @@ export default function RemoveOrgScreen() {
     }
 
     try {
-      // the selectedOrg id is removed from the activeOrgs array
-      const newOrgs = currentStudent.activeOrgs.filter(
-        (orgId) => orgId !== selectedOrg.org_id
-      );
+      const newOrgs = currentStudent.activeOrgs.filter(orgId => orgId !== selectedOrg.org_id);
 
-      await updateCurrentStudent({ activeOrgs: newOrgs });
+      // Create new locationData object with filtered sessions
+      const newLocationData: { [sessionLog_id: string]: SessionLogData } = {};
+      Object.entries(currentStudent.locationData).forEach(([sessionId, sessionLog]) => {
+        if (sessionLog.orgID !== selectedOrg.org_id) {
+          newLocationData[sessionId] = sessionLog;
+        }
+      });
 
-      const newLocationData = { ...currentStudent.locationData };
-      Object.values(newLocationData).filter((sessionLog) => sessionLog.orgID !== selectedOrg.org_id);
-      
-      
-      // Reset UI state
+      await updateCurrentStudent({
+        activeOrgs: newOrgs,
+        locationData: newLocationData,
+      });
+
       setIsDeletionPopupShown(false);
       setSelectedOrg(null);
-    } catch (error) {
-      console.error("Error deleting organization:", error);
-      // You might want to show an error message to the user here
+    } catch (deleteError) {
+      console.error("Error deleting organization:", deleteError);
     }
   };
 
@@ -106,7 +117,7 @@ export default function RemoveOrgScreen() {
 
   const renderHeader = () => (
     <>
-      <Text style={[styles.headerText, { color: theme.fontRegular}]}>Remove an Organisation</Text>
+      <Text style={[styles.headerText, { color: theme.fontRegular }]}>Remove an Organisation</Text>
       <View style={styles.inputSpacing} />
     </>
   );
@@ -115,13 +126,9 @@ export default function RemoveOrgScreen() {
     return <ActivityIndicator />;
   }
 
-  if (error) {
+  if (studentError) {
     return <Text>Error loading organizations</Text>;
   }
-
- 
-
-
 
   return (
     <>
@@ -145,8 +152,8 @@ export default function RemoveOrgScreen() {
             onListButtonClicked={() => handleOrgSelection(item)}
           />
         )}
-        keyExtractor={(item) => item.org_id}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />} // Add space between items
+        keyExtractor={item => item.org_id}
+        ItemSeparatorComponent={ListSeparator}
       />
       {isDeletionPopupShown && selectedOrg && (
         <DataDeletionConfirmationPopup
@@ -168,9 +175,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 20,
     fontSize: 32,
-    fontFamily: 'Quittance',
+    fontFamily: "Quittance",
   },
   inputSpacing: {
     height: 20,
+  },
+  separator: {
+    height: Spacing.listSeparator,
   },
 });

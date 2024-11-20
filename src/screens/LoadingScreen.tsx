@@ -3,6 +3,7 @@ import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useAuth } from "@clerk/clerk-expo";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamsList } from "./RootStackParamsList";
+import { Colors } from "../styles/colors";
 
 const LoadingScreen: React.FC = () => {
   const { isLoaded, isSignedIn } = useAuth();
@@ -25,7 +26,7 @@ const LoadingScreen: React.FC = () => {
         }
       }, 1000);
     }
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, navigation]);
 
   return (
     <View style={styles.container}>
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.pageBackground,
   },
 });
 

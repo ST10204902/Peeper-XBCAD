@@ -1,0 +1,2462 @@
+[
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/.eslintrc.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/App.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 88,
+        "column": 11,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 88,
+        "endColumn": 22,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [3359, 3396], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 91,
+        "column": 11,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 91,
+        "endColumn": 22,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [3473, 3523], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_error' is defined but never used.",
+        "line": 112,
+        "column": 16,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 112,
+        "endColumn": 22,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/addOrganisations.ts",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 337,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 337,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [8638, 8694], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/TrackingBackground.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/icons/AvatarArrowLeft.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/icons/AvatarArrowRight.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/icons/LandingIcon.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/icons/OrgDetailsIcon.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/icons/SettingsIcon.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/icons/searchIcon.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/assets/logoBase64.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/atoms/atoms.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/AvatarComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'selectedAvatarURI' is defined but never used. Allowed unused args must match /^_/u.",
+        "line": 44,
+        "column": 3,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 44,
+        "endColumn": 20,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/ComboComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/ConfirmationInputComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/CurrentTrackingBanner.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/CustomButton.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/DataDeletionConfirmationPopup.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/DuplicateRequestPopup.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/EmergencyContacts.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/ExpandableOrgList.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'userLocation' is defined but never used. Allowed unused args must match /^_/u.",
+        "line": 36,
+        "column": 3,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 36,
+        "endColumn": 15,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/ExpandableOrgListItem.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/FontLoader.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/GeneralInputComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/LoginRegisterHeadingComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/LoginRegisterHyperlink.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/MapComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/MapComponentOrg.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/MapSessionHistory.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/OrganisationListItem.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/PDFShareComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/PolicySectionComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/SearchBarComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/SearchLocation.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/SettingsListItem.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/SettingsSection.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/StudentHeaderComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/StudentLocationMap.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/TermsAndConditionsPopup.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/TrackingPopup.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/components/loginRegisterInputComponent.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/AdminData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/LocationLogData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/OrgAddressData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/OrgRequestData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/OrganisationData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/SessionLogData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/StudentData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/ViewportData.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/Admin.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/LocationLog.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/OrgAddress.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/OrgRequest.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/Organisation.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/SessionLog.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/Student.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/databaseClasses/Viewport.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/databaseModels/enums.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/firebase/firebaseConfig.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/hooks/useAllOrganisations.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/hooks/useCurrentStudent.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/hooks/useLocationTracking.ts",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 38,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 38,
+        "endColumn": 18,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [1742, 1789], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 63,
+        "column": 9,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 63,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [2718, 2767], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 71,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 71,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [2915, 2955], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 90,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 90,
+        "endColumn": 18,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [3640, 3708], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 116,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 116,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [4525, 4565], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 118,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 118,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [4613, 4679], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 161,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 161,
+        "endColumn": 18,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [6190, 6234], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 171,
+        "column": 9,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 171,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [6601, 6653], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/hooks/useOrgRequests.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/LandingScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 89,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 89,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [4344, 4401], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 108,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 108,
+        "endColumn": 18,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [4889, 4956], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 123,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 123,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [5423, 5462], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 134,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 134,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [5720, 5758], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/LoadingScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/LoginScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/Navigation.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/RegisterProfilePhotoScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/RegisterScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/RootStackParamsList.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/SafetyInfoScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/organisation/ManageOrgsScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 190,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 190,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [6405, 6533], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 375,
+        "column": 49,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 375,
+        "endColumn": 60,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/organisation/OrgDetailsScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "react-hooks/exhaustive-deps",
+        "severity": 1,
+        "message": "React Hook React.useCallback has an unnecessary dependency: 'error'. Either exclude it or remove the dependency array.",
+        "line": 34,
+        "column": 8,
+        "nodeType": "ArrayExpression",
+        "endLine": 34,
+        "endColumn": 29,
+        "suggestions": [
+          {
+            "desc": "Update the dependencies array to be: [fetchStudent]",
+            "fix": { "range": [1447, 1468], "text": "[fetchStudent]" }
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/organisation/RemoveOrgScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/organisation/RequestOrgScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 154,
+        "column": 9,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 154,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [6135, 6175], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 179,
+        "column": 5,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 179,
+        "endColumn": 16,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [6904, 6953], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/organisation/RequestProgressScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/settings/CustomizeAvatarScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 67,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 67,
+        "endColumn": 18,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "log" },
+            "fix": { "range": [1957, 1988], "text": "" },
+            "desc": "Remove the console.log()."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/settings/ExportReportScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/settings/LessonsScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/settings/PrivacyPolicyScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/settings/SettingTypes.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'SettingsSection' is defined but never used.",
+        "line": 27,
+        "column": 6,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 27,
+        "endColumn": 21,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'PolicySection' is defined but never used.",
+        "line": 32,
+        "column": 6,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 32,
+        "endColumn": 19,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/settings/SettingsScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/screens/settings/TermsAndConditionsScreen.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/services/trackingNotification.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/styles/LoginScreenStyle.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/styles/RegisterScreenStyle.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/styles/ThemeContext.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/styles/colors.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/styles/themes.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/tests/Admin.test.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/tests/DatabaseUtility.test.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/types/fonts.d.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/types/images.d.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/types/react-native-places-input.d.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/types/react-native.d.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/utils/AvatarUtility.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/utils/DatabaseUtility.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/utils/MyMaths.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  },
+  {
+    "filePath": "/Users/nicsmeyer/Documents/VSProjects/Peeper-XBCAD/src/utils/tokenCache.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-negated-in-lhs", "replacedBy": ["no-unsafe-negation"] },
+      { "ruleId": "no-catch-shadow", "replacedBy": ["no-shadow"] },
+      { "ruleId": "handle-callback-err", "replacedBy": [] },
+      { "ruleId": "no-mixed-requires", "replacedBy": [] },
+      { "ruleId": "no-new-require", "replacedBy": [] },
+      { "ruleId": "no-path-concat", "replacedBy": [] },
+      { "ruleId": "no-restricted-modules", "replacedBy": [] },
+      { "ruleId": "no-new-object", "replacedBy": ["no-object-constructor"] }
+    ]
+  }
+]

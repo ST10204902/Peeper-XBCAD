@@ -1,67 +1,55 @@
-import React, { useEffect, useState, useContext } from "react";
-import MapView, { Marker, MapStyleElement } from "react-native-maps";
+import React, { useEffect, useState, useMemo } from "react";
+import MapView, { Marker } from "react-native-maps";
 import { View, StyleSheet, Dimensions } from "react-native";
 import { Student } from "../databaseModels/databaseClasses/Student";
 import { LocationLog } from "../databaseModels/databaseClasses/LocationLog";
 import { Viewport } from "../databaseModels/databaseClasses/Viewport";
 import { useTheme } from "../styles/ThemeContext";
+import ServiceMapMarker from "../assets/icons/ServiceMapMarker.png";
 
-/*
- * Props for the MapSessionHistory component
- */
 interface MapSessionHistoryComponentProps {
   currentStudent: Student;
 }
 
-/*
- * Map component for displaying the Students previous community service locations.
- */
-const MapSessionHistory: React.FC<MapSessionHistoryComponentProps> = ({
-  currentStudent,
-}) => {
+const MapSessionHistory: React.FC<MapSessionHistoryComponentProps> = ({ currentStudent }) => {
   const { isDarkMode } = useTheme();
-  const mapStyle = isDarkMode ? [] : [];
 
-  // Default location for Cape Town
-  const defaultRegion = {
-    latitude: -33.9249, // Cape Town latitude
-    longitude: 18.4241, // Cape Town longitude
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  };
+  // Default location for Cape Town - memoized to prevent recreation on every render
+  const defaultRegion = useMemo(
+    () => ({
+      latitude: -33.9249,
+      longitude: 18.4241,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    }),
+    [],
+  );
 
   // State for session start locations (markers)
-  const [sessionStartLocations, setSessionStartLocations] = useState<
-    LocationLog[]
-  >([]);
+  const [sessionStartLocations, setSessionStartLocations] = useState<LocationLog[]>([]);
   // State for map region
   const [region, setRegion] = useState(defaultRegion);
   // Loading state
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!currentStudent) return;
+    if (currentStudent === null || currentStudent === undefined) return;
     // Fetch session start locations
     const fetchSessionLocations = () => {
       const tempSessionStartLocations: LocationLog[] = [];
       const seenOrgs = new Set<string>();
-      if (!currentStudent.locationData) {
+      if (currentStudent.locationData === null || currentStudent.locationData === undefined) {
         setLoading(false);
         return;
       }
-      Object.values(currentStudent.locationData).forEach((sessionLog) => {
+      Object.values(currentStudent.locationData).forEach(sessionLog => {
         if (!seenOrgs.has(sessionLog.orgID)) {
           seenOrgs.add(sessionLog.orgID);
 
           // Check if locationLogs is an array and has at least one element
-          if (
-            Array.isArray(sessionLog.locationLogs) &&
-            sessionLog.locationLogs.length > 0
-          ) {
+          if (Array.isArray(sessionLog.locationLogs) && sessionLog.locationLogs.length > 0) {
             const firstLocationLogData = sessionLog.locationLogs[0];
-            tempSessionStartLocations.push(
-              new LocationLog(firstLocationLogData)
-            );
+            tempSessionStartLocations.push(new LocationLog(firstLocationLogData));
           }
         }
       });
@@ -75,14 +63,11 @@ const MapSessionHistory: React.FC<MapSessionHistoryComponentProps> = ({
       }
 
       // Update the region based on the bounding box of the session locations
-      const boundingBox = Viewport.calculateBoundingBox(
-        tempSessionStartLocations
-      );
-      if (boundingBox) {
+      const boundingBox = Viewport.calculateBoundingBox(tempSessionStartLocations);
+      if (boundingBox !== null && boundingBox !== undefined) {
         const newRegion = {
           latitude: (boundingBox.low.latitude + boundingBox.high.latitude) / 2,
-          longitude:
-            (boundingBox.low.longitude + boundingBox.high.longitude) / 2,
+          longitude: (boundingBox.low.longitude + boundingBox.high.longitude) / 2,
           latitudeDelta:
             boundingBox.high.latitude -
             boundingBox.low.latitude +
@@ -99,33 +84,31 @@ const MapSessionHistory: React.FC<MapSessionHistoryComponentProps> = ({
     };
 
     fetchSessionLocations();
-  }, [currentStudent]);
+  }, [currentStudent, defaultRegion]);
 
   return (
-    <View style={[styles.mapContainer]}>
+    <View style={styles.mapContainer}>
       <View style={styles.mapWrapper}>
         {!loading && (
           <MapView
             style={styles.mapStyle}
             region={region}
             userInterfaceStyle={isDarkMode ? "dark" : "light"}
-            scrollEnabled={false} // Disables scrolling
-            zoomEnabled={false} // Disables zooming
-            pitchEnabled={false} // Disables changing the viewing angle
-            rotateEnabled={false} // Disables rotating the map
+            scrollEnabled={false}
+            zoomEnabled={false}
+            pitchEnabled={false}
+            rotateEnabled={false}
           >
-            {sessionStartLocations.map(
-              (location: LocationLog, index: number) => (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                  }}
-                  icon={require("../assets/icons/ServiceMapMarker.png")}
-                />
-              )
-            )}
+            {sessionStartLocations.map((location: LocationLog, index: number) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                }}
+                icon={ServiceMapMarker}
+              />
+            ))}
           </MapView>
         )}
       </View>
@@ -136,7 +119,7 @@ const MapSessionHistory: React.FC<MapSessionHistoryComponentProps> = ({
 const styles = StyleSheet.create({
   mapContainer: {
     width: "100%",
-    height: Dimensions.get("window").height * 0.3, // Takes up 30% of screen height
+    height: Dimensions.get("window").height * 0.3,
   },
   mapWrapper: {
     flex: 1,

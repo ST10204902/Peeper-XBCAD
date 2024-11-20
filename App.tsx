@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from "react";
 import * as SecureStore from "expo-secure-store";
 import { NavigationContainer } from "@react-navigation/native";
 import { RecoilRoot } from "recoil";
@@ -14,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
+  StyleSheet,
 } from "react-native";
 import "react-native-get-random-values";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -45,30 +45,8 @@ export default function App() {
   // Throwing an error if the publishableKey required by Clerk is missing
   if (!publishableKey) {
     throw new Error(
-      "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+      "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env",
     );
-  }
-
-  // Configure how notifications are handled
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    }),
-  });
-
-  // Set up Android notification channel
-  if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("tracking", {
-      name: "Location Tracking",
-      importance: Notifications.AndroidImportance.HIGH,
-      enableVibrate: false,
-      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-      enableLights: false,
-      showBadge: true,
-    });
   }
 
   // Configure how notifications are handled
@@ -103,18 +81,19 @@ export default function App() {
      * @returns {Promise<string | null>} - The token or null if not found or on error.
      */
     async getToken(key: string) {
-      // Attempt to retrieve token from secure storage
       try {
         const item = await SecureStore.getItemAsync(key);
-        if (item) {
+        if (item !== null && item !== undefined && item !== "") {
+          // eslint-disable-next-line no-console
           console.log(`${key} was used 🔐 \n`);
         } else {
+          // eslint-disable-next-line no-console
           console.log("No values stored under key: " + key);
         }
-        return item; // Return token if found
+        return item;
       } catch (error) {
         console.error("SecureStore get item error: ", error);
-        await SecureStore.deleteItemAsync(key); // Clean up storage if retrieval fails
+        await SecureStore.deleteItemAsync(key);
         return null;
       }
     },
@@ -128,20 +107,17 @@ export default function App() {
      */
     async saveToken(key: string, value: string) {
       try {
-        // Save the token securely in storage
         return SecureStore.setItemAsync(key, value);
-      } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_error) {
         return;
       }
     },
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ClerkProvider
-        publishableKey={publishableKey}
-        tokenCache={localTokenCache}
-      >
+    <GestureHandlerRootView style={styles.rootView}>
+      <ClerkProvider publishableKey={publishableKey} tokenCache={localTokenCache}>
         <FontLoader>
           <ThemeProvider>
             <RecoilRoot>
@@ -149,7 +125,7 @@ export default function App() {
               <NavigationContainer>
                 <KeyboardAvoidingView
                   behavior={Platform.OS === "ios" ? "padding" : "height"}
-                  style={{ flex: 1 }}
+                  style={styles.rootView}
                 >
                   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <>
@@ -165,4 +141,9 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
-// End of File
+
+const styles = StyleSheet.create({
+  rootView: {
+    flex: 1,
+  },
+});

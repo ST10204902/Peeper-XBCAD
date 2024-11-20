@@ -9,45 +9,50 @@ on:
     branches:
       - main
       - dev
-      
+
 permissions:
   actions: read
   contents: write
   checks: write
-  
+
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-    - name: Set up Expo
-      run: npm install -g expo-cli
+      - name: Set up Expo
+        run: npm install -g expo-cli
 
-    - name: Install dependencies
-      run: npm install --legacy-peer-deps
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
 
-    - name: Run tests
-      run: npm test
+      - name: Run linting
+        run: |
+          npm run lint
+          npx prettier --check "**/*.{js,jsx,ts,tsx,json,md}"
 
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: test-results.xml
+      - name: Run tests
+        run: npm test
 
-    - name: Report test results
-      if: always()
-      uses: dorny/test-reporter@v1
-      with:
-        name: Test Results
-        path: test-results.xml
-        reporter: jest-junit
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml
+
+      - name: Report test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test Results
+          path: test-results.xml
+          reporter: jest-junit

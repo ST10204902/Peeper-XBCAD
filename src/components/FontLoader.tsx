@@ -26,13 +26,13 @@ const FontLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       try {
         await SplashScreen.preventAutoHideAsync();
 
-        //Loading in the custom fonts
+        // Loading in the custom fonts
         await Font.loadAsync({
-          "Rany-Medium": require("../assets/fonts/Inter-Medium.otf"),
-          "Rany-Bold": require("../assets/fonts/Inter-Bold.otf"),
-          "Rany-Regular": require("../assets/fonts/Inter-Regular.otf"),
-          "Inter-Black": require("../assets/fonts/Inter-Black.otf"),
-          Quittance: require("../assets/fonts/Quittance.otf"),
+          "Rany-Medium": (await import("../assets/fonts/Inter-Medium.otf")).default,
+          "Rany-Bold": (await import("../assets/fonts/Inter-Bold.otf")).default,
+          "Rany-Regular": (await import("../assets/fonts/Inter-Regular.otf")).default,
+          "Inter-Black": (await import("../assets/fonts/Inter-Black.otf")).default,
+          Quittance: (await import("../assets/fonts/Quittance.otf")).default,
         });
 
         setFontsLoaded(true);

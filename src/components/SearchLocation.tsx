@@ -1,21 +1,13 @@
 import { useRef, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import MapView, { Marker, Region } from "react-native-maps";
+import { StyleSheet, View, Text } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 import PlacesInput from "react-native-places-input";
-import { useTheme } from '../styles/ThemeContext';
-import { lightTheme, darkTheme } from '../styles/themes';
+import { useTheme } from "../styles/ThemeContext";
+import { lightTheme, darkTheme } from "../styles/themes";
+import { Colors } from "../styles/colors";
 
 interface Props {
-  handlePlaceUpdated: (
-    place: string,
-    coordinate: { latitude: number; longitude: number }
-  ) => void;
+  handlePlaceUpdated: (place: string, coordinate: { latitude: number; longitude: number }) => void;
 }
 
 /**
@@ -64,9 +56,9 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
-  if (!googleApiKey) {
+  if (googleApiKey === null || googleApiKey === undefined) {
     throw new Error(
-      "Missing Google API Key. Please set EXPO_PUBLIC_GOOGLE_MAPS_API_KEY in your .env"
+      "Missing Google API Key. Please set EXPO_PUBLIC_GOOGLE_MAPS_API_KEY in your .env",
     );
   }
 
@@ -77,12 +69,10 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
       <PlacesInput
         googleApiKey={googleApiKey}
         placeHolder="Enter Address"
-        onSelect={(place) => {
-          console.log(place);
-          const location =
-            place.result?.geometry?.location || place?.geometry?.location;
+        onSelect={place => {
+          const location = Boolean(place.result?.geometry?.location) || place?.geometry?.location;
 
-          if (location) {
+          if (location !== null && location !== undefined && typeof location === "object") {
             const { lat, lng } = location;
 
             const newRegion = {
@@ -94,9 +84,13 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
             const coordinate = { latitude: lat, longitude: lng };
             setMarkerCoordinate(coordinate);
 
-            if (mapRef.current) {
+            if (mapRef.current !== null) {
               mapRef.current.animateToRegion(newRegion, 1000);
-              handlePlaceUpdated(place.result.formatted_address, coordinate);
+              if (place.result?.formatted_address !== undefined) {
+                handlePlaceUpdated(place.result.formatted_address, coordinate);
+              } else {
+                console.error("Place details are missing formatted address.");
+              }
             }
           } else {
             console.error("Place details are missing geometry data.");
@@ -139,7 +133,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 20,
     fontFamily: "Rany-Bold",
-    color: "#4A4A4A",
+    color: Colors.textGray,
     marginBottom: 10,
     marginLeft: 35,
   },

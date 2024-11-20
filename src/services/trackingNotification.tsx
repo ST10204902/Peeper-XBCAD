@@ -4,7 +4,7 @@ import { trackingState } from "../atoms/atoms";
 import { useSetRecoilState } from "recoil";
 
 // Define a constant identifier for iOS notifications
-const IOS_NOTIFICATION_IDENTIFIER = 'tracking-notification';
+const IOS_NOTIFICATION_IDENTIFIER = "tracking-notification";
 
 // Add notification category configuration
 Notifications.setNotificationCategoryAsync("tracking", [
@@ -18,7 +18,7 @@ Notifications.setNotificationCategoryAsync("tracking", [
 ]);
 
 // Add notification handler setup
-Notifications.addNotificationResponseReceivedListener((response) => {
+Notifications.addNotificationResponseReceivedListener(response => {
   if (response.actionIdentifier === "stop_tracking") {
     // Update tracking state
     const setTrackingAtom = useSetRecoilState(trackingState);
@@ -36,7 +36,7 @@ export const requestNotificationPermissions = async () => {
       return false;
     }
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -58,7 +58,7 @@ const formatElapsedTime = (elapsedTime: number): string => {
 
   if (hours > 0) {
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(
-      seconds
+      seconds,
     ).padStart(2, "0")} hours`;
   } else if (minutes > 0) {
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")} minutes`;
@@ -82,7 +82,7 @@ export const showOrUpdateTrackingNotification = async (orgName: string, elapsedT
       sound: "", // Disable sound for updates
       priority: Notifications.AndroidNotificationPriority.HIGH,
       badge: 1,
-      sticky: true,  // Make notification persistent
+      sticky: true, // Make notification persistent
     };
 
     // Set platform-specific options
@@ -92,20 +92,20 @@ export const showOrUpdateTrackingNotification = async (orgName: string, elapsedT
     }
 
     // If we already have an active notification, update it
-    if (activeNotificationId) {
+    if (activeNotificationId !== null && activeNotificationId !== "") {
       await Notifications.scheduleNotificationAsync({
         content,
         trigger: null,
-        identifier: activeNotificationId
+        identifier: activeNotificationId,
       });
     } else {
       // Create new notification if none exists
       const id = await Notifications.scheduleNotificationAsync({
         content,
         trigger: null,
-        identifier: Platform.OS === "ios" ? IOS_NOTIFICATION_IDENTIFIER : undefined
+        identifier: Platform.OS === "ios" ? IOS_NOTIFICATION_IDENTIFIER : undefined,
       });
-      
+
       if (Platform.OS === "android") {
         activeNotificationId = id;
       }
@@ -122,7 +122,7 @@ export const showOrUpdateTrackingNotification = async (orgName: string, elapsedT
  * Clears the currently active tracking notification, if any.
  */
 export const clearTrackingNotification = async () => {
-  if (activeNotificationId) {
+  if (activeNotificationId !== null && activeNotificationId !== "") {
     try {
       if (Platform.OS === "ios") {
         await Notifications.cancelScheduledNotificationAsync(activeNotificationId);

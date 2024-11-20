@@ -1,13 +1,5 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Alert, ActivityIndicator } from "react-native";
 import MapComponent from "../components/MapComponent";
 import OrganisationListItem from "../components/OrganisationListItem";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -16,13 +8,9 @@ import { OrganisationData } from "../databaseModels/OrganisationData";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import { useLocationTracking } from "../hooks/useLocationTracking"; // Custom hook for location tracking
 import { useUser } from "@clerk/clerk-expo";
-
 import { useCurrentStudent } from "../hooks/useCurrentStudent";
 import { useTheme } from "../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../styles/themes";
-import { useRecoilState } from "recoil";
-import { trackingState } from "../atoms/atoms";
-import CurrentTrackingBanner from "../components/CurrentTrackingBanner";
 
 /**
  * Landing screen component for displaying the organisation list and tracking popup.
@@ -32,14 +20,11 @@ export default function LandingScreen() {
   //                          STATES                           //
   //-----------------------------------------------------------//
   const [organisations, setOrganisations] = useState<OrganisationData[]>([]); // State to hold organisation data
-  const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for controlling visibility of the tracking popup
   const { tracking, startTracking } = useLocationTracking(); // Import location tracking functions from hook
-  const { currentStudent, error, loading, saving, updateCurrentStudent } =
-    useCurrentStudent();
+  const { currentStudent, error: studentError, loading } = useCurrentStudent();
   const { user } = useUser(); // Get the current authenticated user from Clerk
-  const [selectedOrganisation, setSelectedOrganisation] =
-    useState<Organisation | null>(null); // State for the selected organisation
+  const [selectedOrganisation, setSelectedOrganisation] = useState<Organisation | null>(null); // State for the selected organisation
   const sheetRef = useRef<BottomSheet>(null); // Reference for controlling the bottom sheet
   const snapPoints = useMemo(() => [100, "48%"], []); // Memoized snap points for the bottom sheet heights
   const { isDarkMode, toggleTheme } = useTheme();
@@ -49,30 +34,30 @@ export default function LandingScreen() {
   //                          EFFECTS                          //
   //-----------------------------------------------------------//
 
-  // Method to fetch data
-  const fetchStudentsOrgs = async () => {
-    if (!user || !currentStudent) {
-      console.error(
-        "User or student data not found while fetching organisations"
-      );
-      return;
-    }
-    const studentOrgs = await Organisation.getStudentsOrgs(
-      currentStudent?.activeOrgs
-    );
-    setOrganisations(
-      studentOrgs
-        .filter((org) => org && typeof org.toJSON === "function")
-        .map((org) => org.toJSON())
-    );
-  };
-
-  // Fetch organisation data on component mount
+  // Move fetchStudentsOrgs inside useEffect
   useEffect(() => {
+    const fetchStudentsOrgs = async () => {
+      if (!user || !currentStudent) {
+        console.error("User or student data not found while fetching organisations");
+        return;
+      }
+      const studentOrgs = await Organisation.getStudentsOrgs(currentStudent?.activeOrgs);
+      if (studentOrgs !== null && studentOrgs !== undefined && studentOrgs.length > 0) {
+        setOrganisations(
+          studentOrgs
+            .filter(
+              (org): org is Organisation =>
+                org !== null && org !== undefined && typeof org.toJSON === "function",
+            )
+            .map(org => org.toJSON()),
+        );
+      }
+    };
+
     if (currentStudent) {
       fetchStudentsOrgs();
     }
-  }, [currentStudent?.activeOrgs]);
+  }, [currentStudent, user]);
 
   // Snap the bottom sheet closed when an organisation is selected
   useEffect(() => {
@@ -82,15 +67,12 @@ export default function LandingScreen() {
   }, [selectedOrganisation]);
 
   useEffect(() => {
-    if (
-      currentStudent?.darkMode !== null &&
-      currentStudent?.darkMode !== undefined
-    ) {
+    if (currentStudent?.darkMode !== null && currentStudent?.darkMode !== undefined) {
       if (isDarkMode !== currentStudent.darkMode) {
         toggleTheme();
       }
     }
-  }, [currentStudent?.darkMode]);
+  }, [currentStudent?.darkMode, isDarkMode, toggleTheme]);
 
   //-----------------------------------------------------------//
   //                          METHODS                          //
@@ -103,6 +85,7 @@ export default function LandingScreen() {
     setIsPopupVisible(true); // Show the tracking popup
     const newSelectedOrg = new Organisation(pSelectedOrganisation);
     setSelectedOrganisation(newSelectedOrg); // Set the selected organisation
+    // eslint-disable-next-line no-console
     console.log(`${pSelectedOrganisation.orgName} selected`);
   };
 
@@ -116,15 +99,16 @@ export default function LandingScreen() {
     }
     if (tracking.isTracking) {
       setIsPopupVisible(false);
-      Alert.alert("Tracking already in progress");
+      Alert.alert("Error", "Tracking already in progress");
       return;
     }
     try {
       // Start tracking the organisation
+      // eslint-disable-next-line no-console
       console.log("Starting tracking for", selectedOrganisation.orgName);
       await startTracking(selectedOrganisation);
-    } catch (error) {
-      console.error("Error starting tracking:", error);
+    } catch (trackingError) {
+      console.error("Error starting tracking:", trackingError);
     } finally {
       setIsPopupVisible(false);
     }
@@ -135,16 +119,18 @@ export default function LandingScreen() {
   //-----------------------------------------------------------//
 
   if (loading) {
+    // eslint-disable-next-line no-console
     console.log("Loading student data...");
     return <ActivityIndicator />;
   }
 
-  if (error) {
-    console.error("Error loading student data:", error);
-    return <Text>Error: {error.message}</Text>;
+  if (studentError) {
+    console.error("Error loading student data:", studentError);
+    return <Text>Error: {studentError.message}</Text>;
   }
 
   if (!currentStudent) {
+    // eslint-disable-next-line no-console
     console.log("Student data not found");
     return <Text>No student data available.</Text>;
   }
@@ -158,13 +144,7 @@ export default function LandingScreen() {
    * @param item - The organisation data
    * @param index - The index of the item in the list
    */
-  const renderItem = ({
-    item,
-    index,
-  }: {
-    item: OrganisationData;
-    index: number;
-  }) => (
+  const renderItem = ({ item, index }: { item: OrganisationData; index: number }) => (
     <OrganisationListItem
       orgName={item.orgName}
       // Alternate between 'odd' and 'even'
@@ -177,11 +157,9 @@ export default function LandingScreen() {
   );
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Map Component displaying selected organisation */}
-      <MapComponent selectedOrganisation={selectedOrganisation}   />
+      <MapComponent selectedOrganisation={selectedOrganisation} />
 
       {/* Tracking Status or Popup */}
 
@@ -202,19 +180,15 @@ export default function LandingScreen() {
         enablePanDownToClose={false}
         backgroundStyle={{ backgroundColor: theme.background }}
       >
-        <View
-          style={[styles.sheetHeader, { backgroundColor: theme.background }]}
-        >
-          <Text style={[styles.sheetHeading, { color: theme.fontRegular }]}>
-            Organisation List
-          </Text>
+        <View style={[styles.sheetHeader, { backgroundColor: theme.background }]}>
+          <Text style={[styles.sheetHeading, { color: theme.fontRegular }]}>Organisation List</Text>
         </View>
         {/* Scrollable list of organisations */}
         {organisations.length > 0 && (
           <BottomSheetFlatList
             data={organisations}
             // Use organisation ID as key
-            keyExtractor={(item) => item.org_id}
+            keyExtractor={item => item.org_id}
             // Render each item using renderItem function
             renderItem={renderItem}
             contentContainerStyle={[
@@ -245,48 +219,5 @@ const styles = StyleSheet.create({
     fontFamily: "Quittance",
   },
   listContentContainer: {},
-  itemContainer: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-  },
-  itemText: {
-    fontSize: 16,
-  },
-  trackingStatusContainer: {
-    position: "absolute",
-    top: 50,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    zIndex: 1000,
-  },
-  trackingStatus: {
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  trackingText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  stopButton: {
-    backgroundColor: "#ff4444",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  stopButtonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
 });
 //------------------------***EOF***-----------------------------//
