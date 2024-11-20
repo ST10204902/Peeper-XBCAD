@@ -77,11 +77,32 @@ export class DatabaseUtility {
     }
   }
 
+  /**
+   * Generates a cryptographically secure UUID v4
+   * Using bitwise operations is necessary for UUID v4 specification
+   * @returns A UUID v4 string
+   */
+  /* eslint-disable no-bitwise */
   static generateUniqueId(): string {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-      const r = Math.floor(Math.random() * 16);
-      const v = c === "x" ? r : Math.floor(r % 4) + 8;
-      return v.toString(16);
-    });
+    // Create a Uint8Array of 16 bytes (128 bits)
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+
+    // Convert to UUID format
+    return Array.from(bytes)
+      .map((b, i) => {
+        // Insert hyphens at positions 4, 6, 8, and 10
+        const hyphen = i === 4 || i === 6 || i === 8 || i === 10 ? "-" : "";
+        // Handle version 4 UUID requirements
+        if (i === 6) {
+          return hyphen + ((b & 0x0f) | 0x40).toString(16);
+        }
+        if (i === 8) {
+          return hyphen + ((b & 0x3f) | 0x80).toString(16);
+        }
+        return hyphen + b.toString(16).padStart(2, "0");
+      })
+      .join("");
   }
+  /* eslint-enable no-bitwise */
 }
