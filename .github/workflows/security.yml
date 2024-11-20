@@ -45,10 +45,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download dependencies
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: security-deps
+          node-version: "20"
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci --prefer-offline
+          npm cache verify
 
       - name: Initialize CodeQL
         if: startsWith(matrix.check, 'codeql')
