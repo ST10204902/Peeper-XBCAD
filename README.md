@@ -1,11 +1,11 @@
-# PEEPER - Student Community Service Tracking System
+# HERENOW - Student Community Service Tracking System
 
-[![CI](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ST10204902_Peeper-XBCAD&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ST10204902_Peeper-XBCAD)
+[![CI](https://github.com/ST10204902/PEEPER-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/PEEPER-XBCAD/actions/workflows/main.yml)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=ST10204902_Peeper-XBCAD)](https://sonarcloud.io/summary/new_code?id=ST10204902_Peeper-XBCAD)
 
 ## Overview
 
-PEEPER is a comprehensive mobile application designed to monitor and verify community service hours completed by Bachelor of Education students. The system provides real-time location tracking, organization management, and reporting capabilities while ensuring data security and user privacy.
+HERENOW is a comprehensive system designed to monitor and verify community service hours completed by Bachelor of Education students. It consists of a mobile application for iOS and Android platforms and a web portal accessible across various operating systems. The system ensures transparency, prevents fraud, and provides administrators with tools to manage and export student data effectively.
 
 ## Features
 
