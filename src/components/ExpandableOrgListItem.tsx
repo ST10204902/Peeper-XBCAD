@@ -19,9 +19,9 @@ interface Props {
   orgAddress: OrgAddressData;
   oddOrEven: "odd" | "even";
   listButton: React.ReactNode;
-  _userLocation?: Location.LocationObject;
   index: number;
   totalItems: number;
+  testID?: string;
 }
 
 /**
@@ -37,9 +37,9 @@ export default function ExpandableOrgListItem({
   orgAddress,
   oddOrEven,
   listButton,
-  _userLocation,
   index,
   totalItems,
+  testID,
 }: Props) {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;

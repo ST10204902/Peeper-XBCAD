@@ -1,8 +1,7 @@
+import React from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import { OrganisationData } from "../databaseModels/OrganisationData";
 import ExpandableOrgListItem from "./ExpandableOrgListItem";
-import React from "react";
-import * as Location from "expo-location";
 import { useTheme } from "../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../styles/themes";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
@@ -17,8 +16,9 @@ interface Props {
   items: Organisation[];
   listButtonComp: React.ReactNode;
   onListButtonClicked: (selectedOrg: OrganisationData) => void;
-  userLocation?: Location.LocationObject;
+  userLocation?: { coords: { latitude: number; longitude: number } };
   style?: object;
+  testID?: string;
 }
 
 /**
@@ -32,14 +32,14 @@ interface Props {
 export default function ExpandableOrgList({
   items,
   listButtonComp,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  userLocation,
   onListButtonClicked,
+  testID,
 }: Props) {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
+
   return (
-    <View style={[styles.listContainer, { backgroundColor: theme.orgListOdd }]}>
+    <View style={[styles.listContainer, { backgroundColor: theme.orgListOdd }]} testID={testID}>
       <FlatList
         data={items}
         renderItem={({ index, item }) => (
@@ -49,10 +49,11 @@ export default function ExpandableOrgList({
             oddOrEven={index % 2 === 0 ? "even" : "odd"}
             listButton={React.cloneElement(listButtonComp as React.ReactElement, {
               onPress: () => onListButtonClicked(item),
+              testID: "list-button",
             })}
-            // Pass index and length of the list to determine corner radius
             index={index}
             totalItems={items.length}
+            testID={`org-list-item-${index}`}
           />
         )}
       />
@@ -61,7 +62,6 @@ export default function ExpandableOrgList({
 }
 
 const styles = StyleSheet.create({
-  // Add styles here
   listContainer: {
     borderRadius: 30,
   },

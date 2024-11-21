@@ -32,6 +32,7 @@ interface Props {
   options: ComboBoxOption[];
   value?: string;
   onValueChange: (value: string) => void;
+  testID?: string;
 }
 
 function ComboBoxComponent({
@@ -41,6 +42,7 @@ function ComboBoxComponent({
   options,
   value,
   onValueChange,
+  testID,
 }: Props) {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
@@ -59,6 +61,7 @@ function ComboBoxComponent({
       <TouchableOpacity
         style={[styles.comboBoxContainer, { backgroundColor: theme.componentBackground }]}
         onPress={() => setIsOpen(true)}
+        testID={testID}
       >
         <Text
           style={[

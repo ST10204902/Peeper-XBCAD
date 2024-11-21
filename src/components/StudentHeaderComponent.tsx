@@ -10,9 +10,13 @@ import { Colors } from "../styles/colors";
 
 interface StudentHeaderComponentProps {
   currentStudent: Student;
+  testID?: string;
 }
 
-const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({ currentStudent }) => {
+const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
+  currentStudent,
+  testID,
+}) => {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -45,6 +49,7 @@ const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({ current
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.progress, { width: `${progress}%` }]}
+              testID={testID}
             />
           </View>
         </View>

@@ -22,19 +22,31 @@ const EmergencyContacts = () => {
         <Text style={styles.subHeader}>EMERGENCY CONTACTS</Text>
         <Text style={styles.description}>Know your emergency numbers!</Text>
 
-        <TouchableOpacity style={styles.contactRow} onPress={() => handlePress("112")}>
+        <TouchableOpacity
+          style={styles.contactRow}
+          onPress={() => handlePress("112")}
+          testID="emergency-button"
+        >
           <Text style={styles.contactText}>
             📱 Emergency: <Text style={styles.contactNumber}>112</Text>
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.contactRow} onPress={() => handlePress("10111")}>
+        <TouchableOpacity
+          style={styles.contactRow}
+          onPress={() => handlePress("10111")}
+          testID="police-button"
+        >
           <Text style={styles.contactText}>
             🚔 Police: <Text style={styles.contactNumber}>10111</Text>
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.contactRow} onPress={() => handlePress("10177")}>
+        <TouchableOpacity
+          style={styles.contactRow}
+          onPress={() => handlePress("10177")}
+          testID="ambulance-button"
+        >
           <Text style={styles.contactText}>
             🚑 Ambulance: <Text style={styles.contactNumber}>10177</Text>
           </Text>

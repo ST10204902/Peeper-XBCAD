@@ -5,13 +5,17 @@ import { lightTheme, darkTheme } from "../styles/themes";
 interface PolicySectionProps {
   heading: string;
   content: string;
+  testID?: string;
 }
 
-export const PolicySectionComponent = ({ heading, content }: PolicySectionProps) => {
+export const PolicySectionComponent = ({ heading, content, testID }: PolicySectionProps) => {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
   return (
-    <View style={[styles.sectionContainer, { backgroundColor: theme.sectionBackground }]}>
+    <View
+      style={[styles.sectionContainer, { backgroundColor: theme.sectionBackground }]}
+      testID={testID}
+    >
       <Text style={[styles.sectionHeading, { color: theme.fontRegular }]}>{heading}</Text>
       <Text style={[styles.sectionContent, { color: theme.sectionText }]}>{content}</Text>
     </View>
