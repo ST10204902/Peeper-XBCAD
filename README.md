@@ -5,69 +5,126 @@
 
 ## Overview
 
-PEEPER is a comprehensive system designed to monitor and verify community service hours completed by Bachelor of Education students. It consists of a mobile application for iOS and Android platforms and a web portal accessible across various operating systems. The system ensures transparency, prevents fraud, and provides administrators with tools to manage and export student data effectively.
+PEEPER is a comprehensive mobile application designed to monitor and verify community service hours completed by Bachelor of Education students. The system provides real-time location tracking, organization management, and reporting capabilities while ensuring data security and user privacy.
 
 ## Features
 
-- **Real-time Location Tracking**: Utilize GPS to monitor student locations during community service sessions.
-- **Organization Management**: Manage a list of approved organizations within the system.
-- **Session History with Maps Integration**: View past service sessions with integrated mapping for visual representation.
-- **PDF Report Generation**: Generate comprehensive reports of service hours in PDF format.
-- **Dark/Light Theme Support**: Switch between dark and light themes for better usability.
-- **Emergency Contact Information**: Access important contact details when needed.
-- **Privacy and Security**: Protect user data with robust security measures.
+- **Real-time Location Tracking**: GPS monitoring of student locations during service sessions
+- **Organization Management**: Curated list of approved community service organizations
+- **Session History**: Interactive maps showing past service locations and durations
+- **PDF Report Generation**: Detailed service hour reports and verifications
+- **Dark/Light Theme**: Customizable UI appearance
+- **Emergency Contacts**: Quick access to important safety information
+- **Cross-Platform**: Supports both iOS and Android devices
 
-## Table of Contents
+## CI/CD Pipeline
 
-- Getting Started
-  - Prerequisites
-  - Installation
-  - Running the App
-- Related Links
-- Team
-- License
+The project uses GitHub Actions for continuous integration and deployment:
 
-## Getting Started
+- **Automated Testing**: Jest unit tests run on every push
+- **Code Quality**: SonarCloud analysis for code quality and security
+- **Security Scanning**: Dependency vulnerability checks
+- **Build Verification**: Expo build verification for iOS and Android
 
-### Prerequisites
+## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v20 or later)
-- [npm](https://www.npmjs.com/) (included with Node.js)
-- [Expo CLI](https://docs.expo.dev/workflow/expo-cli/)
-- Code editor (e.g., Visual Studio Code)
-- iOS or Android device/emulator
+- Node.js (v20 or later)
+- npm (included with Node.js)
+- Expo CLI (`npm install -g expo-cli`)
+- Expo Go app on mobile device
+- iOS/Android development environment for native builds
+- Firebase account for backend services
+- Clerk account for authentication
 
-### Installation
+## Installation
 
-1. **Clone the Repository**:
+1. Clone the repository:
+```bash
+git clone https://github.com/ST10204902/Peeper-XBCAD.git
+cd Peeper-XBCAD
+```
 
-   ```bash
-   git clone https://github.com/ST10204902/Peeper-XBCAD.git
-   cd Peeper-XBCAD
-   ```
+2. Install dependencies:
+```bash
+npm install --legacy-peer-deps
+```
 
-2. **Install Dependencies**:
+3. Configure environment variables:
+```bash
+cp .env.example .env
+```
+Edit 
 
-   ```bash
-   npm install --legacy-peer-deps
-   ```
+.env
 
-### Running the App
+ with your API keys and configuration
 
-Start the development server:
+## Running the App
 
+### Development Mode
+
+Start the Expo development server:
 ```bash
 npx expo start
 ```
 
-Scan the QR code displayed in the terminal with the Expo Go app on your iOS or Android device to run the application.
+### iOS Device (Sideloading)
 
-Refer to documentation for further instructions for sideloading the app natively on your specific platform.
+1. Install development certificates:
+```bash
+npx expo run:ios
+```
 
-## Related Links
+2. Open Xcode project:
+```bash
+open ios/PeeperXBCAD.xcworkspace
+```
 
-- [Web Portal](https://herenow-portal.vercel.app/)
-- [GitHub Repository](https://github.com/ST10204902/Peeper-XBCAD)
+3. Connect iOS device and select as build target
+4. Build and run using Xcode
+
+### Android Device (Sideloading)
+
+1. Enable Developer Mode on device
+2. Enable USB Debugging
+3. Connect device via USB
+4. Build and install:
+```bash 
+npx expo run:android
+```
+
+## Development Setup
+
+1. Install IDE extensions:
+- ESLint
+- Prettier
+- React Native Tools
+
+2. Configure Firebase:
+- Create new Firebase project
+- Add iOS/Android apps
+- Download configuration files
+
+3. Configure Clerk:
+- Create Clerk application
+- Set up OAuth providers
+- Add API keys to environment
+
+## Environment Configuration
+
+Required environment variables:
+```
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_maps_key 
+```
+
+## Contributing
+
+1. Fork repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Open pull request
 
 ## Team
 
@@ -78,6 +135,11 @@ Refer to documentation for further instructions for sideloading the app natively
 - **Nicholas Meyer** - ST10204902
 - **David Mellors** - ST10241466
 
+## Related Links
+
+- [Web Portal](https://peeper-portal.vercel.app/)
+- [GitHub Repository](https://github.com/ST10204902/Peeper-XBCAD)
+
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
