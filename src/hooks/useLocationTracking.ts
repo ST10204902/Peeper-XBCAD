@@ -41,9 +41,9 @@ export function useLocationTracking() {
    * @param {ExpoLocation.LocationObject} location - The location object
    */
   const handleLocationUpdate = useCallback(
-    (location: ExpoLocation.LocationObject) => {
+    async (location: ExpoLocation.LocationObject) => {
       // eslint-disable-next-line no-console
-      console.log("handleLocationUpdate was called");
+      console.log("Location update received:", location);
 
       const currentSessionLog = sessionLogRef.current;
       const currentStudent = studentRef.current;
@@ -53,23 +53,45 @@ export function useLocationTracking() {
         return;
       }
 
-      const ISOTimeStamp = new Date(location.timestamp).toISOString();
-      const newLocationLog = new LocationLog({
-        timestamp: ISOTimeStamp,
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        accuracy: location.coords.accuracy ?? 0,
-        altitude: location.coords.altitude ?? 0,
-      });
+      try {
+        // Create new location log
+        const newLocationLog = new LocationLog({
+          timestamp: new Date(location.timestamp).toISOString(),
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          accuracy: location.coords.accuracy ?? 0,
+          altitude: location.coords.altitude ?? 0,
+        });
 
-      currentSessionLog.locationLogs.push(newLocationLog);
-      currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
+        // Update the session log
+        currentSessionLog.locationLogs.push(newLocationLog);
+        currentSessionLog.sessionEndTime = new Date().toISOString();
 
-      // Save to database
-      updateCurrentStudent({ locationData: currentStudent.locationData }).then(() => {
+        // Update viewport
+        const boundingBox = Viewport.calculateBoundingBox(currentSessionLog.locationLogs);
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (boundingBox) {
+          currentSessionLog.viewport = boundingBox;
+        }
+
+        // Create a new reference to the locationData object
+        const updatedLocationData = {
+          ...currentStudent.locationData,
+          [currentSessionLog.sessionLog_id]: currentSessionLog,
+        };
+
+        // Update both refs and Firebase
+        currentStudent.locationData = updatedLocationData;
+        await updateCurrentStudent({ locationData: updatedLocationData });
         // eslint-disable-next-line no-console
-        console.log("New location log saved to student");
-      });
+        console.log(
+          `Location log saved successfully. Total logs: ${currentSessionLog.locationLogs.length}`,
+          newLocationLog,
+        );
+      } catch (error) {
+        console.error("Error saving location update:", error);
+        setErrorMsg(`Failed to save location update: ${error}`);
+      }
     },
     [updateCurrentStudent],
   );
@@ -79,10 +101,20 @@ export function useLocationTracking() {
     console.log("Stopping tracking called");
 
     try {
+      // Clear notification timer first
+      if (notificationTimerRef.current !== null) {
+        clearInterval(notificationTimerRef.current);
+        notificationTimerRef.current = null;
+      }
+
+      // Clear the notification
+      await clearTrackingNotification();
+
       const currentSessionLog = sessionLogRef.current;
       const currentStudent = studentRef.current;
 
       if (!currentSessionLog || !currentStudent) {
+        setTracking({ isTracking: false, organizationName: "" });
         return;
       }
 
@@ -94,29 +126,27 @@ export function useLocationTracking() {
       currentStudent.locationData[currentSessionLog.sessionLog_id] = currentSessionLog;
 
       await updateCurrentStudent({ locationData: currentStudent.locationData });
-      // eslint-disable-next-line no-console
-      console.log("Session log saved to student while stopping tracking");
 
       if (locationSubscriptionRef.current !== null) {
         locationSubscriptionRef.current.remove();
         locationSubscriptionRef.current = null;
       }
 
-      await clearTrackingNotification();
+      sessionLogRef.current = null;
+      setTracking({ isTracking: false, organizationName: "" });
+    } catch (trackingError) {
+      console.error("Error in stopTracking:", trackingError);
 
+      // Ensure notifications are cleared even on error
       if (notificationTimerRef.current !== null) {
         clearInterval(notificationTimerRef.current);
         notificationTimerRef.current = null;
       }
+      await clearTrackingNotification();
 
-      sessionLogRef.current = null;
       setTracking({ isTracking: false, organizationName: "" });
-    } catch (trackingError) {
       setErrorMsg(`Error stopping tracking: ${trackingError}`);
-      console.error(trackingError);
     }
-
-    setTracking({ isTracking: false, organizationName: "" });
   }, [setTracking, updateCurrentStudent]);
 
   const startTracking = async (organisation: Organisation) => {
@@ -169,7 +199,12 @@ export function useLocationTracking() {
       console.log("Session log saved to student");
 
       locationSubscriptionRef.current = await ExpoLocation.watchPositionAsync(
-        { accuracy: ExpoLocation.Accuracy.Balanced, timeInterval: 5000, distanceInterval: 0 },
+        {
+          accuracy: ExpoLocation.Accuracy.Balanced,
+          timeInterval: 5000, // Poll every 5 seconds
+          distanceInterval: 0,
+          mayShowUserSettingsDialog: true,
+        },
         handleLocationUpdate,
       );
 
@@ -198,15 +233,6 @@ export function useLocationTracking() {
   };
 
   useEffect(() => {
-    if (
-      !tracking.isTracking &&
-      (locationSubscriptionRef.current !== null || sessionLogRef.current !== null)
-    ) {
-      stopTracking();
-    }
-  }, [tracking.isTracking, stopTracking]);
-
-  useEffect(() => {
     if (errorMsg !== null && errorMsg !== "") {
       console.error(`Error during tracking: ${errorMsg}`);
       setErrorMsg(null);
@@ -223,5 +249,15 @@ export function useLocationTracking() {
     };
   }, [errorMsg]);
 
-  return { tracking, startTracking };
+  useEffect(() => {
+    return () => {
+      if (notificationTimerRef.current !== null) {
+        clearInterval(notificationTimerRef.current);
+        notificationTimerRef.current = null;
+      }
+      clearTrackingNotification().catch(console.error);
+    };
+  }, []);
+
+  return { tracking, startTracking, stopTracking };
 }

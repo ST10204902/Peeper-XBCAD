@@ -1,14 +1,14 @@
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { elapsed_time, trackingStartTimeState, trackingState } from "../atoms/atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { elapsed_time, trackingStartTimeState } from "../atoms/atoms";
 import { useEffect } from "react";
-import { clearTrackingNotification } from "../services/trackingNotification";
 import { useTheme } from "../styles/ThemeContext";
 import { darkTheme, lightTheme } from "../styles/themes";
 import { Colors } from "../styles/colors";
 import stopTrackingIcon from "../assets/stop_tracking_button.png";
+import { useLocationTracking } from "../hooks/useLocationTracking";
 
 /**
  * @component CurrentTrackingBanner
@@ -36,15 +36,14 @@ import stopTrackingIcon from "../assets/stop_tracking_button.png";
  * <CurrentTrackingBanner />
  */
 const CurrentTrackingBanner = () => {
-  const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
+  const { tracking, stopTracking } = useLocationTracking();
   const startTime = useRecoilValue(trackingStartTimeState);
   const setElapsedTime = useSetRecoilState(elapsed_time);
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   const handleStopTracking = async () => {
-    await clearTrackingNotification();
-    setTrackingAtom({ isTracking: false, organizationName: "" });
+    await stopTracking();
     setElapsedTime(0);
   };
 
@@ -52,7 +51,7 @@ const CurrentTrackingBanner = () => {
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
 
-    if (trackingAtom.isTracking && startTime > 0) {
+    if (tracking.isTracking && startTime > 0) {
       intervalId = setInterval(() => {
         const currentTime = Date.now();
         const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
@@ -65,9 +64,9 @@ const CurrentTrackingBanner = () => {
         clearInterval(intervalId);
       }
     };
-  }, [trackingAtom.isTracking, startTime, setElapsedTime]);
+  }, [tracking.isTracking, startTime, setElapsedTime]);
 
-  if (!trackingAtom.isTracking) {
+  if (!tracking.isTracking) {
     return null;
   }
 
@@ -82,7 +81,7 @@ const CurrentTrackingBanner = () => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {trackingAtom.organizationName}
+            {tracking.organizationName}
           </Text>
           <ElapsedTimeDisplay />
         </View>

@@ -70,30 +70,35 @@ export default function SearchLocation({ handlePlaceUpdated }: Props) {
         googleApiKey={googleApiKey}
         placeHolder="Enter Address"
         onSelect={place => {
-          const location = Boolean(place.result?.geometry?.location) || place?.geometry?.location;
+          const location = place.result?.geometry?.location || place?.geometry?.location;
 
-          if (location !== null && location !== undefined && typeof location === "object") {
-            const { lat, lng } = location;
-
-            const newRegion = {
-              latitude: lat,
-              longitude: lng,
-              latitudeDelta: 0.015,
-              longitudeDelta: 0.0121,
-            };
-            const coordinate = { latitude: lat, longitude: lng };
-            setMarkerCoordinate(coordinate);
-
-            if (mapRef.current !== null) {
-              mapRef.current.animateToRegion(newRegion, 1000);
-              if (place.result?.formatted_address !== undefined) {
-                handlePlaceUpdated(place.result.formatted_address, coordinate);
-              } else {
-                console.error("Place details are missing formatted address.");
-              }
-            }
-          } else {
+          if (location?.lat == null || !location?.lng) {
             console.error("Place details are missing geometry data.");
+            return;
+          }
+
+          if (!location?.lat || !location?.lng) {
+            console.error("Place details are missing geometry data.");
+            return;
+          }
+          const { lat, lng } = location;
+
+          const newRegion = {
+            latitude: lat,
+            longitude: lng,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.0121,
+          };
+          const coordinate = { latitude: lat, longitude: lng };
+          setMarkerCoordinate(coordinate);
+
+          if (mapRef.current !== null) {
+            mapRef.current.animateToRegion(newRegion, 1000);
+            if (place.result?.formatted_address !== undefined) {
+              handlePlaceUpdated(place.result.formatted_address, coordinate);
+            } else {
+              console.error("Place details are missing formatted address.");
+            }
           }
         }}
         stylesInput={styles.input}

@@ -74,6 +74,29 @@
           "iosDisplayInForeground": true
         }
       ]
+    ],
+    "fonts": [
+      {
+        "asset": "./src/assets/fonts/Inter-Black.otf",
+        "family": "Inter-Black"
+      },
+      {
+        "asset": "./src/assets/fonts/Inter-Bold.otf",
+        "family": "Inter-Bold"
+      },
+      {
+        "asset": "./src/assets/fonts/Inter-Medium.otf",
+        "family": "Inter-Medium"
+      },
+      {
+        "asset": "./src/assets/fonts/Inter-Regular.otf",
+        "family": "Inter-Regular"
+      },
+      {
+        "asset": "./src/assets/fonts/Quittance.otf",
+        "family": "Quittance"
+      }
     ]
   }
 }
+
