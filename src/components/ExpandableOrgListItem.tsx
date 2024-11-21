@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { OrgAddressData } from "../databaseModels/OrgAddressData";
-import * as Location from "expo-location";
 import { useTheme } from "../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../styles/themes";
 import { Linking } from "react-native";
@@ -39,7 +38,6 @@ export default function ExpandableOrgListItem({
   listButton,
   index,
   totalItems,
-  testID,
 }: Props) {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
