@@ -1,11 +1,11 @@
-# PEEPER - Student Community Service Tracking System
+# HERENOW - Student Community Service Tracking System
 
-[![CI](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ST10204902_Peeper-XBCAD&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ST10204902_Peeper-XBCAD)
+[![CI](https://github.com/ST10204902/HERENOW-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/HERENOW-XBCAD/actions/workflows/main.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ST10204902_HERENOW-XBCAD&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ST10204902_HERENOW-XBCAD)
 
 ## Overview
 
-PEEPER is a comprehensive system designed to monitor and verify community service hours completed by Bachelor of Education students. It consists of a mobile application for iOS and Android platforms and a web portal accessible across various operating systems. The system ensures transparency, prevents fraud, and provides administrators with tools to manage and export student data effectively.
+HERENOW is a comprehensive system designed to monitor and verify community service hours completed by Bachelor of Education students. It consists of a mobile application for iOS and Android platforms and a web portal accessible across various operating systems. The system ensures transparency, prevents fraud, and provides administrators with tools to manage and export student data effectively.
 
 ## Features
 
@@ -42,8 +42,8 @@ PEEPER is a comprehensive system designed to monitor and verify community servic
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/ST10204902/Peeper-XBCAD.git
-   cd Peeper-XBCAD
+   git clone https://github.com/ST10204902/HERENOW-XBCAD.git
+   cd HERENOW-XBCAD
    ```
 
 2. **Install Dependencies**:
@@ -67,7 +67,7 @@ Refer to documentation for further instructions for sideloading the app natively
 ## Related Links
 
 - [Web Portal](https://herenow-portal.vercel.app/)
-- [GitHub Repository](https://github.com/ST10204902/Peeper-XBCAD)
+- [GitHub Repository](https://github.com/ST10204902/HERENOW-XBCAD)
 
 ## Team
 
