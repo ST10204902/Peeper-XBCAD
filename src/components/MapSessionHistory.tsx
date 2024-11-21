@@ -11,6 +11,35 @@ interface MapSessionHistoryComponentProps {
   currentStudent: Student;
 }
 
+/**
+ * @component MapSessionHistory
+ * @description A map component that visualizes a student's session history locations.
+ * Displays markers for unique session start locations and handles viewport management.
+ *
+ * @typedef {Object} Student
+ * @property {LocationLog[]} locationData - Array of location logs for the student
+ *
+ * @typedef {Object} LocationLog
+ * @property {number} latitude - Location latitude
+ * @property {number} longitude - Location longitude
+ * @property {string} orgId - Organization identifier
+ *
+ * @param {Object} props
+ * @param {Student} props.currentStudent - The student whose session history to display
+ *
+ * @state {LocationLog[]} sessionStartLocations - Array of unique session start locations
+ * @state {Object} region - Current map viewport configuration
+ * @state {boolean} loading - Loading state indicator
+ *
+ * @constant {Object} defaultRegion - Memoized default map region (Cape Town)
+ *
+ * @effect Fetches and processes session locations when student data changes
+ *
+ * @returns {JSX.Element} A MapView component displaying session history markers
+ *
+ * @example
+ * <MapSessionHistory currentStudent={studentData} />
+ */
 const MapSessionHistory: React.FC<MapSessionHistoryComponentProps> = ({ currentStudent }) => {
   const { isDarkMode } = useTheme();
 

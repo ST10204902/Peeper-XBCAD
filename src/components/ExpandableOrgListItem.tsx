@@ -24,12 +24,39 @@ interface Props {
 }
 
 /**
- * Creates an ExpandableOrgListItem component
- * @param orgName name of the organisation
- * @param orgAddress address of the organisation
- * @param oddOrEven used to make the alternating grey white pattern for the items
- * @param listButton button to be rendered inside of the item when expanded
- * @returns An ExpandableOrgListItem component
+ * @component ExpandableOrgListItem
+ * @description An expandable list item component for displaying organization information
+ * with dynamic styling based on position and theme.
+ *
+ * @typedef {Object} Organisation
+ * @typedef {Object} OrgAddressData
+ *
+ * @param {Object} props
+ * @param {Organisation} props.orgData - Organization data to display
+ * @param {OrgAddressData} props.orgAddress - Organization address information
+ * @param {'odd'|'even'} props.oddOrEven - Determines alternating row styling
+ * @param {React.ReactNode} props.listButton - Button element to be rendered in the item
+ * @param {number} props.index - Position of item in the list (0-based)
+ * @param {number} props.totalItems - Total number of items in the list
+ * @param {string} [props.testID] - Optional test identifier
+ *
+ * @features
+ * - Dynamic border radius based on item position
+ * - Theme-aware styling (dark/light mode)
+ * - Alternating row colors
+ * - Expandable content
+ *
+ * @returns {JSX.Element} A styled, expandable list item component
+ *
+ * @example
+ * <ExpandableOrgListItem
+ *   orgData={orgData}
+ *   orgAddress={address}
+ *   oddOrEven="odd"
+ *   listButton={<Button />}
+ *   index={0}
+ *   totalItems={5}
+ * />
  */
 export default function ExpandableOrgListItem({
   orgData,

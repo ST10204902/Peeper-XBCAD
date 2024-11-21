@@ -3,16 +3,39 @@ import MapView, { Marker } from "react-native-maps";
 import { View, StyleSheet } from "react-native";
 import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 
-/*
- * Map component for displaying the organisation location.
- */
-
 // Props for the MapComponent
 interface MapComponentProps {
   selectedOrganisation: Organisation | null;
 }
 
-// MapComponent functional component
+/**
+ * @component MapComponent
+ * @description A React Native component that displays an interactive map with organization locations.
+ * Centers on Cape Town by default and can show specific organization markers when selected.
+ *
+ * @typedef {Object} Organisation
+ * @property {number} orgLatitude - Organization's latitude coordinate
+ * @property {number} orgLongitude - Organization's longitude coordinate
+ *
+ * @param {Object} props
+ * @param {Organisation|null} props.selectedOrganisation - The currently selected organization to display on map
+ *
+ * @constant {number} defaultLatitude - Default latitude for Cape Town (-33.9249)
+ * @constant {number} defaultLongitude - Default longitude for Cape Town (18.4241)
+ *
+ * @state {Object} region - Current map view region
+ * @state {number} region.latitude - Latitude center of the map view
+ * @state {number} region.longitude - Longitude center of the map view
+ * @state {number} region.latitudeDelta - Latitude zoom level
+ * @state {number} region.longitudeDelta - Longitude zoom level
+ *
+ * @effect Updates map region when selected organisation changes
+ *
+ * @returns {JSX.Element} A MapView component with optional organization marker
+ *
+ * @example
+ * <MapComponent selectedOrganisation={someOrganisation} />
+ */
 const MapComponent: React.FC<MapComponentProps> = ({ selectedOrganisation }) => {
   // Default location for Cape Town
   const defaultLatitude = -33.9249; // Cape Town latitude

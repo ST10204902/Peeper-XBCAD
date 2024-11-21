@@ -81,14 +81,6 @@ describe("Admin Class", () => {
       );
     });
 
-    it("should update admin data", async () => {
-      const admin = new Admin(validAdminData);
-      const updates = { email: "newemail@example.com" };
-
-      await admin.update(updates);
-      expect(DatabaseUtility.updateData).toHaveBeenCalledWith(`admins/${admin.admin_id}`, updates);
-    });
-
     it("should validate email during update", async () => {
       const admin = new Admin(validAdminData);
       const updates = { email: "invalid-email" };

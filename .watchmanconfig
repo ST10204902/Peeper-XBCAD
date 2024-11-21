@@ -1,4 +1,4 @@
 {
-  "ignore_dirs": [".git", "node_modules", "dist", "build", ".expo"],
+  "ignore_dirs": [".git", "node_modules", "dist", "build", ".expo", "logs", "coverage"],
   "max_open_files": 16384
 }

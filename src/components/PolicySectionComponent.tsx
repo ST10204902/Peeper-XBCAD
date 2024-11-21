@@ -8,6 +8,24 @@ interface PolicySectionProps {
   testID?: string;
 }
 
+/**
+ * @component PolicySectionComponent
+ * @description A component that displays a policy section with a heading and content. The styling adapts to the current theme (dark/light mode).
+ *
+ * @param {Object} props
+ * @param {string} props.heading - The heading text for the policy section
+ * @param {string} props.content - The content text for the policy section
+ * @param {string} [props.testID] - Optional test identifier for the component
+ *
+ * @returns {JSX.Element} A styled view containing the policy section heading and content
+ *
+ * @example
+ * <PolicySectionComponent
+ *   heading="Privacy Policy"
+ *   content="This is the privacy policy content."
+ *   testID="privacy-policy-section"
+ * />
+ */
 export const PolicySectionComponent = ({ heading, content, testID }: PolicySectionProps) => {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;

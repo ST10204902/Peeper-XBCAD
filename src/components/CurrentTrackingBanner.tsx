@@ -1,31 +1,49 @@
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrackingBackground from "../assets/TrackingBackground";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { elapsed_time, trackingStartTimeState, trackingState } from "../atoms/atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { elapsed_time, trackingStartTimeState } from "../atoms/atoms";
 import { useEffect } from "react";
-import { clearTrackingNotification } from "../services/trackingNotification";
 import { useTheme } from "../styles/ThemeContext";
 import { darkTheme, lightTheme } from "../styles/themes";
 import { Colors } from "../styles/colors";
 import stopTrackingIcon from "../assets/stop_tracking_button.png";
+import { useLocationTracking } from "../hooks/useLocationTracking";
 
 /**
- * Component responsible for displaying the current tracking session to the user.
- * Displays the time elapsed and organisation name for which the user is tracking.
- * Also allows the user to stop tracking.
- * @returns A created CurrentTrackingBanner Component
+ * @component CurrentTrackingBanner
+ * @description A banner component that displays and manages the current tracking state
+ * for time tracking functionality. Shows active tracking status and provides stop functionality.
+ * Uses Recoil for state management and includes an auto-updating elapsed time display.
+ *
+ * @requires useTheme - Theme context hook for dark/light mode
+ * @requires Recoil - State management library
+ * @requires React Native SafeAreaView
+ *
+ * @state {Object} trackingAtom - Recoil state containing tracking status
+ * @state {boolean} trackingAtom.isTracking - Whether tracking is currently active
+ * @state {string} trackingAtom.organizationName - Name of organization being tracked
+ * @state {number} startTime - Timestamp when tracking started
+ * @state {number} elapsedTime - Seconds elapsed since tracking started
+ *
+ * @function handleStopTracking - Async function to stop tracking and clear notifications
+ *
+ * @effect Timer Effect - Manages interval for updating elapsed time while tracking is active
+ *
+ * @returns {JSX.Element|null} Returns the tracking banner when active, null when inactive
+ *
+ * @example
+ * <CurrentTrackingBanner />
  */
 const CurrentTrackingBanner = () => {
-  const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);
+  const { tracking, stopTracking } = useLocationTracking();
   const startTime = useRecoilValue(trackingStartTimeState);
   const setElapsedTime = useSetRecoilState(elapsed_time);
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   const handleStopTracking = async () => {
-    await clearTrackingNotification();
-    setTrackingAtom({ isTracking: false, organizationName: "" });
+    await stopTracking();
     setElapsedTime(0);
   };
 
@@ -33,7 +51,7 @@ const CurrentTrackingBanner = () => {
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
 
-    if (trackingAtom.isTracking && startTime > 0) {
+    if (tracking.isTracking && startTime > 0) {
       intervalId = setInterval(() => {
         const currentTime = Date.now();
         const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
@@ -46,9 +64,9 @@ const CurrentTrackingBanner = () => {
         clearInterval(intervalId);
       }
     };
-  }, [trackingAtom.isTracking, startTime, setElapsedTime]);
+  }, [tracking.isTracking, startTime, setElapsedTime]);
 
-  if (!trackingAtom.isTracking) {
+  if (!tracking.isTracking) {
     return null;
   }
 
@@ -63,7 +81,7 @@ const CurrentTrackingBanner = () => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {trackingAtom.organizationName}
+            {tracking.organizationName}
           </Text>
           <ElapsedTimeDisplay />
         </View>

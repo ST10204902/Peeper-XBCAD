@@ -4,7 +4,11 @@ import { useTheme } from "../styles/ThemeContext";
 import { lightTheme, darkTheme } from "../styles/themes";
 import { Colors } from "../styles/colors";
 
-// Simple chevron down icon component using just View elements
+/**
+ * The ChevronDownIcon component displays a chevron down icon.
+ * @param param0 - The color and size of the chevron down icon.
+ * @returns The ChevronDownIcon component.
+ */
 const ChevronDownIcon = ({ color, size = 15 }: { color: string; size?: number }) => (
   <View style={styles.chevronContainer}>
     <View
@@ -35,6 +39,30 @@ interface Props {
   testID?: string;
 }
 
+/**
+ * @component ComboComponent
+ * @description A customizable combo box/dropdown component for React Native that displays a selection in a modal
+ *
+ * @typedef {Object} Option
+ * @property {string | number} value - The value of the option
+ * @property {string} label - The display text for the option
+ * @param {Object} props
+ * @param {Option[]} props.options - Array of options to display in the dropdown
+ * @param {Option} [props.selectedOption] - Currently selected option
+ * @param {string} [props.placeholder] - Placeholder text to display when no option is selected
+ * @param {string} [props.testID] - Test identifier for the component
+ * @param {(option: Option) => void} props.onSelect - Callback function when an option is selected
+ * @param {Object} [props.style] - Additional styles to apply to the container
+ *
+ * @example
+ * <ComboComponent
+ *   options={[{ value: 1, label: 'Option 1' }]}
+ *   placeholder="Select an option"
+ *   onSelect={(option) => console.log(option)}
+ * />
+ *
+ * @returns {JSX.Element} A combo box component with modal selection
+ */
 function ComboBoxComponent({
   FGColor,
   placeHolderColor,

@@ -12,13 +12,27 @@ import A6 from "../assets/Avatars/A6.png";
 import A7 from "../assets/Avatars/A7.png";
 import A8 from "../assets/Avatars/A8.png";
 import A9 from "../assets/Avatars/A9.png";
-
+/**
+ * The AvatarSource interface represents the structure of the avatar source object.
+ * @interface AvatarSource
+ * @property {number} id - The id of the avatar.
+ * @property {number} source - The source of the avatar.
+ * @property {string} avatarId - The avatar id.
+ */
 interface AvatarSource {
   id: number;
   source: number;
   avatarId: string;
 }
 
+/**
+ * The avatars array contains the avatar sources.
+ * @const avatars
+ * @type {AvatarSource[]}
+ * @property {number} id - The id of the avatar.
+ * @property {number} source - The source of the avatar.
+ * @property {string} avatarId - The avatar id.
+ */
 const avatars: AvatarSource[] = [
   { id: 1, source: A1, avatarId: "avatar_1" },
   { id: 2, source: A2, avatarId: "avatar_2" },
@@ -33,6 +47,12 @@ const avatars: AvatarSource[] = [
 
 const { width } = Dimensions.get("window");
 
+/**
+ * The AvatarComponentProps interface represents the structure of the AvatarComponentProps.
+ * @interface AvatarComponentProps
+ * @property {Function} onAvatarSelected - The function to call when an avatar is selected.
+ * @property {string} selectedAvatarURI - The selected avatar URI.
+ */
 interface AvatarComponentProps {
   onAvatarSelected: (uri: string) => void;
   selectedAvatarURI: string;

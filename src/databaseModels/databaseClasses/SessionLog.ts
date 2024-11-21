@@ -1,8 +1,12 @@
-// SessionLog.ts
 import { SessionLogData } from "../SessionLogData";
 import { LocationLog } from "./LocationLog";
 import { Viewport } from "./Viewport";
 
+/**
+ * @class SessionLog
+ * @implements {SessionLogData}
+ * @description Represents a session log with properties such as session ID, organization ID, session start and end times, location logs, and viewport.
+ */
 export class SessionLog implements SessionLogData {
   sessionLog_id: string;
   orgID: string;
@@ -11,6 +15,10 @@ export class SessionLog implements SessionLogData {
   locationLogs: LocationLog[];
   viewport: Viewport;
 
+  /**
+   * @constructor
+   * @param {SessionLogData} data - The data to initialize the session log instance
+   */
   constructor(data: SessionLogData) {
     this.sessionLog_id = data.sessionLog_id;
     this.orgID = data.orgID ?? "";
@@ -28,6 +36,11 @@ export class SessionLog implements SessionLogData {
         : new Viewport({ low: { latitude: 0, longitude: 0 }, high: { latitude: 0, longitude: 0 } });
   }
 
+  /**
+   * @method toJSON
+   * @description Converts the session log instance to a JSON object
+   * @returns {SessionLogData} The JSON representation of the session log instance
+   */
   toJSON(): SessionLogData {
     return {
       sessionLog_id: this.sessionLog_id,

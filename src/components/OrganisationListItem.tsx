@@ -14,7 +14,27 @@ interface OrganisationListItemProps {
 // Get the screen width
 const screenWidth = Dimensions.get("window").width;
 
-// OrganisationListItem functional component
+/**
+ * @component OrganisationListItem
+ * @description A functional component that displays an organization name in a styled list item.
+ * The background color alternates based on the item's position (odd or even) and adapts to the theme (dark/light mode).
+ *
+ * @param {Object} props
+ * @param {string} props.orgName - The name of the organization to display
+ * @param {'odd'|'even'} props.oddOrEven - Determines the background color based on the item's position
+ * @param {Function} props.onPress - Callback function to handle the press event when the item is clicked
+ *
+ * @constant {number} screenWidth - The width of the device screen
+ *
+ * @returns {JSX.Element} A styled TouchableOpacity component displaying the organization name
+ *
+ * @example
+ * <OrganisationListItem
+ *   orgName="Example Organization"
+ *   oddOrEven="odd"
+ *   onPress={() => console.log('Item pressed')}
+ * />
+ */
 const OrganisationListItem: React.FC<OrganisationListItemProps> = ({
   orgName,
   oddOrEven,

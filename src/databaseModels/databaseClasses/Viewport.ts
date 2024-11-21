@@ -1,10 +1,19 @@
 import { LocationLogData } from "../LocationLogData";
 import { ViewportData } from "../ViewportData";
 
+/**
+ * @class Viewport
+ * @implements {ViewportData}
+ * @description Represents a viewport with properties for the low and high latitude and longitude coordinates.
+ */
 export class Viewport implements ViewportData {
   low: { latitude: number; longitude: number };
   high: { latitude: number; longitude: number };
 
+  /**
+   * @constructor
+   * @param {ViewportData} [data] - The data to initialize the viewport instance
+   */
   constructor(
     data: ViewportData = {
       low: { latitude: 0, longitude: 0 },
@@ -15,6 +24,11 @@ export class Viewport implements ViewportData {
     this.high = data.high;
   }
 
+  /**
+   * @method toJSON
+   * @description Converts the viewport instance to a JSON object
+   * @returns {ViewportData} The JSON representation of the viewport instance
+   */
   toJSON(): ViewportData {
     return {
       low: this.low,
@@ -22,8 +36,13 @@ export class Viewport implements ViewportData {
     };
   }
 
-  // Helper function to calculate bounding box
-  //-----------------------------------------------------------//
+  /**
+   * @static
+   * @method calculateBoundingBox
+   * @description Calculates the bounding box for a given set of location logs
+   * @param {LocationLogData[]} locationLogs - Array of location logs to calculate the bounding box for
+   * @returns {Viewport} The calculated viewport instance
+   */
   static calculateBoundingBox(locationLogs: LocationLogData[]): Viewport {
     let minLatSoFar = 90;
     let minlngSoFar = 180;
