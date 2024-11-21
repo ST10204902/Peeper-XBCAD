@@ -1,7 +1,7 @@
 # HERENOW - Student Community Service Tracking System
 
-[![CI](https://github.com/ST10204902/HERENOW-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/HERENOW-XBCAD/actions/workflows/main.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ST10204902_HERENOW-XBCAD&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ST10204902_HERENOW-XBCAD)
+[![CI](https://github.com/ST10204902/PEEPER-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/PEEPER-XBCAD/actions/workflows/main.yml)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=ST10204902_Peeper-XBCAD)](https://sonarcloud.io/summary/new_code?id=ST10204902_Peeper-XBCAD)
 
 ## Overview
 
