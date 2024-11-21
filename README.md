@@ -45,8 +45,8 @@ HERENOW is a comprehensive tracking system designed to monitor and verify commun
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ST10204902/HERENOW-XBCAD.git
-cd HERENOW-XBCAD
+git clone https://github.com/ST10204902/Peeper-XBCAD.git
+cd Peeper-XBCAD
 ```
 2. Install dependencies:
 ```bash
@@ -61,8 +61,8 @@ run the `npx expo start` command in terminal and scan the QR code with an IPhone
 
 ## Related Links
 
-- [Web Portal](https://HERENOW-portal.vercel.app/)
-- [GitHub Repository](https://github.com/ST10204902/HERENOW-XBCAD)
+- [Web Portal](https://herenow-portal.vercel.app/)
+- [GitHub Repository](https://github.com/ST10204902/PEEPER-XBCAD)
 
 ## License
 
