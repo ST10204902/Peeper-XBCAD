@@ -1,12 +1,75 @@
+# PEEPER - Student Community Service Tracking System
+
 [![CI](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml/badge.svg)](https://github.com/ST10204902/Peeper-XBCAD/actions/workflows/main.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ST10204902_Peeper-XBCAD&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ST10204902_Peeper-XBCAD)
 
-[![Workflow Overview](https://mermaid.ink/img/pako:eNqVlFFvqyAYhv8K4eJcrWcJ3vXiJI32ZlmbKi5LDt0F02_TVNEhLDPL_vtBoa1dpMvxgiDvC_rxPvCJsyYHvMSvkrcFSqO9QObp9LMd2OOd7gqkGlTzUtzm8L7H1jI8Ozaq63cQ6gktFn_Qhg2-331dPU1so0RZB5mWpeq_yefexq5BGQWlW3TXPE9sG2rVlKXQqe9i6sSEJVqgwdFdyInTV-yhrRqejxa0kqp84dmF99yzH6QbtuFKlh_DJ6dGan-Xhiw0exjfozt6m9IZw5aJtkZc56WaUSMWQQsiB5H1KCwgO0xNIfplFhiayNpPBVC3myiBTlenEsxKezGTYlUZ45seqvalmbCpzQVKZhO120mJL1NniNmA1-JN8-pq7sQFTzzJOz0l89kf5YT40j86VuR_8icOAOIlwDlC4mfAWbbEQ4HTI3KdAzKCMLaRm3IuxsPCZTmxjWT-dMUW9tgHe2xpjddsTe9LoWYkcxtIUKoEOSOaU9u3QDNZthdz127ZE9Z2eVNI28gL586UHttjHm9ZbJFC20aVGVxl_xHgUPWIZgXkuoIp8o8slI04SRZ5GviopoEDIvAC4Rxh4AfCWbaBBwinR8F1IIIRiLGN3JRV8PPlgG9wDdKc6dzc-p_D8B6rAmqzL0vTzbk8DDv0ZXxcq4b2IsNLJTXcYNno1wIvX3jVmTfd5lxBVHKzz_VptOXib9Mc37_-AcXszYk?type=png)](https://mermaid.live/edit#pako:eNqVlFFvqyAYhv8K4eJcrWcJ3vXiJI32ZlmbKi5LDt0F02_TVNEhLDPL_vtBoa1dpMvxgiDvC_rxPvCJsyYHvMSvkrcFSqO9QObp9LMd2OOd7gqkGlTzUtzm8L7H1jI8Ozaq63cQ6gktFn_Qhg2-331dPU1so0RZB5mWpeq_yefexq5BGQWlW3TXPE9sG2rVlKXQqe9i6sSEJVqgwdFdyInTV-yhrRqejxa0kqp84dmF99yzH6QbtuFKlh_DJ6dGan-Xhiw0exjfozt6m9IZw5aJtkZc56WaUSMWQQsiB5H1KCwgO0xNIfplFhiayNpPBVC3myiBTlenEsxKezGTYlUZ45seqvalmbCpzQVKZhO120mJL1NniNmA1-JN8-pq7sQFTzzJOz0l89kf5YT40j86VuR_8icOAOIlwDlC4mfAWbbEQ4HTI3KdAzKCMLaRm3IuxsPCZTmxjWT-dMUW9tgHe2xpjddsTe9LoWYkcxtIUKoEOSOaU9u3QDNZthdz127ZE9Z2eVNI28gL586UHttjHm9ZbJFC20aVGVxl_xHgUPWIZgXkuoIp8o8slI04SRZ5GviopoEDIvAC4Rxh4AfCWbaBBwinR8F1IIIRiLGN3JRV8PPlgG9wDdKc6dzc-p_D8B6rAmqzL0vTzbk8DDv0ZXxcq4b2IsNLJTXcYNno1wIvX3jVmTfd5lxBVHKzz_VptOXib9Mc37_-AcXszYk)
+## Overview
 
-# PEEPER
+PEEPER is a comprehensive system designed to monitor and verify community service hours completed by Bachelor of Education students. It consists of a mobile application for iOS and Android platforms and a web portal accessible across various operating systems. The system ensures transparency, prevents fraud, and provides administrators with tools to manage and export student data effectively.
 
-## Team: **CTRL+ALT+Innovate**
+## Features
 
-Team members:
+- **Real-time Location Tracking**: Utilize GPS to monitor student locations during community service sessions.
+- **Organization Management**: Manage a list of approved organizations within the system.
+- **Session History with Maps Integration**: View past service sessions with integrated mapping for visual representation.
+- **PDF Report Generation**: Generate comprehensive reports of service hours in PDF format.
+- **Dark/Light Theme Support**: Switch between dark and light themes for better usability.
+- **Emergency Contact Information**: Access important contact details when needed.
+- **Privacy and Security**: Protect user data with robust security measures.
+
+## Table of Contents
+
+- Getting Started
+  - Prerequisites
+  - Installation
+  - Running the App
+- Related Links
+- Team
+- License
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v20 or later)
+- [npm](https://www.npmjs.com/) (included with Node.js)
+- [Expo CLI](https://docs.expo.dev/workflow/expo-cli/)
+- Code editor (e.g., Visual Studio Code)
+- iOS or Android device/emulator
+
+### Installation
+
+1. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/ST10204902/Peeper-XBCAD.git
+   cd Peeper-XBCAD
+   ```
+
+2. **Install Dependencies**:
+
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+
+### Running the App
+
+Start the development server:
+
+```bash
+npx expo start
+```
+
+Scan the QR code displayed in the terminal with the Expo Go app on your iOS or Android device to run the application.
+
+Refer to documentation for further instructions for sideloading the app natively on your specific platform.
+
+## Related Links
+
+- [Web Portal](https://herenow-portal.vercel.app/)
+- [GitHub Repository](https://github.com/ST10204902/Peeper-XBCAD)
+
+## Team
 
 - **Anneme Holzhausen (PM)** - ST10144453
 - **Jasper Van Niekerk** - ST10071737
@@ -15,10 +78,6 @@ Team members:
 - **Nicholas Meyer** - ST10204902
 - **David Mellors** - ST10241466
 
-## Project Summary
+## License
 
-The PEEPER project aims to develop a zero-cost app and web portal to track and verify community service completed by Bachelor of Education students, ensuring transparency and preventing fraud. The mobile app will be available on both iOS and Android platforms, while the web portal will be accessible across Windows, macOS, and mobile devices. The portal will provide administrators and faculty with tools to manage, track, and export student data, with a strong emphasis on ease of use and a user-friendly interface.
-
-## Download Instructions
-
-This repository is currently under development and is intended for use by the project’s development team only.
+This project is licensed under the MIT License.
