@@ -1,5 +1,10 @@
 import { LocationLogData } from "../LocationLogData";
 
+/**
+ * @class LocationLog
+ * @implements {LocationLogData}
+ * @description Represents a location log with properties such as timestamp, latitude, longitude, accuracy, and altitude.
+ */
 export class LocationLog implements LocationLogData {
   timestamp: string;
   latitude: number;
@@ -7,6 +12,10 @@ export class LocationLog implements LocationLogData {
   accuracy: number;
   altitude: number;
 
+  /**
+   * @constructor
+   * @param {Partial<LocationLogData>} data - The data to initialize the location log instance
+   */
   constructor(data: Partial<LocationLogData>) {
     this.timestamp =
       data.timestamp !== null && data.timestamp !== undefined && data.timestamp !== ""
@@ -34,6 +43,11 @@ export class LocationLog implements LocationLogData {
         : 0;
   }
 
+  /**
+   * @method toJSON
+   * @description Converts the location log instance to a JSON object
+   * @returns {LocationLogData} The JSON representation of the location log instance
+   */
   toJSON(): LocationLogData {
     return {
       timestamp: this.timestamp,

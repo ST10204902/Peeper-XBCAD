@@ -11,6 +11,25 @@ interface TrackingPopupProps {
   onCancel: () => void;
 }
 
+/**
+ * @component TrackingPopup
+ * @description A modal popup component that prompts the user to start tracking or cancel the action.
+ * The styling adapts to the current theme (dark/light mode).
+ *
+ * @param {Object} props
+ * @param {boolean} props.visible - Determines whether the modal is visible
+ * @param {Function} props.onStartTracking - Callback function to handle the start tracking action
+ * @param {Function} props.onCancel - Callback function to handle the cancel action
+ *
+ * @returns {JSX.Element} A modal popup with start tracking and cancel buttons
+ *
+ * @example
+ * <TrackingPopup
+ *   visible={true}
+ *   onStartTracking={() => console.log('Tracking started')}
+ *   onCancel={() => console.log('Tracking cancelled')}
+ * />
+ */
 const TrackingPopup: React.FC<TrackingPopupProps> = ({ visible, onStartTracking, onCancel }) => {
   const { isDarkMode } = useTheme();
   const theme = isDarkMode ? darkTheme : lightTheme;

@@ -4,10 +4,33 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Colors } from "../styles/colors";
 
 /**
- * EmergencyContacts component renders a screen with emergency contact information.
- * It displays a gradient background with a header and a list of emergency contact numbers.
+ * @component EmergencyContacts
+ * @description A component that displays emergency contact numbers with clickable buttons
+ * to directly initiate calls. Features a gradient background and standardized emergency
+ * numbers for quick access.
  *
- * @returns {JSX.Element} The rendered EmergencyContacts component.
+ * @requires React Native
+ * @requires expo-linear-gradient
+ *
+ * @function handlePress
+ * @param {string} number - The phone number to dial
+ * @returns {void}
+ *
+ * @styles {Object} styles - StyleSheet containing:
+ *  - container: Gradient container styles
+ *  - header: Main heading styles
+ *  - subContainer: Inner container styles
+ *  - contactRow: Individual contact button styles
+ *
+ * @test-ids
+ * - emergency-button: Emergency number button
+ * - police-button: Police number button
+ * - ambulance-button: Ambulance number button
+ *
+ * @returns {JSX.Element} Emergency contacts interface with clickable phone numbers
+ *
+ * @example
+ * <EmergencyContacts />
  */
 const EmergencyContacts = () => {
   const handlePress = (number: string) => {

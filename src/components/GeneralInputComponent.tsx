@@ -9,7 +9,37 @@ interface Props {
   placeholderText: string;
   labelText: string;
 }
-
+/**
+ * @component SearchBarComponent
+ * @description A reusable search input component with customizable styling and labels.
+ * Provides real-time search input handling with parent component callback.
+ *
+ * @param {Object} props
+ * @param {string} props.FGColor - Foreground color for the input text and label
+ * @param {Function} props.onSearchInputChange - Callback function for search input changes
+ * @param {string} props.placeHolderColor - Color for the placeholder text
+ * @param {string} props.placeholderText - Text to display when input is empty
+ * @param {string} props.labelText - Label text displayed above the input field
+ *
+ * @state {string} searchInput - Controlled input state for the search field
+ *
+ * @styles {Object} styles - StyleSheet containing:
+ *  - labelContainer: Wrapper for the label
+ *  - label: Text styling for the label
+ *  - searchBarContainer: Container for the search input
+ *  - input: Styling for the TextInput component
+ *
+ * @returns {JSX.Element} A styled search input component with label
+ *
+ * @example
+ * <SearchBarComponent
+ *   FGColor="#000000"
+ *   onSearchInputChange={(text) => handleSearch(text)}
+ *   placeHolderColor="#999999"
+ *   placeholderText="Search..."
+ *   labelText="Search"
+ * />
+ */
 function SearchBarComponent({
   FGColor,
   onSearchInputChange,

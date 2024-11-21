@@ -442,8 +442,40 @@ async function testHTML(student: Student, base64Logo: string): Promise<string> {
 }
 
 /**
- * Component to share a PDF report of a student's location data.
- * @returns React component
+ * @constant {string} GOOGLE_MAPS_API_KEY - API key for Google Maps services
+ */
+
+/**
+ * @function calculateZoomLevel
+ * @description Calculates the appropriate zoom level for a map based on the provided location logs.
+ *
+ * @param {Array<LocationLog>} locationLogs - Array of location logs containing latitude and longitude
+ *
+ * @returns {number} The calculated zoom level for the map
+ *
+ * @example
+ * const zoomLevel = calculateZoomLevel(locationLogs);
+ */
+
+/**
+ * @component PDFShareComponent
+ * @description A component that generates and shares a PDF document containing student location logs and organization information.
+ * Utilizes Expo's Print and Sharing APIs for PDF generation and sharing functionality.
+ *
+ * @requires expo-print
+ * @requires expo-sharing
+ *
+ * @typedef {Object} Student
+ * @typedef {Object} LocationLog
+ * @typedef {Object} Organisation
+ *
+ * @param {Object} props
+ * @param {Student} props.currentStudent - The current student whose data is being displayed
+ *
+ * @returns {JSX.Element} A component with a button to generate and share a PDF document
+ *
+ * @example
+ * <PDFShareComponent currentStudent={studentData} />
  */
 export default function PDFShareComponent() {
   const [loading, setLoading] = React.useState(false);

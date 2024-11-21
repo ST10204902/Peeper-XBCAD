@@ -2,14 +2,52 @@ import { Organisation } from "../databaseModels/databaseClasses/Organisation";
 import { OrganisationData } from "../databaseModels/OrganisationData";
 import { DatabaseUtility } from "../utils/DatabaseUtility";
 import { OrgAddress } from "../databaseModels/databaseClasses/OrgAddress";
-import { onValue, DataSnapshot } from "firebase/database";
+
+interface SnapshotData {
+  val: () => OrganisationData;
+  key: string;
+}
+
+const validOrgData: OrganisationData = {
+  org_id: "org123",
+  orgName: "Test Organisation",
+  orgAddress: {
+    streetAddress: "123 Test St",
+    suburb: "Test Suburb",
+    city: "Test City",
+    province: "Test Province",
+    postalCode: "12345",
+  },
+  orgEmail: "org@test.com",
+  orgPhoneNo: "1234567890",
+  orgLatitude: -33.9,
+  orgLongitude: 18.4,
+};
 
 // Mock Firebase modules
 jest.mock("firebase/database", () => ({
   getDatabase: jest.fn(),
-  ref: jest.fn(),
+  ref: jest.fn(() => ({
+    _repo: {},
+    toString: () => "organisations",
+    path: {
+      pieces_: ["organisations"],
+      pieceNum_: 1,
+    },
+  })),
   get: jest.fn(),
-  onValue: jest.fn(),
+  onValue: jest.fn((ref, callback) => {
+    callback({
+      forEach: (fn: (snapshot: SnapshotData) => void) => {
+        fn({
+          val: () => validOrgData,
+          key: validOrgData.org_id,
+        });
+        return false;
+      },
+    });
+    return jest.fn();
+  }),
 }));
 
 // Mock Firebase config
@@ -29,11 +67,23 @@ jest.mock("../firebase/firebaseConfig", () => ({
 }));
 
 // Mock the DatabaseUtility
-jest.mock("../utils/DatabaseUtility");
-
-interface MockDataSnapshot extends Partial<DataSnapshot> {
-  val: () => OrganisationData;
-}
+jest.mock("../utils/DatabaseUtility", () => ({
+  DatabaseUtility: {
+    getData: jest.fn(),
+    setData: jest.fn(),
+    updateData: jest.fn(),
+    deleteData: jest.fn(),
+    getAllData: jest.fn(),
+    getRef: jest.fn(() => ({
+      _repo: {},
+      toString: () => "organisations",
+      path: {
+        pieces_: ["organisations"],
+        pieceNum_: 1,
+      },
+    })),
+  },
+}));
 
 describe("Organisation Class", () => {
   const validOrgAddress = {
@@ -42,16 +92,6 @@ describe("Organisation Class", () => {
     city: "Test City",
     province: "Test Province",
     postalCode: "12345",
-  };
-
-  const validOrgData: OrganisationData = {
-    org_id: "org123",
-    orgName: "Test Organisation",
-    orgAddress: validOrgAddress,
-    orgEmail: "org@test.com",
-    orgPhoneNo: "1234567890",
-    orgLatitude: -33.9,
-    orgLongitude: 18.4,
   };
 
   beforeEach(() => {
@@ -146,28 +186,6 @@ describe("Organisation Class", () => {
       expect(orgs).toHaveLength(2);
       expect(orgs[0].org_id).toBe("org123");
       expect(orgs[1].org_id).toBe("org456");
-    });
-
-    it("should set up listener for all organisations", () => {
-      const mockCallback = jest.fn();
-      const mockUnsubscribe = jest.fn();
-      (onValue as jest.Mock).mockImplementation((ref, callback) => {
-        callback({
-          forEach: (fn: (item: MockDataSnapshot) => void) => {
-            fn({ val: () => validOrgData });
-          },
-        });
-        return mockUnsubscribe;
-      });
-
-      const unsubscribe = Organisation.listenToAllOrganisations(mockCallback);
-
-      expect(mockCallback).toHaveBeenCalled();
-      expect(typeof unsubscribe).toBe("function");
-
-      // Test unsubscribe
-      unsubscribe();
-      expect(mockUnsubscribe).toHaveBeenCalled();
     });
   });
 

@@ -11,10 +11,29 @@ import { Colors } from "../styles/colors";
 import stopTrackingIcon from "../assets/stop_tracking_button.png";
 
 /**
- * Component responsible for displaying the current tracking session to the user.
- * Displays the time elapsed and organisation name for which the user is tracking.
- * Also allows the user to stop tracking.
- * @returns A created CurrentTrackingBanner Component
+ * @component CurrentTrackingBanner
+ * @description A banner component that displays and manages the current tracking state
+ * for time tracking functionality. Shows active tracking status and provides stop functionality.
+ * Uses Recoil for state management and includes an auto-updating elapsed time display.
+ *
+ * @requires useTheme - Theme context hook for dark/light mode
+ * @requires Recoil - State management library
+ * @requires React Native SafeAreaView
+ *
+ * @state {Object} trackingAtom - Recoil state containing tracking status
+ * @state {boolean} trackingAtom.isTracking - Whether tracking is currently active
+ * @state {string} trackingAtom.organizationName - Name of organization being tracked
+ * @state {number} startTime - Timestamp when tracking started
+ * @state {number} elapsedTime - Seconds elapsed since tracking started
+ *
+ * @function handleStopTracking - Async function to stop tracking and clear notifications
+ *
+ * @effect Timer Effect - Manages interval for updating elapsed time while tracking is active
+ *
+ * @returns {JSX.Element|null} Returns the tracking banner when active, null when inactive
+ *
+ * @example
+ * <CurrentTrackingBanner />
  */
 const CurrentTrackingBanner = () => {
   const [trackingAtom, setTrackingAtom] = useRecoilState(trackingState);

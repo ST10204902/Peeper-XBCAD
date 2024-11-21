@@ -19,6 +19,10 @@ type LocationSubscription = {
   remove: () => void;
 };
 
+/**
+ * Custom hook to manage location tracking
+ * @returns {Object} An object containing the error message, tracking state, and functions to start and stop tracking
+ */
 export function useLocationTracking() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [tracking, setTracking] = useRecoilState(trackingState);
@@ -32,6 +36,10 @@ export function useLocationTracking() {
   const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const elapsedTimeRef = useRef<number>(0);
 
+  /**
+   * Handles location updates
+   * @param {ExpoLocation.LocationObject} location - The location object
+   */
   const handleLocationUpdate = useCallback(
     (location: ExpoLocation.LocationObject) => {
       // eslint-disable-next-line no-console

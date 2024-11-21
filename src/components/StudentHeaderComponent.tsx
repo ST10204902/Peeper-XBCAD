@@ -13,6 +13,33 @@ interface StudentHeaderComponentProps {
   testID?: string;
 }
 
+/**
+ * @component SearchBarComponent
+ * @description A reusable search input component with customizable styling and labels.
+ * Provides real-time search input handling with parent component callback.
+ *
+ * @param {Object} props
+ * @param {string} props._FGColor - Foreground color for the input text and label
+ * @param {Function} props.onSearchInputChange - Callback function for search input changes
+ * @param {string} props._placeHolderColor - Color for the placeholder text
+ * @param {Function} [props.onFocus] - Optional callback function when the input gains focus
+ * @param {Function} [props.onBlur] - Optional callback function when the input loses focus
+ *
+ * @state {string} searchInput - Controlled input state for the search field
+ * @state {boolean} _isFocused - State to track if the input is focused
+ * @state {string} placeholderText - State for the placeholder text
+ *
+ * @returns {JSX.Element} A styled search input component with label
+ *
+ * @example
+ * <SearchBarComponent
+ *   _FGColor="#000000"
+ *   onSearchInputChange={(text) => handleSearch(text)}
+ *   _placeHolderColor="#999999"
+ *   onFocus={() => console.log('Focused')}
+ *   onBlur={(text) => console.log('Blurred with text:', text)}
+ * />
+ */
 const StudentHeaderComponent: React.FC<StudentHeaderComponentProps> = ({
   currentStudent,
   testID,

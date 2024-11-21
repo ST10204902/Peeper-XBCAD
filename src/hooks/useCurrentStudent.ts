@@ -12,7 +12,19 @@ type UseCurrentStudentResult = {
   saving: boolean;
   updateCurrentStudent: (updates: Partial<StudentData>) => Promise<void>;
 };
+/**
+ * @typedef {Object} UseCurrentStudentResult
+ * @property {Student | null} currentStudent - The current student instance
+ * @property {Error | null} error - The error state
+ * @property {boolean} loading - The loading state
+ * @property {boolean} saving - The saving state
+ * @property {function} updateCurrentStudent - Function to update the current student
+ */
 
+/**
+ * Custom hook to manage the current student data
+ * @returns {UseCurrentStudentResult} An object containing the current student, error, loading, saving states, and updateCurrentStudent function
+ */
 export function useCurrentStudent(): UseCurrentStudentResult {
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -54,6 +66,11 @@ export function useCurrentStudent(): UseCurrentStudentResult {
     };
   }, [user]);
 
+  /**
+   * Updates the current student's data
+   * @param {Partial<StudentData>} updates - The updates to apply to the current student
+   * @returns {Promise<void>}
+   */
   const updateCurrentStudent = async (updates: Partial<StudentData>) => {
     if (!currentStudent) {
       setError(new Error("No current student to update"));
